@@ -3,7 +3,7 @@
     <v-layout>
       <v-flex class="side-menu" pa-2>
         <v-btn round large @click.stop="dialog=true">
-          <v-icon class="mr-2" color="blue">add</v-icon>새로 만들기
+          <v-icon class="mr-2" color="blue">add</v-icon>프로젝트 생성
         </v-btn>
         <div style="background: green, width : 100%, height : 100%;"></div>
         <v-dialog max-width="395px" height="180px" v-model="dialog">

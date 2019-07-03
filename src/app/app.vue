@@ -23,7 +23,7 @@
   </v-app>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss" >
 @import './app.scss';
 </style>
 

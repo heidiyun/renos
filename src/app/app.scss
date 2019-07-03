@@ -9,3 +9,13 @@
 body {
   margin: 0;
 }
+
+html {
+  overflow-y: hidden !important;
+}
+
+.profile-card {
+  background: green;
+  width: 250px;
+  height: 200px;
+}

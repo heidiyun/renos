@@ -6,7 +6,6 @@
       src="http://www.mdaily.net/news/photo/201907/22828_28511_452.jpg"
     ></v-img>
 
-    <v-img height="calc(100% - 64px)" class="card-image" :src="project.data.fileURL"></v-img>
     <v-card-title class="px-3 py-2" style=" height:64px;">
       <div style="width:100%" class="card-text-layout">
         <div class="card-title" style="font-weight:bold">{{project.data.name}}</div>

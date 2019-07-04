@@ -1,6 +1,7 @@
 import { FirestoreDocumentData } from '@/vue-common';
 
 export default class ProjectFile extends FirestoreDocumentData {
+  public name: string = '';
   public pid: string = '';
   public uid: string = '';
   public fileType: string = '';

@@ -1,0 +1,19 @@
+.c-layout {
+  .card-image {
+    background-size: cover;
+  }
+  .card-text-layout {
+    .card-title {
+      width: calc(100% - 20px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    &:hover {
+      cursor: default;
+    }
+  }
+  &[selected] {
+    background: green;
+  }
+}

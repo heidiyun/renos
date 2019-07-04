@@ -1,105 +1,68 @@
 import { Vue, Component } from 'vue-property-decorator';
+import { Auth, FirestoreDocument, Storage } from '@/vue-common';
 import Collections from '@/models/collections';
 import Project from '@/models/project';
-import { Auth, FirestoreDocument, FirestoreDocumentData } from '@/vue-common';
-import _ from 'lodash';
 import User from '@/models/user';
+import toast from '@/vue-common/plugins/toast';
+import ProjectFile from '@/models/projectFile';
 
 @Component({})
 export default class Drive extends Vue {
-  private dialog = false;
-  private projectTitle: string = '';
-  private projectList: Array<FirestoreDocument<Project>> = [];
-  private imageList = [
-    'https://png.pngtree.com/thumb_back/fw800/back_pic/02/66/81/39578b81744df9f.jpg',
-    'http://cfile225.uf.daum.net/image/2572C63851AE0A84105A82',
-    'http://cfile222.uf.daum.net/image/2668933953157BC9169043',
-    'https://t1.daumcdn.net/cfile/tistory/25257E4753D84EE013'
-  ];
-  private mainImage = this.imageList[
-    Math.floor(Math.random() * this.imageList.length)
-  ];
+  private members: Array<FirestoreDocument<User>> = [];
+  private isOwner: boolean = false;
+  private project: FirestoreDocument<Project> = Collections.projects.create(
+    Project
+  );
+  private fileList: Array<FirestoreDocument<ProjectFile>> = [];
 
-  private category: {
-    name: string;
-    active: boolean;
-    list: Array<FirestoreDocument<Project>>;
-  }[] = [
-    {
-      name: '관리자로 있는 프로젝트',
-      active: false,
-      list: []
-    },
-    {
-      name: '편집자로 있는 프로젝트',
-      active: false,
-      list: []
-    },
-    {
-      name: '관찰자로 있는 프로젝트',
-      active: false,
-      list: []
-    }
-  ];
-
-  get currentProjectList() {
-    this.category.forEach(p => {
-      if (p.active) this.projectList = p.list;
-    });
-    return this.projectList;
+  private uploadFile() {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.style.display = 'none';
+    input.addEventListener('change', this.onChange);
+    input.click();
+    document.body.appendChild(input);
   }
 
-  private createProject() {
-    if (this.projectTitle.length === 0) return;
+  private async onChange(e) {
+    console.log(e);
+    const file = e.target.files[0];
+    console.log(file);
 
-    const project = Collections.projects.create(Project);
-    project.data.name = this.projectTitle;
-    `${this.$store.getters.user.id}`;
-    project.data.users = {
-      [`${this.$store.getters.user.id}`]: 'supervisor'
-    };
-    project.data.imageURL = this.mainImage;
-
-    project.saveSync();
-    this.dialog = false;
-    this.projectTitle = '';
+    const files = Collections.files.create(ProjectFile);
+    files.data.uid = this.$store.getters.user.data.uid;
+    files.data.pid = this.project.id;
+    files.data.uploadDate = new Date().toUTCString();
+    files.data.fileType = e.target.type;
+    files.data.name = file.name;
+    const storage = new Storage('files/');
+    await storage.upload(file);
+    files.data.fileURL = await storage.getDownloadURL();
+    files.saveSync();
+    this.fileList.push(files);
   }
 
   private mounted() {
-    console.log(this.mainImage);
-    Auth.addChangeListener(
-      'drive',
-      async u => {
-        if (u === null) this.$router.push('login');
+    const pid = this.$route.params.projectName;
+    Auth.addChangeBeforeListener('drive', async u => {
+      //사용자를 갖고올거야.
+      this.project = await Collections.projects.load(Project, pid);
+      const keys = Object.keys(this.project.data.users);
 
-        const projects = await Collections.projects.get(Project);
-        const users = await Collections.users.get(User);
-
-        projects.forEach(p => {
-          const uid = p.data.users[`${this.$store.getters.user.id}`];
-          if (uid) {
-            this.projectList.push(p);
+      const users: Array<FirestoreDocument<User>> = [];
+      for (const key of keys) {
+        if (this.project.data.users[key] === 'supervisor') {
+          if (key === this.$store.getters.user.id) {
+            this.isOwner = true;
           }
+        }
+        users.push(await Collections.users.load(User, key));
+      }
+      this.members = users;
 
-          if (uid === 'supervisor') {
-            this.category[0].list.push(p);
-          } else if (uid === 'editor') {
-            this.category[1].list.push(p);
-          } else {
-            this.category[2].list.push(p);
-          }
-        });
-
-        Collections.projects.clearOnChange();
-
-        //   Collections.projects.onChange(Project, (project, state) => {
-        //     if (state === 'added') {
-        //       console.log('added');
-        //       this.projectList.push(project);
-        //     }
-        //   });
-      },
-      true
-    );
+      const files = await Collections.files.get(ProjectFile);
+      this.fileList = files;
+    });
   }
 }

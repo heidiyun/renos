@@ -2,7 +2,9 @@ import { Vue, Component } from 'vue-property-decorator';
 import { Auth } from '@/vue-common';
 import User from '@/models/user';
 import Collections from '@/models/collections';
+import ProjectCard from '@/components/projectCard';
 
+Vue.component('project-card', ProjectCard);
 @Component({})
 export default class App extends Vue {
   private mounted() {

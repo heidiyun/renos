@@ -1,0 +1,25 @@
+.side-menu {
+  max-width: 240px;
+  height: calc(100vh - 64px);
+  background: #fff;
+  min-width: 240px;
+
+  .project-right-menu {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    margin-top: 4px;
+
+    .subitem {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.content-layout {
+  align-content: flex-start;
+  height: calc(100vh - 64px);
+  overflow-y: scroll;
+}

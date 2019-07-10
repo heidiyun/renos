@@ -22,6 +22,8 @@ export default class App extends Vue {
   private projectList: Array<FirestoreDocument<project>> = [];
   private projectTitle: string = '';
   private dialog = false;
+  private snackbarText = '';
+  private snackbar = false;
 
   private categoryGroups: {
     [key: string]: Array<FirestoreDocument<project>>;
@@ -110,6 +112,8 @@ export default class App extends Vue {
               this.projectList.push(project);
             } else if (state === 'removed') {
               const index = this.projectList.findIndex(p => {
+                this.snackbar = true;
+                this.snackbarText = '프로젝트가 삭제되었습니다.';
                 return p.id === project.id;
               });
               this.projectList.splice(index, 1);
@@ -118,6 +122,8 @@ export default class App extends Vue {
                 return p.id === project.id;
               });
               this.projectList.splice(index, 1, project);
+              this.snackbar = true;
+              this.snackbarText = '변경사항이 적용되었습니다.';
             }
             this.categoryGroups = _.groupBy(
               this.projectList,

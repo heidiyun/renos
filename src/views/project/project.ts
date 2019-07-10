@@ -15,10 +15,8 @@ export default class Project extends Vue {
   private showMenu = false;
   public projectSelected: boolean = false;
   private selected: string = '';
-  private snackbarText = '';
   private moreMenuClicked = false;
   private filterSelected = '전체';
-  private snackbar = false;
 
   private ui = {
     categories: [
@@ -70,7 +68,7 @@ export default class Project extends Vue {
         }
       }
     });
-
+    this.$progress.off();
     return this.projectList;
   }
 
@@ -78,9 +76,6 @@ export default class Project extends Vue {
     this.$router.push(`/myprojects/${pid}`);
   }
 
-  private onChangeSnackbarText(text: string) {
-    this.snackbarText = text;
-  }
 
   private mounted() {
     // console.log('param', this.$route.params);

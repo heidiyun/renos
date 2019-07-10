@@ -18,7 +18,6 @@ export default class ProjectCard extends Vue {
   private renameDialog = false;
   private projectTitle = this.project.data.name;
   private selected: string = '';
-  
 
   private removeProject() {
     const storage = new Storage(`images/${this.project.id}`);
@@ -56,7 +55,7 @@ export default class ProjectCard extends Vue {
     await storage.upload(file);
     const url = await storage.getDownloadURL();
     this.project.update({ imageURL: `${url}` });
-    this.$emit('change-snackbar-text', '이미지가 변경되었습니다.');
+    
   }
 
   private async mounted() {

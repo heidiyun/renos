@@ -1,6 +1,6 @@
 <template>
   <v-app @click="profileButtonClicked= false">
-    <v-navigation-drawer app permanent width="300px;" style="overflow:hidden">
+    <v-navigation-drawer app permanent width="300px;" style="overflow:hidden;">
       <v-flex class="side-menu">
         <div class="logo">RENOS</div>
         <v-btn
@@ -26,34 +26,6 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-
-        <div class="project-right-menu">
-          <v-list>
-            <v-list-group
-              v-for="(item,i) in currentCategories"
-              :key="`item-${i}`"
-              v-model="item.active"
-            >
-              <template v-slot:activator>
-                <v-list-tile>
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{item.name}}</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-              </template>
-
-              <v-list-tile v-for="(subItem,i) in categoryGroups[item.dataKey]" :key="i">
-                <v-list-tile-content>
-                  <v-list-tile-title
-                    class="px-3 subitem"
-                    style="font-size : 14px; color:gray "
-                    @click="goToProject(subItem.id)"
-                  >{{subItem.data.name}}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list-group>
-          </v-list>
-        </div>
       </v-flex>
     </v-navigation-drawer>
     <v-toolbar app color="white" flat height="90px;">
@@ -91,10 +63,14 @@
         </v-layout>
       </v-card>
     </v-toolbar>
-
+    <v-snackbar v-model="snackbar" bottom left :timeout="Number(6000)">
+      {{snackbarText}}
+      <v-btn color="gray" icon small flat @click="snackbar = false">
+        <v-icon small>clear</v-icon>
+      </v-btn>
+    </v-snackbar>
     <v-content>
       <router-view></router-view>
-      
     </v-content>
   </v-app>
 </template>

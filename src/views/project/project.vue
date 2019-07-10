@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <v-layout class="content-layout" px-5 wrap style="width:100%">
+    <v-layout class="content-layout" px-5 pb-5 wrap style="width:100%;">
       <v-flex
         style="height : 370px;"
         xl3
@@ -33,7 +33,6 @@
         <project-card
           :project="project"
           :selected="selected === project.id"
-          @change-snackbar-text="onChangeSnackbarText"
           @show-progress-bar="showProgressbar"
           @show-more-menu="showMoreMenu"
           class="project-card"
@@ -53,13 +52,6 @@
               </v-list-tile>
         </v-list>-->
       </v-flex>
-
-      <v-snackbar v-model="snackbar" bottom left :timeout="Number(6000)">
-        {{snackbarText}}
-        <v-btn color="gray" icon small flat @click="snackbar = false">
-          <v-icon small>clear</v-icon>
-        </v-btn>
-      </v-snackbar>
     </v-layout>
   </v-container>
 </template>

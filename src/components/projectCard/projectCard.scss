@@ -9,11 +9,34 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
     &:hover {
       cursor: default;
     }
   }
+
+  .more-icon {
+    opacity: 0;
+
+    .project-more-menu {
+      position: absolute;
+      z-index: 20;
+    }
+  }
+
+  &:hover {
+    .more-icon {
+      opacity: 1;
+      cursor: pointer;
+    }
+  }
   &[selected] {
-    background: green;
+    background: rgb(232, 240, 254);
+    .card-title {
+      color: rgb(23, 110, 210);
+    }
+    .card-title-supervisor {
+      color: rgb(23, 110, 210);
+    }
   }
 }

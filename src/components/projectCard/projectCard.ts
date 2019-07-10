@@ -1,5 +1,5 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { FirestoreDocument } from '@/vue-common';
+import { FirestoreDocument, Storage } from '@/vue-common';
 import Project from '@/models/project';
 import User from '@/models/user';
 import Collections from '@/models/collections';
@@ -13,6 +13,51 @@ export default class ProjectCard extends Vue {
   // };
   public project!: FirestoreDocument<Project>;
   public owner: FirestoreDocument<User> = Collections.users.create(User);
+  private moreMenuClicked = false;
+  private removeDialog = false;
+  private renameDialog = false;
+  private projectTitle = this.project.data.name;
+  private selected: string = '';
+  
+
+  private removeProject() {
+    const storage = new Storage(`images/${this.project.id}`);
+    storage.delete();
+    this.project.delete();
+    this.removeDialog = false;
+  }
+
+  private showMoreMenu() {
+    this.$emit('show-more-menu', this.project.id);
+  }
+
+  private async renameProjectTitle() {
+    await this.project.update({ name: `${this.projectTitle}` });
+    this.renameDialog = false;
+    this.projectTitle = this.project.data.name;
+    this.$emit('change-snackbar-text', '이름이 변경되었습니다.');
+  }
+
+  private changeMainImage() {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.style.display = 'none';
+    input.addEventListener('change', this.onChange);
+    input.click();
+    document.body.appendChild(input);
+  }
+
+  private async onChange(e) {
+    console.log(e);
+    this.$emit('show-progress-bar');
+    const file = e.target.files[0];
+    const storage = new Storage(`/images/${this.project.id}`);
+    await storage.upload(file);
+    const url = await storage.getDownloadURL();
+    this.project.update({ imageURL: `${url}` });
+    this.$emit('change-snackbar-text', '이미지가 변경되었습니다.');
+  }
 
   private async mounted() {
     for (const key of Object.keys(this.project.data.users)) {

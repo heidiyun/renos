@@ -1,112 +1,131 @@
 import { Vue, Component } from 'vue-property-decorator';
 import Collections from '@/models/collections';
 import project from '@/models/project';
-import { Auth, FirestoreDocument, FirestoreDocumentData } from '@/vue-common';
+import {
+  Auth,
+  FirestoreDocument,
+  FirestoreDocumentData,
+  Storage
+} from '@/vue-common';
 import _ from 'lodash';
-import User from '@/models/user';
-import router from '@/router';
 
 @Component({})
 export default class Project extends Vue {
-  private dialog = false;
-  private projectTitle: string = '';
   private projectList: Array<FirestoreDocument<project>> = [];
-  private projects: Array<FirestoreDocument<project>> = [];
   private showMenu = false;
   public projectSelected: boolean = false;
+  private selected: string = '';
+  private snackbarText = '';
+  private moreMenuClicked = false;
+  private filterSelected = '전체';
+  private snackbar = false;
+
   private ui = {
     categories: [
       {
-        name: 'supervisor',
+        name: '전체',
         active: false,
         dataKey: 'supervisor'
       },
       {
-        name: 'editor',
+        name: '관리자',
+        active: false,
+        dataKey: 'supervisor'
+      },
+      {
+        name: '편집자',
         active: false,
         dataKey: 'editor'
       },
       {
-        name: 'viewer',
+        name: '뷰어',
         active: false,
         dataKey: 'viewer'
       }
     ]
   };
 
-  private categoryGroups: {
-    [key: string]: Array<FirestoreDocument<project>>;
-  } = {
-    supervisor: [],
-    editor: [],
-    viewer: []
-  };
+  private showProgressbar() {
+    this.$progress.show();
+  }
+
+  private showMoreMenu(id: string) {
+    this.moreMenuClicked
+      ? (this.moreMenuClicked = false)
+      : (this.moreMenuClicked = true);
+    console.log(this.moreMenuClicked);
+  }
 
   get currentProjectList() {
-    this.projectList = this.projects;
-    this.ui.categories.forEach(p => {
-      if (p.active) {
-        this.projectList = this.categoryGroups[p.dataKey];
-      }
-    });
-
     // const list = _(this.projectList).map(p => {
     //   return { item: p, selected: false };
     // });
 
+    this.projectList = this.$store.getters.projectList;
+
+    this.ui.categories.forEach(p => {
+      if (p.name === this.filterSelected) {
+        if (p.name !== '전체') {
+          this.projectList = this.$store.getters.categoryGroups[p.dataKey];
+        }
+      }
+    });
+
     return this.projectList;
   }
 
-  private createProject() {
-    if (this.projectTitle.length === 0) return;
-
-    const pj = Collections.projects.create(project);
-    pj.data.name = this.projectTitle;
-    pj.data.users = {
-      [`${this.$store.getters.user.id}`]: 'supervisor'
-    };
-
-    pj.saveSync();
-    this.dialog = false;
-    this.projectTitle = '';
-  }
   private goToProject(pid: string) {
     this.$router.push(`/myprojects/${pid}`);
   }
 
+  private onChangeSnackbarText(text: string) {
+    this.snackbarText = text;
+  }
+
   private mounted() {
-    console.log('param', this.$route.params);
-    console.log('query', this.$route.query);
-    Auth.addChangeListener(
-      'project',
-      async u => {
-        if (u === null) {
-          this.$router.push('login');
-          return;
-        }
-
-        this.projects = await Collections.projects
-          //@ts-ignore
-          .createQuery(`users.${u.uid}`, '>', '')
-          .exec(project);
-
-        this.projectList = this.projects;
-
-        this.categoryGroups = _.groupBy(
-          this.projectList,
-          p => p.data.users[u.uid]
-        );
-
-        // Collections.projects.clearOnChange();
-
-        // Collections.projects.onChange(Project, (project, state) => {
-        //   if (state === 'added') {
-        //     console.log('added');
-        //     this.projectList.push(project);
-        //   }
-        // });
-      },
-      true
-    );
+    // console.log('param', this.$route.params);
+    // console.log('query', this.$route.query);
+    // Auth.addChangeListener(
+    //   'project',
+    //   async u => {
+    //     if (u === null) {
+    //       this.$router.push('/');
+    //       return;
+    //     }
+    //     // this.projects = await Collections.projects
+    //     //   //@ts-ignore
+    //     //   .createQuery(`users.${u.uid}`, '>', '')
+    //     //   .exec(project);
+    //     // this.projectList = this.projects;
+    //     Collections.projects.clearOnChange();
+    //     Collections.projects
+    //       //@ts-ignore
+    //       .createQuery(`users.${u.uid}`, '>', '')
+    //       .onChange(project, (project, state) => {
+    //         if (state === 'added') {
+    //           this.projectList.push(project);
+    //         } else if (state === 'removed') {
+    //           const index = this.projectList.findIndex(p => {
+    //             return p.id === project.id;
+    //           });
+    //           this.projectList.splice(index, 1);
+    //           this.snackbar = true;
+    //           this.snackbarText = '프로젝트가 삭제되었습니다.';
+    //         } else if (state === 'modified') {
+    //           const index = this.projectList.findIndex(p => {
+    //             return p.id === project.id;
+    //           });
+    //           this.projectList.splice(index, 1, project);
+    //           this.snackbar = true;
+    //           this.$progress.off();
+    //         }
+    //         this.categoryGroups = _.groupBy(
+    //           this.projectList,
+    //           p => p.data.users[u.uid]
+    //         );
+    //       });
+    //   },
+    //   true
+    // );
   }
 }

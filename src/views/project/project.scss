@@ -1,25 +1,32 @@
-.side-menu {
-  max-width: 240px;
-  height: calc(100vh - 64px);
-  background: #fff;
-  min-width: 240px;
+.content-toolbar {
+  width: 100%;
+  height: 70px;
+  display: flex;
+  line-height: 90px;
 
-  .project-right-menu {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    margin-top: 4px;
-
-    .subitem {
+  .content-title {
+    width: fit-content;
+    font-size: 20px;
+    font-weight: bold;
+    padding-left: 36px;
+  }
+  .content-filter {
+    display: flex;
+    padding-right: 36px;
+    .filter-menu {
       &:hover {
         cursor: pointer;
+      }
+
+      &[selected] {
+        color: rgb(23, 110, 210);
+        font-weight: bold;
       }
     }
   }
 }
-
 .content-layout {
   align-content: flex-start;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 134px);
   overflow-y: scroll;
 }

@@ -4,9 +4,7 @@
     flat
     height="100%"
     @dblclick="goToProject"
-    hover
     :selected="selected === project.id"
-    style="box-shadow:0px 3px 20px 1px rgba(0,0,0,0.1); border-radius:10px;"
   >
     <!-- <progress-mini></progress-mini> -->
     <v-img height="calc(100% - 64px)" class="card-image" :src="project.data.imageURL"></v-img>
@@ -14,24 +12,24 @@
       <div style="width:85%;" class="card-text-layout">
         <div class="card-title" style="font-weight:bold">{{project.data.name}}</div>
         <div class="card-title-supervisor" style="font-size:12px">관리자 {{owner.data.name}}</div>
+        <slot></slot>
       </div>
 
       <div class="more-icon">
-        <v-icon
-          small
-          @click="moreMenuClicked ? moreMenuClicked = false : moreMenuClicked = true"
-        >more_vert</v-icon>
-        <v-list class="project-more-menu" v-if="moreMenuClicked">
-          <v-list-tile>
-            <v-list-tile-title @click="removeDialog=true">삭제</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title @click="renameDialog=true">이름 변경</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title @click="changeMainImage">이미지 변경</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
+        <v-icon small @click.stop="$refs.opener.open">more_vert</v-icon>
+        <opener ref="opener" @state="state => moreMenuClicked = state">
+          <v-list class="project-more-menu" v-if="moreMenuClicked">
+            <v-list-tile>
+              <v-list-tile-title @click="removeDialog=true">삭제</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-title @click="renameDialog=true">이름 변경</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-title @click="changeMainImage">이미지 변경</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </opener>
       </div>
       <v-dialog max-width="395px" height="180px" v-model="removeDialog">
         <v-card class="pa-2">

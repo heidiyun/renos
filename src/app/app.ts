@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+
 import { Vue, Component } from 'vue-property-decorator';
 import { Auth, FirestoreDocument, Storage } from '@/vue-common';
 import User from '@/models/user';
@@ -9,14 +11,25 @@ import project from '@/models/project';
 import Spinner from '@/vue-common/plugins/spinner';
 import Progress from '@/plugin/progress';
 import _ from 'lodash';
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.less';
+import Opener from '@/components/opener';
+import ProfileCard from '@/components/profileCard';
 
+Vue.use(Antd);
 Vue.use(Spinner);
 Vue.use(Progress);
+Vue.component('profile-card', ProfileCard);
+Vue.component('opener', Opener);
 Vue.component('project-card', ProjectCard);
 Vue.component('progress-bar', ProgressBar);
 Vue.component('progress-mini', ProgressMini);
+
 @Component({})
 export default class App extends Vue {
+  $refs!: {
+    opener: Opener;
+  };
   private profileButtonClicked = false;
   private projects: Array<FirestoreDocument<project>> = [];
   private projectList: Array<FirestoreDocument<project>> = [];
@@ -32,6 +45,9 @@ export default class App extends Vue {
     editor: [],
     viewer: []
   };
+
+  
+
   private async createProject() {
     if (this.projectTitle.length === 0) return;
 
@@ -57,15 +73,7 @@ export default class App extends Vue {
     return this.projectList;
   }
 
-  private signOut() {
-    Auth.signOut();
-    this.$router.push('/');
-    this.profileButtonClicked = false;
-  }
-
   private mounted() {
-    console.log('param', this.$route.name);
-
     Auth.addChangeBeforeListener('login', async u => {
       if (u !== null) {
         const exist = await Collections.users.exist(u.uid);
@@ -87,7 +95,6 @@ export default class App extends Vue {
         this.$store.commit('setUser', undefined);
       }
     });
-
     Auth.addChangeListener(
       'project',
       async u => {
@@ -108,7 +115,6 @@ export default class App extends Vue {
           .createQuery(`users.${u.uid}`, '>', '')
           .onChange(project, (project, state) => {
             if (state === 'added') {
-              console.log('added');
               this.projectList.push(project);
             } else if (state === 'removed') {
               const index = this.projectList.findIndex(p => {

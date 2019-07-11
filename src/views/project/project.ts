@@ -17,34 +17,58 @@ export default class Project extends Vue {
   private selected: string = '';
   private moreMenuClicked = false;
   private filterSelected = '전체';
+  private searchInputModel = '';
+  private inputModel = '';
 
   private ui = {
     categories: [
       {
-        name: '전체',
+        name: 'all',
+        active: false,
+        dataKey: 'all'
+      },
+      {
+        name: 'supervisor',
         active: false,
         dataKey: 'supervisor'
       },
       {
-        name: '관리자',
-        active: false,
-        dataKey: 'supervisor'
-      },
-      {
-        name: '편집자',
+        name: 'editor',
         active: false,
         dataKey: 'editor'
       },
       {
-        name: '뷰어',
+        name: 'viewer',
         active: false,
         dataKey: 'viewer'
       }
     ]
   };
 
+  get currentUICategoriesNames() {
+    const names: Array<string> = [];
+    this.ui.categories.forEach(item => {
+      names.push(item.name);
+    });
+
+    return names;
+  }
+
+  private changeSelection(e) {
+    alert(e);
+  }
+
   private showProgressbar() {
     this.$progress.show();
+  }
+
+  private onClicked = _.debounce(() => {
+    console.warn('WT');
+  }, 500);
+
+  private clickToolbar() {
+    console.log('click111');
+    this.onClicked();
   }
 
   private showMoreMenu(id: string) {
@@ -58,26 +82,41 @@ export default class Project extends Vue {
     // const list = _(this.projectList).map(p => {
     //   return { item: p, selected: false };
     // });
-
     this.projectList = this.$store.getters.projectList;
 
     this.ui.categories.forEach(p => {
       if (p.name === this.filterSelected) {
-        if (p.name !== '전체') {
+        if (p.name !== 'all') {
           this.projectList = this.$store.getters.categoryGroups[p.dataKey];
         }
       }
     });
     this.$progress.off();
+
+    this.projectList = _.filter(this.projectList, project => {
+      return project.data.name.indexOf(this.searchInputModel) !== -1;
+    });
+
     return this.projectList;
+  }
+
+  private setSearchModel(input) {
+    this.searchInputModel = input;
+  }
+  private setInputModel = _.debounce(input => {
+    this.setSearchModel(input);
+  }, 500);
+
+  private onSearch(e) {
+    this.setInputModel(this.inputModel);
   }
 
   private goToProject(pid: string) {
     this.$router.push(`/myprojects/${pid}`);
   }
 
-
   private mounted() {
+    console.log(this.projectList);
     // console.log('param', this.$route.params);
     // console.log('query', this.$route.query);
     // Auth.addChangeListener(

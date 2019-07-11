@@ -10,5 +10,11 @@ module.exports = {
   runtimeCompiler: true,
   productionSourceMap: undefined,
   parallel: undefined,
-  css: undefined,
+  css: {
+    loaderOptions: {
+      less: {
+        javascriptEnabled: true
+      }
+    }
+  }
 };

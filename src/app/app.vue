@@ -1,15 +1,16 @@
 <template>
-  <v-app @click="profileButtonClicked= false">
-    <v-navigation-drawer app permanent width="300px;" style="overflow:hidden;">
-      <v-flex class="side-menu">
+  <v-app>
+    <v-navigation-drawer
+      app
+      permanent
+      floating
+      width="300px;"
+      style="overflow:hidden;"
+      v-if="$route.name !== 'login'"
+    >
+      <v-flex class="side-menu" pt-3 pl-4>
         <div class="logo">RENOS</div>
-        <v-btn
-          large
-          @click.stop="dialog=true"
-          color="blue"
-          style="margin-left:30px; color:white;"
-          v-if="$route.name==='myprojects'"
-        >
+        <v-btn large @click.stop=" dialog=true" dark color="blue" v-if="$route.name==='myprojects'">
           <v-icon class="mr-2 ml-0" color="white">add</v-icon>프로젝트 생성
         </v-btn>
 
@@ -32,36 +33,19 @@
       <v-toolbar-title class="headline text-uppercase"></v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn
-        flat
-        icon
-        class="profile"
-        :ripple="false"
-        target="_blank"
-        v-if="$route.name !== 'login'"
-        :style="{backgroundImage : $store.getters.user ? `url(${$store.getters.user.data.photoURL})` : ''}"
-        @click.stop="profileButtonClicked ? profileButtonClicked = false : profileButtonClicked =true"
-      ></v-btn>
-      <v-card class="profile-card" flat color="white" v-if="profileButtonClicked">
-        <v-layout>
-          <v-flex>
-            <v-avatar tile color="green" size="100">
-              <img :src="$store.getters.user.data.photoURL" style="border-radius:50%" alt="Avatar" />
-            </v-avatar>
-          </v-flex>
-          <v-flex px-4 py-2>
-            <div style="font-weight:bold; font-size:15px;">YunJeong Goo</div>
-            <div>heidiyun.goo@gmail.com</div>
-            <v-btn
-              color="blue"
-              small
-              dark
-              style="border-radius : 5px; margin-top:12px;"
-              @click="signOut"
-            >Sign Out</v-btn>
-          </v-flex>
-        </v-layout>
-      </v-card>
+      <opener ref="opener" @state="state => profileButtonClicked = state">
+        <v-btn
+          flat
+          icon
+          class="profile"
+          :ripple="false"
+          target="_blank"
+          v-if="$route.name !== 'login'"
+          :style="{backgroundImage : $store.getters.user ? `url(${$store.getters.user.data.photoURL})` : ''}"
+          @click.stop="$refs.opener.open"
+        ></v-btn>
+        <profile-card v-if="profileButtonClicked" @close="profileButtonClicked  = false"></profile-card>
+      </opener>
     </v-toolbar>
     <v-snackbar v-model="snackbar" bottom left :timeout="Number(6000)">
       {{snackbarText}}

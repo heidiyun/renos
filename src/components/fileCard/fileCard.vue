@@ -5,7 +5,22 @@
 
     <v-img height="calc(100% - 64px)"
            class="card-image"
-           :src="file.data.fileURL"></v-img>
+           :src="file.data.fileURL">
+      <a-dropdown :trigger="['click']">
+        <v-btn icon
+               small
+               class="more-icon"
+               style="background:rgba(0,0,0,0.7); float:right;">
+          <v-icon small
+                  color="white">more_vert</v-icon>
+        </v-btn>
+        <a-menu slot="overlay">
+          <a-menu-item key="0"
+                       @click="onDelete">
+            삭제</a-menu-item>
+        </a-menu>
+      </a-dropdown>
+    </v-img>
     <v-card-title class="px-3 py-2"
                   style=" height:64px;">
       <div style="width:100%"

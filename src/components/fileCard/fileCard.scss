@@ -1,0 +1,13 @@
+.c-layout {
+  .more-icon {
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    float: right;
+  }
+
+  &:hover {
+    .more-icon {
+      opacity: 1;
+    }
+  }
+}

@@ -5,6 +5,7 @@ import Project from '@/models/project';
 import User from '@/models/user';
 import toast from '@/vue-common/plugins/toast';
 import ProjectFile from '@/models/projectFile';
+import _ from 'lodash';
 
 @Component({})
 export default class Drive extends Vue {
@@ -38,12 +39,25 @@ export default class Drive extends Vue {
     }
     this.members = users;
 
-    const files = await Collections.files
+    this.fileList = [];
+
+    Collections.files
       .createQuery('pid', '==', this.project.id)
-      .exec(ProjectFile);
-    this.fileList = files;
-    console.log(this.fileList);
+      .onChange(ProjectFile, (file, state) => {
+        if (state === 'added') {
+          this.fileList.push(file);
+        } else if (state === 'removed') {
+          const index = _.findIndex(this.fileList, f => f.id === file.id);
+          this.fileList.splice(index, 1);
+        } else if (state === 'modified') {
+          const index = _.findIndex(this.fileList, f => f.id === file.id);
+          this.fileList.splice(index, 1, file);
+        }
+      });
+
   }
+
+
   private async mounted() {
     Auth.addChangeListener('driveAuth', async () => {
       this.initailize();

@@ -14,7 +14,7 @@ export default class ProjectPage extends Vue {
 
   public $refs!: {
     searchInput: HTMLInputElement;
-  }
+  };
   public projectSelected: boolean = false;
   private projectList: Array<FirestoreDocument<Project>> = [];
   private pinnedProjectList: Array<FirestoreDocument<Project>> = [];
@@ -51,6 +51,11 @@ export default class ProjectPage extends Vue {
       }
     ]
   };
+
+  private setInputModel = _.debounce(input => {
+    this.setSearchModel(input);
+  }, 500);
+
 
   private get pinContainerHeight() {
     if (this.pinnedProjectList.length === 0) { return; }
@@ -151,9 +156,6 @@ export default class ProjectPage extends Vue {
 
     this.searchInputModel = input;
   }
-  private setInputModel = _.debounce(input => {
-    this.setSearchModel(input);
-  }, 500);
 
   private onSearch(e) {
     this.setInputModel(this.inputModel);

@@ -69,11 +69,11 @@ export default class App extends Vue {
   }
 
   private async onChange(e) {
-
+    this.$progress.show();
     const file = e.target.files[0];
     const projectFile = Collections.files.create(ProjectFile);
 
-    const storage = new Storage(`/files/${this.$store.getters.currentProject}`);
+    const storage = new Storage(`/files/${projectFile.id}`);
     await storage.upload(file);
     const url = await storage.getDownloadURL();
 
@@ -84,6 +84,7 @@ export default class App extends Vue {
     projectFile.data.fileType = file.type;
     projectFile.data.fileURL = url;
     await projectFile.saveSync();
+    this.$progress.off();
 
     // document.body.removeChild(input);
   }

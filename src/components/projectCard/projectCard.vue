@@ -1,5 +1,5 @@
 <template>
-  <v-card class="c-layout"
+  <v-card class="c-layout box-shadow round hover"
           flat
           height="100%"
           @dblclick="goToProject"
@@ -27,9 +27,8 @@
             <a-menu-item key="3"
                          @click="changeMainImage">이미지 변경</a-menu-item>
             <a-menu-item key="4"
-                         @click="pinnedProject">즐겨찾기 추가</a-menu-item>
-            <a-menu-item key="5"
-                         @click="pinnedProject">즐겨찾기 삭제</a-menu-item>
+                         @click="pinnedProject">
+              즐겨찾기 {{project.data.pins[$store.getters.user.id] ? '삭제' : '추가'}}</a-menu-item>
 
           </a-menu>
         </a-dropdown>

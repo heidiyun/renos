@@ -11,5 +11,4 @@ export default class Progress extends Vue {
   public off() {
     this.showProgress = false;
   }
-  
 }

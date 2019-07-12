@@ -10,6 +10,20 @@
 
   .card-image {
     background-size: cover;
+    .more-icon {
+      opacity: 0;
+
+      .project-more-menu {
+        position: absolute;
+        z-index: 20;
+      }
+    }
+    &:hover {
+      .more-icon {
+        opacity: 1;
+        cursor: pointer;
+      }
+    }
   }
   .card-text-layout {
     .card-title {
@@ -24,21 +38,6 @@
     }
   }
 
-  .more-icon {
-    opacity: 0;
-
-    .project-more-menu {
-      position: absolute;
-      z-index: 20;
-    }
-  }
-
-  &:hover {
-    .more-icon {
-      opacity: 1;
-      cursor: pointer;
-    }
-  }
   &[selected] {
     background: rgb(232, 240, 254);
     .card-title {

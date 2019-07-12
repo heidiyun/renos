@@ -10,13 +10,15 @@ export interface State {
   user: FirestoreDocument<User> | undefined;
   projectList: Array<FirestoreDocument<Project>> | undefined;
   categoryGroups: Array<FirestoreDocument<Project>> | undefined;
+  currentProject: FirestoreDocument<Project> | undefined;
 }
 
 export default new Vuex.Store<State>({
   state: {
     user: undefined,
     projectList: undefined,
-    categoryGroups: undefined
+    categoryGroups: undefined,
+    currentProject: undefined
   },
   mutations: {
     setUser(state, payload) {
@@ -27,6 +29,9 @@ export default new Vuex.Store<State>({
     },
     setCategoryGroups(state, payload) {
       state.categoryGroups = payload;
+    },
+    setCurrentProject(state, payload) {
+      state.currentProject = payload;
     }
   },
   getters: {
@@ -38,6 +43,9 @@ export default new Vuex.Store<State>({
     },
     categoryGroups(state) {
       return state.categoryGroups;
+    },
+    currentProject(state) {
+      return state.currentProject;
     }
   }
 });

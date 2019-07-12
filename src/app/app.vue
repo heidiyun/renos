@@ -30,7 +30,24 @@
       </v-flex>
     </v-navigation-drawer>
     <v-toolbar app color="white" flat height="90px;">
-      <v-toolbar-title class="headline text-uppercase">RENOS</v-toolbar-title>
+      <!-- <v-toolbar-title class="headline text-uppercase">RENOS</v-toolbar-title> -->
+
+      <!-- <a-select class="ml-3" defaultValue="all" style="width: 120px;">
+        <a-select-option value="all">전체</a-select-option>
+        <a-select-option v-for="(project,i) in projectList " :key="i">{{project.data.name}}</a-select-option>
+      </a-select>-->
+
+      <v-select
+        solo
+        flat
+        v-if="$route.name !== 'myprojects'"
+        :items="projectList"
+        item-text="data.name"
+        item-value="id"
+        :label="currentProject"
+        @change="onHandleChange"
+        style="max-width : 100px;"
+      ></v-select>
 
       <v-spacer></v-spacer>
 

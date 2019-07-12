@@ -46,6 +46,16 @@ export default class App extends Vue {
     viewer: []
   };
 
+  private onHandleChange(e) {
+    this.$router.push(`/myprojects/${e}`);
+  }
+
+  get currentProject() {
+    this.$route.params;
+    if (this.$store.getters.currentProject === undefined) return '';
+    return this.$store.getters.currentProject.data.name;
+  }
+
   private async createProject() {
     if (this.projectTitle.length === 0) return;
 
@@ -67,8 +77,10 @@ export default class App extends Vue {
     this.$router.push(`/myprojects/${pid}`);
   }
 
-  get currentCategories() {
-    return this.projectList;
+  get currentProjectList() {
+    return _.map(this.projectList, project => {
+      return project.data.name;
+    });
   }
 
   private mounted() {
@@ -88,11 +100,12 @@ export default class App extends Vue {
           user.saveSync();
           this.$store.commit('setUser', user);
         }
-        this.$router.push('/myprojects');
+        // this.$router.push('/myprojects');
       } else {
         this.$store.commit('setUser', undefined);
       }
     });
+
     Auth.addChangeListener(
       'project',
       async u => {

@@ -38,6 +38,7 @@
                 :selected="selected === project.id"
                 @show-progress-bar="showProgressbar"
                 @show-more-menu="showMoreMenu"
+                @go-project="goToProject"
                 class="project-card"
               ></project-card>
             </div>
@@ -90,6 +91,7 @@
               :selected="selected === project.id"
               @show-progress-bar="showProgressbar"
               @show-more-menu="showMoreMenu"
+              @go-project="goToProject"
               class="project-card"
             ></project-card>
           </div>

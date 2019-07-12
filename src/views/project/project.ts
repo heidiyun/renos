@@ -139,8 +139,9 @@ export default class Project extends Vue {
     this.setInputModel(this.inputModel);
   }
 
-  private goToProject(pid: string) {
-    this.$router.push(`/myprojects/${pid}`);
+  private goToProject() {
+    console.log('go-project');
+    this.$router.push(`/myprojects/${this.$store.getters.currentProject.id}`);
   }
 
   private mounted() {

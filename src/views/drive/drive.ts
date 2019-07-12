@@ -1,4 +1,4 @@
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import { Auth, FirestoreDocument, Storage } from '@/vue-common';
 import Collections from '@/models/collections';
 import Project from '@/models/project';
@@ -15,30 +15,37 @@ export default class Drive extends Vue {
   );
   private fileList: Array<FirestoreDocument<ProjectFile>> = [];
 
-  
-
-  private mounted() {
+  @Watch('$route', { deep: true })
+  private onChangeRoute() {
+    this.initailize();
+  }
+  private async initailize() {
     const pid = this.$route.params.projectName;
-    Auth.addChangeBeforeListener('drive', async u => {
-      //사용자를 갖고올거야.
-      this.project = await Collections.projects.load(Project, pid);
-      const keys = Object.keys(this.project.data.users);
+    this.project = await Collections.projects.load(Project, pid);
 
-      const users: Array<FirestoreDocument<User>> = [];
-      for (const key of keys) {
-        if (this.project.data.users[key] === 'supervisor') {
-          if (key === this.$store.getters.user.id) {
-            this.isOwner = true;
-          }
+    this.$store.commit('setCurrentProject', this.project);
+
+    const keys = Object.keys(this.project.data.users);
+    const users: Array<FirestoreDocument<User>> = [];
+
+    for (const key of keys) {
+      if (this.project.data.users[key] === 'supervisor') {
+        if (key === this.$store.getters.user.id) {
+          this.isOwner = true;
         }
-        users.push(await Collections.users.load(User, key));
       }
-      this.members = users;
+      users.push(await Collections.users.load(User, key));
+    }
+    this.members = users;
 
-      const files = await Collections.files
-        .createQuery('pid', '==', this.project.id)
-        .exec(ProjectFile);
-      this.fileList = files;
+    const files = await Collections.files
+      .createQuery('pid', '==', this.project.id)
+      .exec(ProjectFile);
+    this.fileList = files;
+  }
+  private async mounted() {
+    Auth.addChangeListener('driveAuth', async () => {
+      this.initailize();
     });
   }
 }

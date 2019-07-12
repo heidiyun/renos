@@ -81,6 +81,8 @@ export default class ProjectCard extends Vue {
   }
 
   private goToProject() {
-    this.$router.push(`/myprojects/${this.project.id}`);
+    this.$store.commit('setCurrentProject', this.project);
+    this.$emit('go-project');
+    // this.$router.push(`/myprojects/${this.project.id}`);
   }
 }

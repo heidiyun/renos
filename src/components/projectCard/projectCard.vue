@@ -7,16 +7,12 @@
     :selected="selected === project.id"
   >
     <!-- <progress-mini></progress-mini> -->
-    <v-img height="calc(100% - 64px)" class="card-image" :src="project.data.imageURL"></v-img>
-    <v-card-title style="display:flex; padding-left:16px;  padding-right:0px; height:64px;">
-      <div style="width:85%;" class="card-text-layout">
-        <div class="card-title" style="font-weight:bold">{{project.data.name}}</div>
-        <div class="card-title-supervisor" style="font-size:12px">관리자 {{owner.data.name}}</div>
-        <slot></slot>
-      </div>
 
+    <v-img height="calc(100% - 64px)" class="card-image pa-2" :src="project.data.imageURL">
       <div class="more-icon">
-        <v-icon small @click.stop="$refs.opener.open">more_vert</v-icon>
+        <v-btn icon small style="float:right;background:rgba(0,0,0,0.7)">
+          <v-icon small color="white" @click.stop="$refs.opener.open">more_vert</v-icon>
+        </v-btn>
         <opener ref="opener" @state="state => moreMenuClicked = state">
           <v-list class="project-more-menu" v-if="moreMenuClicked">
             <v-list-tile>
@@ -38,6 +34,15 @@
           </v-list>
         </opener>
       </div>
+    </v-img>
+    <v-card-title class="pl-3" style="display:flex; height:64px;">
+      <div style="flex:1" class="card-text-layout">
+        <div class="card-title" style="font-weight:bold">{{project.data.name}}</div>
+        <div class="card-title-supervisor" style="font-size:12px; ">관리자 {{owner.data.name}}</div>
+      </div>
+
+      <v-icon class="ml-4" color="blue" size="14" v-if="project.data.pin">bookmark</v-icon>
+
       <v-dialog max-width="395px" height="180px" v-model="removeDialog">
         <v-card class="pa-2">
           <v-card-title style="font-size:18px; font-weight:bold">계속하시겠습니까?</v-card-title>

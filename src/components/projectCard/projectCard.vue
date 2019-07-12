@@ -22,11 +22,18 @@
             <v-list-tile>
               <v-list-tile-title @click="removeDialog=true">삭제</v-list-tile-title>
             </v-list-tile>
+
             <v-list-tile>
               <v-list-tile-title @click="renameDialog=true">이름 변경</v-list-tile-title>
             </v-list-tile>
             <v-list-tile>
               <v-list-tile-title @click="changeMainImage">이미지 변경</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile v-if="!project.data.pin">
+              <v-list-tile-title @click="pinnedProject">즐겨찾기 추가</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile v-if="project.data.pin">
+              <v-list-tile-title @click="pinnedProject">즐겨찾기 삭제</v-list-tile-title>
             </v-list-tile>
           </v-list>
         </opener>

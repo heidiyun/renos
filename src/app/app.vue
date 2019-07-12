@@ -2,8 +2,8 @@
   <v-app>
     <v-navigation-drawer
       app
-      permanent
       floating
+      temporary
       width="300px;"
       style="overflow:hidden;"
       v-if="$route.name !== 'login'"
@@ -30,8 +30,20 @@
       </v-flex>
     </v-navigation-drawer>
     <v-toolbar app color="white" flat height="90px;">
-      <v-toolbar-title class="headline text-uppercase"></v-toolbar-title>
+      <v-toolbar-title class="headline text-uppercase">RENOS</v-toolbar-title>
+
       <v-spacer></v-spacer>
+
+      <v-btn
+        @click.stop=" dialog=true"
+        dark
+        color="blue"
+        round
+        v-if="$route.name==='myprojects'"
+        class="mr-5"
+      >
+        <v-icon class="mr-2 ml-0" color="white">add</v-icon>프로젝트 생성
+      </v-btn>
 
       <opener ref="opener" @state="state => profileButtonClicked = state">
         <v-btn

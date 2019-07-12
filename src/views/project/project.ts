@@ -12,6 +12,7 @@ import _ from 'lodash';
 @Component({})
 export default class Project extends Vue {
   private projectList: Array<FirestoreDocument<project>> = [];
+  private pinnedProjectList: Array<FirestoreDocument<project>> = [];
   private showMenu = false;
   public projectSelected: boolean = false;
   private selected: string = '';
@@ -19,6 +20,7 @@ export default class Project extends Vue {
   private filterSelected = '전체';
   private searchInputModel = '';
   private inputModel = '';
+  private showAll = false;
 
   private ui = {
     categories: [
@@ -45,6 +47,28 @@ export default class Project extends Vue {
     ]
   };
 
+  private get pinContainerHeight() {
+    if (this.pinnedProjectList.length === 0) return;
+
+    const std = document.getElementById('pin-project-layout');
+    const card = document.getElementsByClassName('project-card-container');
+    if (card.length === 0) return;
+
+    const cellCount = Math.floor(std!.clientWidth / card[0].clientWidth);
+    const rowCount = Math.floor((card.length - 1) / cellCount) + 1;
+    const openHeight = rowCount * (card[0].clientHeight + 48);
+
+    if (rowCount <= 1) return '345px';
+
+    if (this.showAll) {
+      return openHeight + 'px';
+    } else {
+      return '345px';
+      // std!.style.whiteSpace = 'nowrap';
+      // std!.style.overflow = 'hidden';
+    }
+  }
+
   get currentUICategoriesNames() {
     const names: Array<string> = [];
     this.ui.categories.forEach(item => {
@@ -54,21 +78,14 @@ export default class Project extends Vue {
     return names;
   }
 
-  private changeSelection(e) {
-    alert(e);
-  }
-
   private showProgressbar() {
     this.$progress.show();
   }
 
-  private onClicked = _.debounce(() => {
-    console.warn('WT');
-  }, 500);
+  private clicked = false;
 
   private clickToolbar() {
-    console.log('click111');
-    this.onClicked();
+    this.clicked ? (this.clicked = false) : (this.clicked = true);
   }
 
   private showMoreMenu(id: string) {
@@ -76,6 +93,13 @@ export default class Project extends Vue {
       ? (this.moreMenuClicked = false)
       : (this.moreMenuClicked = true);
     console.log(this.moreMenuClicked);
+  }
+
+  get currentPinnedProjectList() {
+    this.pinnedProjectList = _.sortBy(this.pinnedProjectList, project => {
+      return project.data.name;
+    });
+    return this.pinnedProjectList;
   }
 
   get currentProjectList() {
@@ -97,6 +121,10 @@ export default class Project extends Vue {
       return project.data.name.indexOf(this.searchInputModel) !== -1;
     });
 
+    this.projectList = _.sortBy(this.projectList, project => {
+      return project.data.name;
+    });
+
     return this.projectList;
   }
 
@@ -116,50 +144,26 @@ export default class Project extends Vue {
   }
 
   private mounted() {
-    console.log(this.projectList);
     // console.log('param', this.$route.params);
     // console.log('query', this.$route.query);
-    // Auth.addChangeListener(
-    //   'project',
-    //   async u => {
-    //     if (u === null) {
-    //       this.$router.push('/');
-    //       return;
-    //     }
-    //     // this.projects = await Collections.projects
-    //     //   //@ts-ignore
-    //     //   .createQuery(`users.${u.uid}`, '>', '')
-    //     //   .exec(project);
-    //     // this.projectList = this.projects;
-    //     Collections.projects.clearOnChange();
-    //     Collections.projects
-    //       //@ts-ignore
-    //       .createQuery(`users.${u.uid}`, '>', '')
-    //       .onChange(project, (project, state) => {
-    //         if (state === 'added') {
-    //           this.projectList.push(project);
-    //         } else if (state === 'removed') {
-    //           const index = this.projectList.findIndex(p => {
-    //             return p.id === project.id;
-    //           });
-    //           this.projectList.splice(index, 1);
-    //           this.snackbar = true;
-    //           this.snackbarText = '프로젝트가 삭제되었습니다.';
-    //         } else if (state === 'modified') {
-    //           const index = this.projectList.findIndex(p => {
-    //             return p.id === project.id;
-    //           });
-    //           this.projectList.splice(index, 1, project);
-    //           this.snackbar = true;
-    //           this.$progress.off();
-    //         }
-    //         this.categoryGroups = _.groupBy(
-    //           this.projectList,
-    //           p => p.data.users[u.uid]
-    //         );
-    //       });
-    //   },
-    //   true
-    // );
+
+    Collections.projects
+      //@ts-ignore
+      .createQuery('pin', '==', true)
+      .onChange(project, (project, state) => {
+        if (state === 'added') {
+          this.pinnedProjectList.push(project);
+        } else if (state === 'removed') {
+          const index = this.pinnedProjectList.findIndex(p => {
+            return p.id === project.id;
+          });
+          this.pinnedProjectList.splice(index, 1);
+        } else if (state === 'modified') {
+          const index = this.pinnedProjectList.findIndex(p => {
+            return p.id === project.id;
+          });
+          this.pinnedProjectList.splice(index, 1, project);
+        }
+      });
   }
 }

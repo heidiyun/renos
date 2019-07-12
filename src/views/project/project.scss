@@ -4,12 +4,19 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  margin-top: 32px;
 
   .content-title {
     width: fit-content;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
   }
+  .show-more-button {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
   .searchbar {
     width: 600px;
     height: 40px;
@@ -34,8 +41,17 @@
     }
   }
 }
-.content-layout {
-  align-content: flex-start;
-  height: calc(100vh - 134px);
-  overflow-y: scroll;
+.pin-project-container {
+  .content-layout {
+    align-content: flex-start;
+    width: 100%;
+    transition: height 0.3s;
+
+    &[show] {
+      height: 345px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
 }

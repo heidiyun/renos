@@ -30,6 +30,14 @@ export default class ProjectCard extends Vue {
     this.$emit('show-more-menu', this.project.id);
   }
 
+  private async pinnedProject() {
+    if (this.project.data.pin) {
+      await this.project.update({ pin: false });
+    } else {
+      await this.project.update({ pin: true });
+    }
+  }
+
   private async renameProjectTitle() {
     await this.project.update({ name: `${this.projectTitle}` });
     this.renameDialog = false;
@@ -55,7 +63,6 @@ export default class ProjectCard extends Vue {
     await storage.upload(file);
     const url = await storage.getDownloadURL();
     this.project.update({ imageURL: `${url}` });
-    
   }
 
   private async mounted() {

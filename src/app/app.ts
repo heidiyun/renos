@@ -46,8 +46,6 @@ export default class App extends Vue {
     viewer: []
   };
 
-  
-
   private async createProject() {
     if (this.projectTitle.length === 0) return;
 

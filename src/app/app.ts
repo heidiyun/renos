@@ -16,6 +16,8 @@ import 'ant-design-vue/dist/antd.less';
 import Opener from '@/components/opener';
 import ProfileCard from '@/components/profileCard';
 import DialogSimple from '@/plugin/dialog';
+import ProjectFile from '@/models/projectFile';
+import FileCard from '@/components/fileCard';
 
 Vue.use(Antd);
 Vue.use(Spinner);
@@ -26,6 +28,7 @@ Vue.component('opener', Opener);
 Vue.component('project-card', ProjectCard);
 Vue.component('progress-bar', ProgressBar);
 Vue.component('progress-mini', ProgressMini);
+Vue.component('file-card', FileCard);
 
 @Component({})
 export default class App extends Vue {
@@ -35,8 +38,6 @@ export default class App extends Vue {
   private profileButtonClicked = false;
   private projects: Array<FirestoreDocument<Project>> = [];
   private projectList: Array<FirestoreDocument<Project>> = [];
-  private projectTitle: string = '';
-  private dialog = false;
   private snackbarText = '';
   private snackbar = false;
 
@@ -57,24 +58,55 @@ export default class App extends Vue {
     return this.$store.getters.currentProject.data.name;
   }
 
+  private uploadFile() {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', '*/*');
+    input.style.display = 'none';
+    input.addEventListener('change', this.onChange);
+    input.click();
+    document.body.appendChild(input);
+  }
+
+  private async onChange(e) {
+
+    const file = e.target.files[0];
+    const projectFile = Collections.files.create(ProjectFile);
+
+    const storage = new Storage(`/files/${this.$store.getters.currentProject}`);
+    await storage.upload(file);
+    const url = await storage.getDownloadURL();
+
+    projectFile.data.name = file.name;
+    projectFile.data.pid = this.$store.getters.currentProject.id;
+    projectFile.data.uid = this.$store.getters.user.id;
+    projectFile.data.uploadDate = new Date().toUTCString();
+    projectFile.data.fileType = file.type;
+    projectFile.data.fileURL = url;
+    await projectFile.saveSync();
+
+    // document.body.removeChild(input);
+  }
+
   private async createProject() {
-    if (this.projectTitle.length === 0) {
+
+    let projectTitle = '';
+    try {
+      projectTitle = await this.$dialogInput.open('프로젝트 생성', '', '취소', '프로젝트 생성');
+    } catch (e) {
       return;
     }
-
-    const pj = Collections.projects.create(Project);
-    pj.data.name = this.projectTitle;
-    pj.data.users = {
+    const project = Collections.projects.create(Project);
+    project.data.name = projectTitle;
+    project.data.users = {
       [`${this.$store.getters.user.id}`]: 'supervisor'
     };
     const storage = new Storage(
       `defaults/${Math.floor(Math.random() * 20) + 1}.jpg`
     );
-    pj.data.imageURL = await storage.getDownloadURL();
+    project.data.imageURL = await storage.getDownloadURL();
 
-    pj.saveSync();
-    this.dialog = false;
-    this.projectTitle = '';
+    project.saveSync();
   }
   private goToProject(pid: string) {
     this.$router.push(`/myprojects/${pid}`);
@@ -118,13 +150,6 @@ export default class App extends Vue {
           this.$router.push('/');
           return;
         }
-
-        // this.projects = await Collections.projects
-        //   //@ts-ignore
-        //   .createQuery(`users.${u.uid}`, '>', '')
-        //   .exec(project);
-
-        // this.projectList = this.projects;
 
 
         // Project Data Set

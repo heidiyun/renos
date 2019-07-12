@@ -42,6 +42,7 @@ export default class Drive extends Vue {
       .createQuery('pid', '==', this.project.id)
       .exec(ProjectFile);
     this.fileList = files;
+    console.log(this.fileList);
   }
   private async mounted() {
     Auth.addChangeListener('driveAuth', async () => {

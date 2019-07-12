@@ -7,7 +7,7 @@ import Collections from '@/models/collections';
 import ProjectCard from '@/components/projectCard';
 import ProgressBar from '@/components/progress';
 import ProgressMini from '@/components/progress-mini';
-import project from '@/models/project';
+import Project from '@/models/project';
 import Spinner from '@/vue-common/plugins/spinner';
 import Progress from '@/plugin/progress';
 import _ from 'lodash';
@@ -15,10 +15,12 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.less';
 import Opener from '@/components/opener';
 import ProfileCard from '@/components/profileCard';
+import DialogSimple from '@/plugin/dialog';
 
 Vue.use(Antd);
 Vue.use(Spinner);
 Vue.use(Progress);
+Vue.use(DialogSimple);
 Vue.component('profile-card', ProfileCard);
 Vue.component('opener', Opener);
 Vue.component('project-card', ProjectCard);
@@ -27,39 +29,40 @@ Vue.component('progress-mini', ProgressMini);
 
 @Component({})
 export default class App extends Vue {
-  $refs!: {
+  public $refs!: {
     opener: Opener;
   };
   private profileButtonClicked = false;
-  private projects: Array<FirestoreDocument<project>> = [];
-  private projectList: Array<FirestoreDocument<project>> = [];
+  private projects: Array<FirestoreDocument<Project>> = [];
+  private projectList: Array<FirestoreDocument<Project>> = [];
   private projectTitle: string = '';
   private dialog = false;
   private snackbarText = '';
   private snackbar = false;
 
   private categoryGroups: {
-    [key: string]: Array<FirestoreDocument<project>>;
+    [key: string]: Array<FirestoreDocument<Project>>;
   } = {
-    supervisor: [],
-    editor: [],
-    viewer: []
-  };
+      supervisor: [],
+      editor: [],
+      viewer: []
+    };
 
   private onHandleChange(e) {
     this.$router.push(`/myprojects/${e}`);
   }
 
   get currentProject() {
-    this.$route.params;
-    if (this.$store.getters.currentProject === undefined) return '';
+    if (this.$store.getters.currentProject === undefined) { return ''; }
     return this.$store.getters.currentProject.data.name;
   }
 
   private async createProject() {
-    if (this.projectTitle.length === 0) return;
+    if (this.projectTitle.length === 0) {
+      return;
+    }
 
-    const pj = Collections.projects.create(project);
+    const pj = Collections.projects.create(Project);
     pj.data.name = this.projectTitle;
     pj.data.users = {
       [`${this.$store.getters.user.id}`]: 'supervisor'
@@ -84,6 +87,8 @@ export default class App extends Vue {
   }
 
   private mounted() {
+
+    // User Data Set
     Auth.addChangeBeforeListener('login', async u => {
       if (u !== null) {
         const exist = await Collections.users.exist(u.uid);
@@ -121,10 +126,12 @@ export default class App extends Vue {
 
         // this.projectList = this.projects;
 
+
+        // Project Data Set
         Collections.projects
-          //@ts-ignore
+          // @ts-ignore
           .createQuery(`users.${u.uid}`, '>', '')
-          .onChange(project, (project, state) => {
+          .onChange(Project, (project, state) => {
             if (state === 'added') {
               this.projectList.push(project);
             } else if (state === 'removed') {

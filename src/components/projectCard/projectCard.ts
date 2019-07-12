@@ -18,6 +18,10 @@ export default class ProjectCard extends Vue {
   private renameDialog = false;
   private projectTitle = this.project.data.name;
   private selected: string = '';
+  private pinned: boolean = false;
+
+
+
 
   private removeProject() {
     const storage = new Storage(`images/${this.project.id}`);
@@ -31,18 +35,36 @@ export default class ProjectCard extends Vue {
   }
 
   private async pinnedProject() {
-    if (this.project.data.pin) {
-      await this.project.update({ pin: false });
+    if (this.project.data.pins[this.$store.getters.user.id] === undefined ||
+      this.project.data.pins[this.$store.getters.user.id] === false) {
+      this.project.data.pins[this.$store.getters.user.id] = true;
     } else {
-      await this.project.update({ pin: true });
+      this.project.data.pins[this.$store.getters.user.id] = false;
+    }
+
+    this.project.save();
+  }
+  private async onDelete() {
+    try {
+      await this.$dialogSimple.open('삭제할거냐?', '뭐', '취소', '삭제');
+      console.log('ok');
+      // TODO 삭제
+    } catch (e) {
+      console.log('cancel');
+      // 취소
     }
   }
 
   private async renameProjectTitle() {
-    await this.project.update({ name: `${this.projectTitle}` });
-    this.renameDialog = false;
-    this.projectTitle = this.project.data.name;
-    this.$emit('change-snackbar-text', '이름이 변경되었습니다.');
+    try {
+      const title = await this.$dialogInput.open('이름 변경', this.project.data.name, '취소', '이름 변경');
+      this.project.data.name = title;
+      await this.project.saveSync();
+      this.$emit('change-snackbar-text', '이름이 변경되었습니다.');
+    } catch (e) {
+      console.error(e);
+    }
+
   }
 
   private changeMainImage() {
@@ -53,6 +75,8 @@ export default class ProjectCard extends Vue {
     input.addEventListener('change', this.onChange);
     input.click();
     document.body.appendChild(input);
+
+
   }
 
   private async onChange(e) {

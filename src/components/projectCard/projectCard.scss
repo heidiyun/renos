@@ -10,14 +10,17 @@
 
   .card-image {
     background-size: cover;
+
     .more-icon {
       opacity: 0;
+      float: right;
 
       .project-more-menu {
         position: absolute;
         z-index: 20;
       }
     }
+
     &:hover {
       .more-icon {
         opacity: 1;
@@ -25,6 +28,7 @@
       }
     }
   }
+
   .card-text-layout {
     .card-title {
       width: calc(100% - 20px);
@@ -40,9 +44,11 @@
 
   &[selected] {
     background: rgb(232, 240, 254);
+
     .card-title {
       color: rgb(23, 110, 210);
     }
+
     .card-title-supervisor {
       color: rgb(23, 110, 210);
     }

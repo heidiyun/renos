@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Login from '@/views/login';
-import Project from './views/project';
+import ProjectPage from './views/project';
 import Drive from './views/drive';
 
 Vue.use(Router);
@@ -18,7 +18,7 @@ export default new Router({
     {
       path: '/myprojects',
       name: 'myprojects',
-      component: Project
+      component: ProjectPage
     },
     {
       path: '/myprojects/:projectName',

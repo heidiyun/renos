@@ -4,7 +4,6 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-top: 32px;
 
   .content-title {
     width: fit-content;
@@ -48,7 +47,7 @@
     transition: height 0.3s;
 
     &[show] {
-      height: 345px;
+      height: 295px;
       width: 100%;
       white-space: nowrap;
       overflow: hidden;

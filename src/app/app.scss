@@ -15,13 +15,18 @@ html {
   overflow-y: hidden !important;
 }
 
+.select-all-tile {
+  &:hover {
+    cursor: pointer;
+  }
+}
 .side-menu {
   width: 100%;
   height: 100vh;
-  background: rgba(241, 241, 241, 0.6);
+  background: rgba(255, 255, 255, 1);
   min-width: 240px;
 
-  .logo {
+  .logo-container {
     width: 100%;
     height: 75px;
     font-size: 24px;
@@ -29,6 +34,11 @@ html {
     text-align: left;
     padding-left: 12px;
     line-height: 75px;
+    .logo {
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 
   .project-right-menu {
@@ -45,20 +55,24 @@ html {
   }
 }
 
-
 .box-shadow {
   box-shadow: 0px 3px 20px 1px rgba(0, 0, 0, 0.1);
   transform: translate(0, 0px);
 
-  transition: transform .3s, box-shadow .3s !important;
-
-  &.round {
-    border-radius: 10px;
-  }
+  transition: transform 0.3s, box-shadow 0.3s !important;
 
   &.hover:hover {
-    transform: translate(0, -5px);
     cursor: pointer;
     box-shadow: 0px 3px 30px 2px rgba(0, 0, 0, 0.3);
   }
+}
+.round {
+  border-radius: 10px;
+}
+
+.text-wrap {
+  width: calc(100% - 20px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

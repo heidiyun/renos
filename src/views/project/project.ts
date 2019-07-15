@@ -11,7 +11,6 @@ import _ from 'lodash';
 
 @Component({})
 export default class ProjectPage extends Vue {
-
   public $refs!: {
     searchInput: HTMLInputElement;
   };
@@ -56,24 +55,29 @@ export default class ProjectPage extends Vue {
     this.setSearchModel(input);
   }, 500);
 
-
   private get pinContainerHeight() {
-    if (this.pinnedProjectList.length === 0) { return; }
+    if (this.pinnedProjectList.length === 0) {
+      return;
+    }
 
     const std = document.getElementById('pin-project-layout');
     const card = document.getElementsByClassName('project-card-container');
-    if (card.length === 0) { return; }
+    if (card.length === 0) {
+      return;
+    }
 
     const cellCount = Math.floor(std!.clientWidth / card[0].clientWidth);
     const rowCount = Math.floor((card.length - 1) / cellCount) + 1;
     const openHeight = rowCount * (card[0].clientHeight + 48);
 
-    if (rowCount <= 1) { return '345px'; }
+    if (rowCount <= 1) {
+      return '295px';
+    }
 
     if (this.showAll) {
       return openHeight + 'px';
     } else {
-      return '345px';
+      return '295px';
       // std!.style.whiteSpace = 'nowrap';
       // std!.style.overflow = 'hidden';
     }
@@ -87,8 +91,6 @@ export default class ProjectPage extends Vue {
 
     return names;
   }
-
-
 
   private showProgressbar() {
     this.$progress.show();
@@ -106,7 +108,9 @@ export default class ProjectPage extends Vue {
   }
 
   get currentPinnedProjectList() {
-    return _(this.$store.getters.projectList as Array<FirestoreDocument<Project>>)
+    return _(this.$store.getters.projectList as Array<
+      FirestoreDocument<Project>
+    >)
       .filter(project => project.data.pins[this.$store.getters.user.id])
       .sortBy(project => project.data.name)
       .value();
@@ -116,7 +120,6 @@ export default class ProjectPage extends Vue {
     // const list = _(this.projectList).map(p => {
     //   return { item: p, selected: false };
     // });
-
 
     // this.ui.categories.forEach(p => {
     //   if (p.name === this.filterSelected) {
@@ -138,22 +141,26 @@ export default class ProjectPage extends Vue {
 
     // TODO Review
 
-    const projectList: Array<FirestoreDocument<Project>> = this.$store.getters.projectList;
+    const projectList: Array<FirestoreDocument<Project>> = this.$store.getters
+      .projectList;
     return _(projectList)
       .filter(project => {
         if (this.filterSelected === 'all') {
           return true;
         }
-        return project.data.users[this.$store.getters.user.id] === this.filterSelected;
+        return (
+          project.data.users[this.$store.getters.user.id] ===
+          this.filterSelected
+        );
       })
-      .filter(project => project.data.name.indexOf(this.searchInputModel) !== -1)
+      .filter(
+        project => project.data.name.indexOf(this.searchInputModel) !== -1
+      )
       .sortBy(project => project.data.name)
       .value();
-
   }
 
   private setSearchModel(input) {
-
     this.searchInputModel = input;
   }
 

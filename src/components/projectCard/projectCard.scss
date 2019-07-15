@@ -1,10 +1,19 @@
 .c-layout {
   transition: box-shadow 0.3;
 
+  .bookmark {
+    opacity: 0;
+  }
 
+  &:hover {
+    transform: translate(0, -5px);
+    .bookmark {
+      opacity: 1;
+    }
+  }
 
   .card-image {
-    background-size: cover;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.1);
 
     .more-icon {
       opacity: 0;
@@ -25,11 +34,13 @@
   }
 
   .card-text-layout {
+    width: calc(100% - 90px);
     .card-title {
-      width: calc(100% - 20px);
+      width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      font-weight: bold;
     }
 
     &:hover {
@@ -38,7 +49,9 @@
   }
 
   &[selected] {
-    background: rgb(232, 240, 254);
+    .card-title-layout {
+      background: rgb(232, 240, 254);
+    }
 
     .card-title {
       color: rgb(23, 110, 210);

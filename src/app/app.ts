@@ -44,17 +44,19 @@ export default class App extends Vue {
   private categoryGroups: {
     [key: string]: Array<FirestoreDocument<Project>>;
   } = {
-      supervisor: [],
-      editor: [],
-      viewer: []
-    };
+    supervisor: [],
+    editor: [],
+    viewer: []
+  };
 
   private onHandleChange(e) {
     this.$router.push(`/myprojects/${e}`);
   }
 
   get currentProject() {
-    if (this.$store.getters.currentProject === undefined) { return ''; }
+    if (this.$store.getters.currentProject === undefined) {
+      return '';
+    }
     return this.$store.getters.currentProject.data.name;
   }
 
@@ -90,10 +92,14 @@ export default class App extends Vue {
   }
 
   private async createProject() {
-
     let projectTitle = '';
     try {
-      projectTitle = await this.$dialogInput.open('프로젝트 생성', '', '취소', '프로젝트 생성');
+      projectTitle = await this.$dialogInput.open(
+        '프로젝트 생성',
+        '',
+        '취소',
+        '프로젝트 생성'
+      );
     } catch (e) {
       return;
     }
@@ -120,7 +126,6 @@ export default class App extends Vue {
   }
 
   private mounted() {
-
     // User Data Set
     Auth.addChangeBeforeListener('login', async u => {
       if (u !== null) {
@@ -152,7 +157,6 @@ export default class App extends Vue {
           return;
         }
 
-
         // Project Data Set
         Collections.projects
           // @ts-ignore
@@ -174,6 +178,7 @@ export default class App extends Vue {
               this.projectList.splice(index, 1, project);
               this.snackbar = true;
               this.snackbarText = '변경사항이 적용되었습니다.';
+              this.$progress.off();
             }
             this.categoryGroups = _.groupBy(
               this.projectList,

@@ -20,9 +20,6 @@ export default class ProjectCard extends Vue {
   private selected: string = '';
   private pinned: boolean = false;
 
-
-
-
   private removeProject() {
     const storage = new Storage(`images/${this.project.id}`);
     storage.delete();
@@ -35,8 +32,10 @@ export default class ProjectCard extends Vue {
   }
 
   private async pinnedProject() {
-    if (this.project.data.pins[this.$store.getters.user.id] === undefined ||
-      this.project.data.pins[this.$store.getters.user.id] === false) {
+    if (
+      this.project.data.pins[this.$store.getters.user.id] === undefined ||
+      this.project.data.pins[this.$store.getters.user.id] === false
+    ) {
       this.project.data.pins[this.$store.getters.user.id] = true;
     } else {
       this.project.data.pins[this.$store.getters.user.id] = false;
@@ -46,25 +45,33 @@ export default class ProjectCard extends Vue {
   }
   private async onDelete() {
     try {
-      await this.$dialogSimple.open('삭제할거냐?', '뭐', '취소', '삭제');
-      console.log('ok');
-      // TODO 삭제
-    } catch (e) {
-      console.log('cancel');
-      // 취소
-    }
+      await this.$dialogSimple.open(
+        '계속하시겠습니까?',
+        `공유 드라이브 ${
+          this.project.data.name
+        }이(가) 모든 사용자로부터 삭제되며 이 작업은 실행취소할 수 없습니다.`,
+        '취소',
+        '프로젝트 삭제'
+      );
+
+      this.removeProject();
+    } catch (e) {}
   }
 
   private async renameProjectTitle() {
     try {
-      const title = await this.$dialogInput.open('이름 변경', this.project.data.name, '취소', '이름 변경');
+      const title = await this.$dialogInput.open(
+        '이름 변경',
+        this.project.data.name,
+        '취소',
+        '이름 변경'
+      );
       this.project.data.name = title;
       await this.project.saveSync();
       this.$emit('change-snackbar-text', '이름이 변경되었습니다.');
     } catch (e) {
       console.error(e);
     }
-
   }
 
   private changeMainImage() {
@@ -75,8 +82,6 @@ export default class ProjectCard extends Vue {
     input.addEventListener('change', this.onChange);
     input.click();
     document.body.appendChild(input);
-
-
   }
 
   private async onChange(e) {

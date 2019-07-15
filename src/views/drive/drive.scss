@@ -17,10 +17,9 @@
   }
 }
 
-.content-layout {
+.content-container {
   align-content: flex-start;
   height: calc(100vh - 64px);
-  overflow-y: scroll;
 
   .content-top-menu {
     width: 100%;
@@ -37,6 +36,6 @@
 
   .content {
     width: 100%;
-    height: calc(100% - 60px);
+    height: fit-content;
   }
 }

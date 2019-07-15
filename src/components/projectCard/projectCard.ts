@@ -48,14 +48,16 @@ export default class ProjectCard extends Vue {
       await this.$dialogSimple.open(
         '계속하시겠습니까?',
         `공유 드라이브 ${
-          this.project.data.name
+        this.project.data.name
         }이(가) 모든 사용자로부터 삭제되며 이 작업은 실행취소할 수 없습니다.`,
         '취소',
         '프로젝트 삭제'
       );
 
       this.removeProject();
-    } catch (e) {}
+    } catch (e) {
+      // empty block
+    }
   }
 
   private async renameProjectTitle() {

@@ -39,29 +39,27 @@ export default class FileCard extends Vue {
         icon: 'video-camera',
         playable: this.file.data.name.endsWith('.mp4'),
         color: 'rgb(217, 48, 37)'
-      }
+      };
     } else if (this.file.data.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
       return {
         tag: 'word',
         icon: 'file-word',
         color: 'rgb(75, 135, 228)'
-      }
+      };
     } else if (this.file.data.fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
       return {
         tag: 'excel',
         icon: 'file-excel',
         color: 'rgb(14, 157, 89)'
-      }
+      };
     } else if (this.file.data.fileType ===
       'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
       return {
         tag: 'ppt',
         icon: 'file-ppt',
         color: 'rgb(253, 117, 65)'
-      }
-    }
-
-    else {
+      };
+    } else {
       return {
         tag: 'file',
         icon: 'file',

@@ -20,11 +20,10 @@
         <v-layout wrap px-5 pb-4>
           <v-flex
             class="project-card-container"
-            style="height : 250px;"
-            xl4
-            lg4
-            md6
-            sm12
+            xl3
+            lg3
+            md4
+            sm6
             xs12
             v-for=" (project,i) in currentPinnedProjectList"
             :key="i"
@@ -75,11 +74,12 @@
       </div>
       <v-layout class="content-layout" px-5 pb-5 wrap style="width:100%;">
         <v-flex
+          class="project-card-container"
           style="height : 300px;"
           xl3
-          lg4
-          md6
-          sm12
+          lg3
+          md4
+          sm6
           xs12
           v-for=" (project,i) in currentProjectList"
           :key="i"

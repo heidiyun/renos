@@ -1,3 +1,4 @@
+@import '@/style/lib.scss';
 .content-toolbar {
   width: 100%;
   height: 70px;
@@ -40,17 +41,68 @@
     }
   }
 }
-.pin-project-container {
-  .content-layout {
-    align-content: flex-start;
-    width: 100%;
-    transition: height 0.3s;
 
-    &[show] {
-      height: 295px;
-      width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
+.content-layout {
+  align-content: flex-start;
+  width: 100%;
+  transition: height 0.3s;
+
+  &[show] {
+    height: 295px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  @include screen-xl {
+    max-height: 16vw;
+    min-height: 14vw;
+  }
+
+  @include screen-lg {
+    max-height: 20vw;
+    min-height: 18vw;
+  }
+
+  @include screen-md {
+    max-height: 26vw;
+    min-height: 24vw;
+  }
+
+  @include screen-sm {
+    max-height: 36vw;
+    min-height: 34vw;
+  }
+
+  @include screen-xs {
+    max-height: 45vw;
+    min-height: 44vw;
+  }
+
+  .project-card-container {
+    @include screen-xl {
+      max-height: 14vw;
+      min-height: 12vw;
+    }
+
+    @include screen-lg {
+      max-height: 18vw;
+      min-height: 15vw;
+    }
+
+    @include screen-md {
+      max-height: 24vw;
+      min-height: 22vw;
+    }
+
+    @include screen-sm {
+      max-height: 34vw;
+      min-width: 33vw;
+    }
+
+    @include screen-xs {
+      max-height: 42vw;
+      min-height: 40vw;
     }
   }
 }

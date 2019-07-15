@@ -44,10 +44,10 @@ export default class App extends Vue {
   private categoryGroups: {
     [key: string]: Array<FirestoreDocument<Project>>;
   } = {
-    supervisor: [],
-    editor: [],
-    viewer: []
-  };
+      supervisor: [],
+      editor: [],
+      viewer: []
+    };
 
   private onHandleChange(e) {
     this.$router.push(`/myprojects/${e}`);

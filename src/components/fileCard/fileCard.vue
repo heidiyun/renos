@@ -1,7 +1,8 @@
 <template>
   <v-card class="c-layout round"
           flat
-          height="100%">
+          height="100%"
+          @dblclick="showPreview">
     <a-dropdown :trigger="['click']">
       <v-btn icon
              small
@@ -14,13 +15,21 @@
                      @click="onDelete">삭제</a-menu-item>
       </a-menu>
     </a-dropdown>
-    <div style="height:calc(100% - 64px); border-bottom : solid 1px rgba(0,0,0,0.1);">
+    <div class="card-image-container">
       <v-img height="100%"
-             class="card-image"
+             class="card-image;"
              v-if="fileIcon.tag === 'image'"
              :src="file.data.fileURL">
 
       </v-img>
+      <video v-else-if="fileIcon.tag === 'video'"
+             :src="file.data.fileURL"
+             style="width:100%;height:100%;"
+             preload=""
+             @mouseover="t => t.target.play()"
+             @mouseout="t => t.target.pause()">
+
+      </video>
 
       <div style="height:100%; display:flex; justify-content:center; align-items:center;">
         <a-icon style="font-size : 60px; opacity : 0.8;"

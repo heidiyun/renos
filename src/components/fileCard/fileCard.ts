@@ -15,6 +15,10 @@ export default class FileCard extends Vue {
     this.$progress.off();
   }
 
+  private showPreview() {
+    this.$dialogPreview.on(this.file.data.name, this.file.data.fileType, this.file.data.fileURL);
+  }
+
   private get fileIcon() {
     // TODO 확장자 추가 or로 달고 image는 필요없음.
     if (this.file.data.fileType.startsWith('image')) {
@@ -33,6 +37,7 @@ export default class FileCard extends Vue {
       return {
         tag: 'video',
         icon: 'video-camera',
+        playable: this.file.data.name.endsWith('.mp4'),
         color: 'rgb(217, 48, 37)'
       }
     } else if (this.file.data.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {

@@ -1,16 +1,39 @@
 .c-layout {
   transition: box-shadow 0.3;
-  
+
+  .bookmark-outer {
+    background: #fff;
+    height: 24px;
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color .3s;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+
 
   .bookmark {
     opacity: 0;
+
+    &[bookmarked] {
+      color: #2196F3;
+      opacity: 1;
+    }
+
   }
 
   &:hover {
     transform: translate(0, -5px);
+
     .bookmark {
       opacity: 1;
     }
+
   }
 
   .card-image {
@@ -36,6 +59,7 @@
 
   .card-text-layout {
     width: calc(100% - 90px);
+
     .card-title {
       width: 100%;
       overflow: hidden;

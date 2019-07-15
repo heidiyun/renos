@@ -85,10 +85,11 @@ export default class ProjectPage extends Vue {
       return '340px';
     }
 
-    if (this.showAll) {
-      return openHeight + 'px';
-    }
+
+    return openHeight + 'px';
+
   }
+
 
   get currentUICategoriesNames() {
     const names: string[] = [];

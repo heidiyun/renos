@@ -20,6 +20,7 @@ export default class Drive extends Vue {
   private onChangeRoute() {
     this.initailize();
   }
+
   private async initailize() {
     const pid = this.$route.params.projectName;
     this.project = await Collections.projects.load(Project, pid);

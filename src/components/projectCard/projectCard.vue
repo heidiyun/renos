@@ -33,7 +33,7 @@
     </v-img>
     <v-card-title class="pl-3 pr-1 card-title-layout pa-0"
                   style="display:flex; height:64px;">
-      <div style="flex:1">
+      <div style="flex:1; max-width:calc(100% - 30px)">
         <div class="card-title">{{project.data.name}}</div>
         <div class="card-title-supervisor"
              style="font-size:12px; ">관리자 {{owner.data.name}}</div>

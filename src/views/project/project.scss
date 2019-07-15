@@ -47,7 +47,7 @@
 .content-layout {
   align-content: flex-start;
   width: 100%;
-  transition: height 0.3s;
+  transition: height 0.3s !important;
 
   &[show] {
     height: 295px;
@@ -82,30 +82,32 @@
   // }
 
   .project-card-container {
+
     @include screen-xl {
       height: 16vw;
       padding: 32px;
     }
 
     @include screen-lg {
-      height: 18vw;
-      padding: 32px;
-      min-height: 260px;
+      height: 20vw;
+      padding: 20px;
+      margin-bottom: 12px;
+
     }
 
     @include screen-md {
       height: 23vw;
-      padding: 32px;
+      padding: 20px;
     }
 
     @include screen-sm {
-      height: 33vw;
+      height: 35vw;
       padding: 32px;
     }
 
     @include screen-xs {
       padding: 24px;
-      height: 50vw;
+      height: 54vw;
     }
   }
 }

@@ -36,8 +36,7 @@
                   sm6
                   xs12
                   v-for=" (project,i) in currentPinnedProjectList"
-                  :key="i"
-                  mb-5>
+                  :key="i">
             <div style=" height:100%;"
                  @click.stop="selected = project.id">
               <project-card :project="project"

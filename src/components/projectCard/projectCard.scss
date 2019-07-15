@@ -57,15 +57,16 @@
     }
   }
 
-  .card-text-layout {
-    width: calc(100% - 90px);
+  .card-title-layout {
 
     .card-title {
       width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      word-break: break-all;
       font-weight: bold;
+      height: 21px;
     }
 
     &:hover {

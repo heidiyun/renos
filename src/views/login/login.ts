@@ -4,6 +4,10 @@ import { Auth, SignInMethod } from '@/vue-common';
 @Component({})
 export default class Login extends Vue {
   private login() {
-    Auth.signIn(SignInMethod.Google);
+    if (this.$store.getters.user !== undefined) {
+      this.$router.push('/projects');
+    } else {
+      Auth.signIn(SignInMethod.Google);
+    }
   }
 }

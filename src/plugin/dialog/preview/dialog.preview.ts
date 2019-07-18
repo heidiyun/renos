@@ -1,7 +1,7 @@
 import { Vue, Component } from 'vue-property-decorator';
 
 @Component({})
-export default class DialogPreview extends Vue {
+export default class DiadlogPreview extends Vue {
   private fileName: string = '';
   private fileType: string = '';
   private fileURL: string = '';

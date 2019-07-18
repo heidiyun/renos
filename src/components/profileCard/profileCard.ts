@@ -6,6 +6,7 @@ export default class ProfileCard extends Vue {
   public signOut() {
     Auth.signOut();
     this.$router.push('/');
+    this.$store.commit('setUser', undefined);
     this.$emit('close');
   }
 }

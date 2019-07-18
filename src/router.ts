@@ -16,13 +16,13 @@ export default new Router({
       component: Login
     },
     {
-      path: '/myprojects',
-      name: 'myprojects',
+      path: '/projects',
+      name: 'projects',
       component: ProjectPage
     },
     {
-      path: '/myprojects/:projectName',
-      name: 'myproject',
+      path: '/projects/:projectName',
+      name: 'project',
       component: Drive
     }
     // {

@@ -1,6 +1,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { FirestoreDocument, Storage } from '@/vue-common';
 import ProjectFile from '@/models/projectFile';
+import Collections from '@/models/collections';
 
 @Component({})
 export default class FileCard extends Vue {
@@ -15,12 +16,25 @@ export default class FileCard extends Vue {
     this.$progress.off();
   }
 
-  private showPreview() {
-    this.$dialogPreview.on(this.file.data.name, this.file.data.fileType, this.file.data.fileURL);
+  private async showPreview() {
+    this.file.data.accessDate = new Date().toUTCString();
+    await this.file.saveSync();
+
+    this.$dialogPreview.on(
+      this.file.data.name,
+      this.file.data.fileType,
+      this.file.data.fileURL
+    );
+  }
+
+  private showComment() {
+    this.$store.commit('setSelectedFile', this.file);
+    this.$emit('open-comment');
   }
 
   private get fileIcon() {
     // TODO 확장자 추가 or로 달고 image는 필요없음.
+    const fileExtension = this.file.data.name.split('.');
     if (this.file.data.fileType.startsWith('image')) {
       return {
         tag: 'image',
@@ -40,20 +54,33 @@ export default class FileCard extends Vue {
         playable: this.file.data.name.endsWith('.mp4'),
         color: 'rgb(217, 48, 37)'
       };
-    } else if (this.file.data.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+    } else if (
+      fileExtension[1] === 'docx' ||
+      fileExtension[1] === 'doc' ||
+      this.file.data.fileType ===
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ) {
       return {
         tag: 'word',
         icon: 'file-word',
         color: 'rgb(75, 135, 228)'
       };
-    } else if (this.file.data.fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    } else if (
+      fileExtension[1] === 'xlsx' ||
+      fileExtension[1] === 'xls' ||
+      this.file.data.fileType ===
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ) {
       return {
         tag: 'excel',
         icon: 'file-excel',
         color: 'rgb(14, 157, 89)'
       };
-    } else if (this.file.data.fileType ===
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
+    } else if (
+      fileExtension[1] === 'pptx' ||
+      this.file.data.fileType ===
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    ) {
       return {
         tag: 'ppt',
         icon: 'file-ppt',
@@ -66,11 +93,7 @@ export default class FileCard extends Vue {
         color: 'rgb(192,192,192)'
       };
     }
-
   }
 
-  private mounted() {
-    console.log('filecard', this.file.data.fileType);
-
-  }
+  private mounted() {}
 }

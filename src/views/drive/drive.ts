@@ -3,9 +3,9 @@ import { Auth, FirestoreDocument, Storage } from '@/vue-common';
 import Collections from '@/models/collections';
 import Project from '@/models/project';
 import User from '@/models/user';
-import toast from '@/vue-common/plugins/toast';
 import ProjectFile from '@/models/projectFile';
 import _ from 'lodash';
+import Comment from '@/models/comment';
 
 @Component({})
 export default class Drive extends Vue {
@@ -15,10 +15,43 @@ export default class Drive extends Vue {
     Project
   );
   private fileList: Array<FirestoreDocument<ProjectFile>> = [];
+  private showComment: boolean = false;
+  private keyNum: number = 2;
+  private commentList: Array<FirestoreDocument<Comment>> = [];
+  
+
+  get latestAccessFileList() {
+    return _(this.fileList)
+      .sortBy(f => {
+        return f.data.accessDate;
+      })
+      .reverse()
+      .value();
+  }
+
+  get currentProjectCommentList() {
+    return _.filter(this.commentList, comment => {
+      return comment.data.isProject === true;
+    });
+  }
+
+  get currentCommentList() {
+    this.keyNum;
+    const list = _(this.commentList).filter(comment => {
+      return comment.data.fid === this.$store.getters.selectedFile.id;
+    });
+
+    console.log(list);
+    return list;
+  }
 
   @Watch('$route', { deep: true })
   private onChangeRoute() {
     this.initailize();
+  }
+
+  private openComment() {
+    this.showComment = true;
   }
 
   private async initailize() {
@@ -56,8 +89,27 @@ export default class Drive extends Vue {
         }
       });
 
-  }
+    Collections.comments
+      .createQuery('pid', '==', this.project.id)
+      .onChange(Comment, (comment, state) => {
+        if (state === 'added') {
+          this.commentList.push(comment);
+        } else if (state === 'removed') {
+          const index = this.commentList.findIndex(c => {
+            return c.id === comment.id;
+          });
 
+          this.commentList.splice(index, 1);
+          this.commentList.splice(index, 1);
+        } else if (state === 'modified') {
+          const index = this.commentList.findIndex(c => {
+            return c.id === comment.id;
+          });
+          this.commentList.splice(index, 1, comment);
+        }
+      });
+    
+  }
 
   private async mounted() {
     Auth.addChangeListener('driveAuth', async () => {

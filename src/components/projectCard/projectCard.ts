@@ -25,6 +25,8 @@ export default class ProjectCard extends Vue {
     storage.delete();
     this.project.delete();
     this.removeDialog = false;
+    
+    
   }
 
   private showMoreMenu() {

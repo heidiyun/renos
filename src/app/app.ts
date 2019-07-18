@@ -18,6 +18,7 @@ import ProfileCard from '@/components/profileCard';
 import DialogSimple from '@/plugin/dialog';
 import ProjectFile from '@/models/projectFile';
 import FileCard from '@/components/fileCard';
+import CommentView from '@/components/commentView';
 
 Vue.use(Antd);
 Vue.use(Spinner);
@@ -29,6 +30,7 @@ Vue.component('project-card', ProjectCard);
 Vue.component('progress-bar', ProgressBar);
 Vue.component('progress-mini', ProgressMini);
 Vue.component('file-card', FileCard);
+Vue.component('comment-view', CommentView);
 
 @Component({})
 export default class App extends Vue {
@@ -40,17 +42,17 @@ export default class App extends Vue {
   private projectList: Array<FirestoreDocument<Project>> = [];
   private snackbarText = '';
   private snackbar = false;
-
+  private data = ['files', 'images', 'videos'];
   private categoryGroups: {
     [key: string]: Array<FirestoreDocument<Project>>;
   } = {
-      supervisor: [],
-      editor: [],
-      viewer: []
-    };
+    supervisor: [],
+    editor: [],
+    viewer: []
+  };
 
   private onHandleChange(e) {
-    this.$router.push(`/myprojects/${e}`);
+    this.$router.push(`/projects/${e}`);
   }
 
   get currentProject() {
@@ -125,6 +127,16 @@ export default class App extends Vue {
     });
   }
 
+  get showSelect() {
+    if (this.$route.name === 'login') {
+      return false;
+    } else if (this.$route.name === 'projects') {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   private mounted() {
     // User Data Set
     Auth.addChangeBeforeListener('login', async u => {
@@ -143,7 +155,6 @@ export default class App extends Vue {
           user.saveSync();
           this.$store.commit('setUser', user);
         }
-        // this.$router.push('/myprojects');
       } else {
         this.$store.commit('setUser', undefined);
       }
@@ -156,6 +167,8 @@ export default class App extends Vue {
           this.$router.push('/');
           return;
         }
+
+        // this.$router.push('/projects');
 
         // Project Data Set
         Collections.projects

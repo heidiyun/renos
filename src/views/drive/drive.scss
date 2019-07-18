@@ -20,6 +20,16 @@
 .content-container {
   align-content: flex-start;
   height: calc(100vh - 64px);
+  width: 100%;
+  overflow: scroll;
+
+  .category {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 20px;
+    font-weight: 600;
+  }
 
   .content-top-menu {
     width: 100%;
@@ -36,6 +46,24 @@
 
   .content {
     width: 100%;
-    height: fit-content;
+    height: 260px;
+    // white-space: nowrap;
+    // overflow: hidden;
   }
+}
+
+.comment-menu {
+  width: 500px;
+  height: 100vh;
+  margin-left: 4px;
+  display: none;
+
+  .comment-title {
+    width: 210px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+ 
 }

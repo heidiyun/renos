@@ -61,35 +61,32 @@ export default class ProjectPage extends Vue {
       return;
     }
 
-
     if (!this.showAll) {
-      return '340px';
+      return '295px';
     }
     const std = document.getElementById('pin-project-layout');
     const card = document.getElementsByClassName('project-card-container');
     console.log(card, card.length === 0);
     if (card.length === 0) {
       console.log('c2');
-      return '340px';
+      return '295px';
     }
     const cardHeight = card[0].clientHeight;
     const cardWidth = card[0].clientWidth;
     console.log('card size', cardWidth, cardHeight, std!.clientWidth);
 
     const cellCount = Math.floor(std!.clientWidth / card[0].clientWidth);
-    const rowCount = Math.floor((this.currentPinnedProjectList.length - 1) / cellCount) + 1;
+    const rowCount =
+      Math.floor((this.currentPinnedProjectList.length - 1) / cellCount) + 1;
     const openHeight = rowCount * (card[0].clientHeight + 16);
     console.log('cnts', cellCount, rowCount, openHeight);
 
     if (rowCount <= 1) {
-      return '340px';
+      return '295px';
     }
 
-
     return openHeight + 'px';
-
   }
-
 
   get currentUICategoriesNames() {
     const names: string[] = [];
@@ -178,7 +175,7 @@ export default class ProjectPage extends Vue {
 
   private goToProject() {
     console.log('go-project');
-    this.$router.push(`/myprojects/${this.$store.getters.currentProject.id}`);
+    this.$router.push(`/projects/${this.$store.getters.currentProject.id}`);
   }
 
   private mounted() {

@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import { FirestoreDocument } from './vue-common';
 import User from './models/user';
 import Project from './models/project';
+import ProjectFile from './models/projectFile';
 
 Vue.use(Vuex);
 
@@ -11,6 +12,7 @@ export interface State {
   projectList: Array<FirestoreDocument<Project>> | undefined;
   categoryGroups: Array<FirestoreDocument<Project>> | undefined;
   currentProject: FirestoreDocument<Project> | undefined;
+  selectedFile: FirestoreDocument<ProjectFile> | undefined;
 }
 
 export default new Vuex.Store<State>({
@@ -18,7 +20,8 @@ export default new Vuex.Store<State>({
     user: undefined,
     projectList: undefined,
     categoryGroups: undefined,
-    currentProject: undefined
+    currentProject: undefined,
+    selectedFile: undefined
   },
   mutations: {
     setUser(state, payload) {
@@ -32,6 +35,9 @@ export default new Vuex.Store<State>({
     },
     setCurrentProject(state, payload) {
       state.currentProject = payload;
+    },
+    setSelectedFile(state, payload) {
+      state.selectedFile = payload;
     }
   },
   getters: {
@@ -46,6 +52,9 @@ export default new Vuex.Store<State>({
     },
     currentProject(state) {
       return state.currentProject;
+    },
+    selectedFile(state) {
+      return state.selectedFile;
     }
   }
 });

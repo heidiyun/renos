@@ -6,4 +6,5 @@ export default class Comment extends FirestoreDocumentData {
   public fid: string = '';
   public uploadDate: string = '';
   public content: string = '';
+  public isProject: boolean = false;
 }

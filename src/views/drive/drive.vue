@@ -1,37 +1,74 @@
 <template>
-  <v-container fluid
-               ma-0
-               pa-0
-               style="overflow-y:auto; height:100vh;">
+  <v-container fluid ma-0 pa-0 style="height:100vh;">
     <v-layout>
       <v-flex>
-        <div class="content-container">
-          <div class="category"
-               style="padding: 0px 36px;">
+        <div
+          class="content-container"
+          :style="showComment? {width:'calc(100vw - 500px)'} : {width : '100%'}"
+        >
+          <div class="category px-4 py-2">
             <div class="content-title">빠른 액세스</div>
           </div>
-          <div class="content">
-            <v-layout class="file-card-layout"
-                      wrap
-                      style="width:100%"
-                      pa-2>
-              <v-flex style="width=325px; height : 250px;"
-                      xl2
-                      lg3
-                      md4
-                      sm6
-                      xs12
-                      v-for=" (file,i) in fileList"
-                      :key="i"
-                      px-2
-                      py-3>
-                <file-card :file="file"></file-card>
+          <div class="content px-4">
+            <v-layout wrap style="width:100%" pa-2>
+              <v-flex
+                style="width=325px; height : 250px;"
+                xl2
+                lg3
+                md4
+                sm6
+                xs12
+                v-for=" (file,i) in latestAccessFileList"
+                :key="i"
+                px-2
+                py-3
+              >
+                <file-card :file="file" @open-comment="openComment"></file-card>
               </v-flex>
             </v-layout>
           </div>
-
         </div>
       </v-flex>
+      <div class="comment-menu" :style="showComment? {display:'inline'} : {display:'none'}">
+        <div style="display:flex;">
+          <div
+            class="pa-3 subheading font-weight-medium comment-title"
+          >{{ showComment === true ? (keyNum == 1 ? project.data.name : $store.getters.selectedFile.data.name) : ''}}</div>
+          <v-btn icon flat @click="showComment=false;">
+            <v-icon>clear</v-icon>
+          </v-btn>
+        </div>
+        <a-tabs defaultActiveKey="2" @change="keyNum === 1 ? keyNum=2 : keyNum = 1">
+          <a-tab-pane tab="프로젝트 댓글" key="1">
+            <div
+              style="width:87%; height:calc(100vh - 200px); overflow-y:scroll; justify-content:center; "
+            >
+              <div
+                class="px-2 py-1"
+                v-for="(comment,i) in currentProjectCommentList"
+                :key="`key1- ${i}`"
+              >
+                <comment-view :comment="comment" :isInput="false" :keyNum="1"></comment-view>
+              </div>
+              <div class="px-2 py-1">
+                <comment-view :comment="null" :isInput="true" :keyNum="1"></comment-view>
+              </div>
+            </div>
+          </a-tab-pane>
+          <a-tab-pane tab="파일 댓글" key="2">
+            <div
+              style="width: 87%;height:calc(100vh - 200px); overflow-y:scroll; justify-content:center; "
+            >
+              <div class="px-2 py-1" v-for="(comment,i) in currentCommentList" :key="`key2- ${i}`">
+                <comment-view :comment="comment" :isInput="false" :keyNum="2"></comment-view>
+              </div>
+              <div class="px-2 py-1">
+                <comment-view :comment="null" :isInput="true" :keyNum="2"></comment-view>
+              </div>
+            </div>
+          </a-tab-pane>
+        </a-tabs>
+      </div>
     </v-layout>
   </v-container>
 </template>

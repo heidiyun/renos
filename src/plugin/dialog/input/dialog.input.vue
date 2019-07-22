@@ -2,7 +2,12 @@
   <v-dialog max-width="395px" height="180px" v-model="on">
     <v-card class="pa-2">
       <v-card-title style="font-size:18px; font-weight:bold">{{title}}</v-card-title>
-      <v-text-field class="pa-3" autofocus v-model="inputModel"></v-text-field>
+      <a-select mode="tags" style="width: 100%" placeholder="Tags Mode">
+        <a-select-option
+          v-for="i in 25"
+          :key="(i + 9).toString(36) + i"
+        >{{(i + 9).toString(36) + i}}</a-select-option>
+      </a-select>
       <v-card-actions>
         <v-spacer></v-spacer>
 

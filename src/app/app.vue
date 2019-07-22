@@ -16,24 +16,12 @@
         <v-btn large @click.stop="uploadFile" dark color="blue">
           <v-icon class="mr-2 ml-0" color="white">add</v-icon>파일 업로드
         </v-btn>
-        <v-list style="width : 100%">
-          <v-list-tile @click>
-            <v-list-tile-content>
-              <v-list-tile-title>문서</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-          <v-list-tile @click>
-            <v-list-tile-content>
-              <v-list-tile-title>이미지</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-
-          <v-list-tile @click>
-            <v-list-tile-content>
-              <v-list-tile-title>동영상</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
+        <a-menu style="width: 100%;" :defaultSelectedKeys="['1']" mode="inline">
+          <a-menu-item key="1" @click="$store.commit('setSelectedFileType', 'all')">전체</a-menu-item>
+          <a-menu-item key="2" @click="$store.commit('setSelectedFileType', 'file')">문서</a-menu-item>
+          <a-menu-item key="3" @click="$store.commit('setSelectedFileType', 'image')">이미지</a-menu-item>
+          <a-menu-item key="4" @click="$store.commit('setSelectedFileType', 'video')">동영상</a-menu-item>
+        </a-menu>
       </v-flex>
     </v-navigation-drawer>
     <v-toolbar app color="white" flat height="90px;">

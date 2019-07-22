@@ -13,6 +13,7 @@ export interface State {
   categoryGroups: Array<FirestoreDocument<Project>> | undefined;
   currentProject: FirestoreDocument<Project> | undefined;
   selectedFile: FirestoreDocument<ProjectFile> | undefined;
+  selectedFileType: string | undefined;
 }
 
 export default new Vuex.Store<State>({
@@ -21,7 +22,8 @@ export default new Vuex.Store<State>({
     projectList: undefined,
     categoryGroups: undefined,
     currentProject: undefined,
-    selectedFile: undefined
+    selectedFile: undefined,
+    selectedFileType: undefined
   },
   mutations: {
     setUser(state, payload) {
@@ -38,6 +40,9 @@ export default new Vuex.Store<State>({
     },
     setSelectedFile(state, payload) {
       state.selectedFile = payload;
+    },
+    setSelectedFileType(state, payload) {
+      state.selectedFileType = payload;
     }
   },
   getters: {
@@ -55,6 +60,9 @@ export default new Vuex.Store<State>({
     },
     selectedFile(state) {
       return state.selectedFile;
+    },
+    selectedFileType(state) {
+      return state.selectedFileType;
     }
   }
 });

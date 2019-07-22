@@ -7,6 +7,9 @@ import Collections from '@/models/collections';
 export default class FileCard extends Vue {
   @Prop()
   public file!: FirestoreDocument<ProjectFile>;
+  @Prop()
+  public isOwner!: boolean;
+  private enableDelete: boolean = false;
 
   private async onDelete() {
     this.$progress.show();
@@ -14,6 +17,16 @@ export default class FileCard extends Vue {
     const storage = new Storage(`/files/${this.file.id}`);
     await storage.delete();
     this.$progress.off();
+  }
+
+  private isAuthorized() {
+    if (this.file.data.uid === this.$store.getters.user.id || this.isOwner) {
+      this.enableDelete = true;
+      return;
+    } else {
+      this.enableDelete = false;
+      return;
+    }
   }
 
   private async showPreview() {
@@ -38,18 +51,21 @@ export default class FileCard extends Vue {
     if (this.file.data.fileType.startsWith('image')) {
       return {
         tag: 'image',
+        kind: 'image',
         icon: 'image',
         color: 'rgb(240,180,0)'
       };
     } else if (this.file.data.fileType.startsWith('application/pdf')) {
       return {
         tag: 'pdf',
+        kind: 'file',
         icon: 'file-pdf',
         color: 'rgb(233,67,52)'
       };
     } else if (this.file.data.fileType.startsWith('video')) {
       return {
         tag: 'video',
+        kind: 'video',
         icon: 'video-camera',
         playable: this.file.data.name.endsWith('.mp4'),
         color: 'rgb(217, 48, 37)'
@@ -62,6 +78,7 @@ export default class FileCard extends Vue {
     ) {
       return {
         tag: 'word',
+        kind: 'file',
         icon: 'file-word',
         color: 'rgb(75, 135, 228)'
       };
@@ -73,6 +90,7 @@ export default class FileCard extends Vue {
     ) {
       return {
         tag: 'excel',
+        kind: 'file',
         icon: 'file-excel',
         color: 'rgb(14, 157, 89)'
       };
@@ -83,17 +101,22 @@ export default class FileCard extends Vue {
     ) {
       return {
         tag: 'ppt',
-        icon: 'file-ppt',
+        kind: 'file',
+      icon: 'file-ppt',
         color: 'rgb(253, 117, 65)'
       };
     } else {
       return {
         tag: 'file',
+        kind: 'file',
         icon: 'file',
         color: 'rgb(192,192,192)'
       };
     }
   }
 
-  private mounted() {}
+  private mounted() {
+    this.file.data.kind = this.fileIcon.kind;
+    this.file.saveSync();
+  }
 }

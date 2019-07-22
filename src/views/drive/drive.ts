@@ -18,14 +18,18 @@ export default class Drive extends Vue {
   private showComment: boolean = false;
   private keyNum: number = 2;
   private commentList: Array<FirestoreDocument<Comment>> = [];
-  
 
   get latestAccessFileList() {
     return _(this.fileList)
       .sortBy(f => {
-        return f.data.accessDate;
+        return f.data.name;
       })
-      .reverse()
+      .filter(f => {
+        if (this.$store.getters.selectedFileType === 'all') {
+          return true;
+        }
+        return this.$store.getters.selectedFileType === f.data.kind;
+      })
       .value();
   }
 
@@ -36,12 +40,14 @@ export default class Drive extends Vue {
   }
 
   get currentCommentList() {
+    if (!this.showComment) {
+      return;
+    }
     this.keyNum;
     const list = _(this.commentList).filter(comment => {
       return comment.data.fid === this.$store.getters.selectedFile.id;
     });
 
-    console.log(list);
     return list;
   }
 
@@ -108,7 +114,6 @@ export default class Drive extends Vue {
           this.commentList.splice(index, 1, comment);
         }
       });
-    
   }
 
   private async mounted() {

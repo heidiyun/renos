@@ -29,7 +29,7 @@
       <div v-else class="warn-preview grey darken-3 white--text pa-4 elevation-4">
         <div style="text-align:center;">
           <div class="subheading font-weight-medium">미리보기를 할 수 없습니다.</div>
-          <v-btn class="mt-3" dark color="blue">
+          <v-btn class="mt-3" dark color="blue" @click="downloadFile">
             <v-icon small class="pr-1" style="margin-top:3px;">file_download</v-icon>
             <b>파일 다운로드</b>
           </v-btn>

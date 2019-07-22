@@ -160,6 +160,8 @@ export default class App extends Vue {
       }
     });
 
+    this.$store.commit('setSelectedFileType', 'all');
+
     Auth.addChangeListener(
       'project',
       async u => {

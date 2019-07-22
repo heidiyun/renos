@@ -1,11 +1,12 @@
 <template>
   <v-card class="c-layout round" flat height="100%" @dblclick="showPreview">
     <a-dropdown :trigger="['click']">
-      <v-btn icon small class="more-icon">
+      <v-btn icon small class="more-icon" @click="isAuthorized">
         <v-icon small color="white">more_vert</v-icon>
       </v-btn>
       <a-menu slot="overlay">
-        <a-menu-item key="0" @click="onDelete">삭제</a-menu-item>
+        <a-menu-item key="0" @click="onDelete" v-if="enableDelete">삭제</a-menu-item>
+        <a-menu-item key="0" disabled @click="onDelete" v-else>삭제</a-menu-item>
         <a-menu-item key="1" @click="showComment">댓글 달기</a-menu-item>
       </a-menu>
     </a-dropdown>

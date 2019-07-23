@@ -25,7 +25,7 @@
       </v-flex>
     </v-navigation-drawer>
     <v-toolbar app color="white" flat height="90px;">
-      <!-- <v-toolbar-title class="headline text-uppercase">RENOS</v-toolbar-title> -->
+      <!-- <v-toolbar-title cl`ass="headline text-uppercase">RENOS</v-toolbar-title> -->
 
       <!-- <a-select class="ml-3" defaultValue="all" style="width: 120px;">
         <a-select-option value="all">전체</a-select-option>

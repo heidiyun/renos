@@ -174,7 +174,7 @@ export default class ProjectPage extends Vue {
   }
 
   private goToProject() {
-    console.log('go-project');
+  console.log('go-project');
     this.$router.push(`/projects/${this.$store.getters.currentProject.id}`);
   }
 

@@ -1,5 +1,60 @@
 .c-layout {
-  width: 100%;
+  // width: 100%;
+  transition: height 0.2s;
+
+  &:hover {
+    .more-icon {
+      opacity: 1;
+    }
+  }
+
+  .card-title {
+    width: 100%;
+    height: 64px;
+
+    .tag-layout {
+      background: white;
+      z-index: 10;
+      position: absolute;
+
+      height: 300px;
+      left: 220px;
+      width: 300px;
+      bottom: 30px;
+      .tag-list {
+        z-index: 10;
+        position: absolute;
+      }
+    }
+  }
+
+  .tag-window {
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 20;
+    border-radius: 10px;
+
+    .tag-list-container {
+      overflow: auto;
+      max-height: calc(100% - 10px);
+      position: absolute;
+      z-index: 20;
+      width: 250px;
+      background: white;
+
+      .list-item {
+        transition: background-color 0.5s;
+
+        // border-bottom: none;
+        &:hover {
+          cursor: pointer;
+          background-color: rgba(233, 233, 233, 0.5);
+        }
+      }
+    }
+  }
+
   border: solid 1px rgba(0, 0, 0, 0.2);
 
   .more-icon {
@@ -8,13 +63,6 @@
     position: absolute;
     z-index: 10;
     right: 0;
-
-  }
-
-  &:hover {
-    .more-icon {
-      opacity: 1;
-    }
   }
 
   .file-type {
@@ -27,10 +75,9 @@
     padding: 0 8px;
     color: #fff;
     border-radius: 20px;
-
   }
 
-  .card-title {
+  .file-name {
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;

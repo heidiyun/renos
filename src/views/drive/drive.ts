@@ -6,6 +6,7 @@ import User from '@/models/user';
 import ProjectFile from '@/models/projectFile';
 import _ from 'lodash';
 import Comment from '@/models/comment';
+import Bricks from 'bricks.js';
 
 @Component({})
 export default class Drive extends Vue {
@@ -18,6 +19,7 @@ export default class Drive extends Vue {
   private showComment: boolean = false;
   private keyNum: number = 2;
   private commentList: Array<FirestoreDocument<Comment>> = [];
+  private mainTag: string = '';
 
   get latestAccessFileList() {
     return _(this.fileList)

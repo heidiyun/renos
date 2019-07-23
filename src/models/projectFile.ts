@@ -9,5 +9,5 @@ export default class ProjectFile extends FirestoreDocumentData {
   public fileURL: string = '';
   public accessDate: string = '';
   public kind: string = '';
-  public tag: string[] = [];
+  public tags: string[] = [];
 }

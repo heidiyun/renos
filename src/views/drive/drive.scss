@@ -20,8 +20,8 @@
 .content-container {
   align-content: flex-start;
   height: calc(100vh - 64px);
-  width: 100%;
   overflow: scroll;
+  
 
   .category {
     width: 100%;
@@ -64,6 +64,4 @@
     text-overflow: ellipsis;
     overflow: hidden;
   }
-
- 
 }

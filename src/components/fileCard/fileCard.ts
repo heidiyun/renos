@@ -1,21 +1,81 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { FirestoreDocument, Storage } from '@/vue-common';
 import ProjectFile from '@/models/projectFile';
+import Bricks from 'bricks.js';
+import Opener from '../opener';
 import Collections from '@/models/collections';
+import _ from 'lodash';
 
 @Component({})
 export default class FileCard extends Vue {
+  public $refs!: {
+    opener: Opener;
+  };
   @Prop()
   public file!: FirestoreDocument<ProjectFile>;
   @Prop()
   public isOwner!: boolean;
   private enableDelete: boolean = false;
+  private menu: boolean = false;
+  private tags: Array<string> = [];
+  private attachedTags: Array<string> = [];
+  private defaultTags = ['design', 'resource', 'code', 'layout'];
+  private inputVisible: boolean = false;
+  private inputValue: string = '';
+  private visibleList = false;
+
+  private async deleteTag(tag: string) {
+    const index = this.attachedTags.findIndex(t => {
+      return t === tag;
+    });
+    this.tags.splice(index, 1);
+
+    this.file.data.tags.splice(index, 1);
+    await this.file.saveSync();
+  }
+
+  private async createTag() {
+    if (this.inputValue.length <= 0) {
+      return;
+    }
+
+    let isEqual = false;
+    for (const tag of this.attachedTags) {
+      if (tag === this.inputValue) {
+        isEqual = true;
+      }
+    }
+
+    if (isEqual) {
+      return;
+    }
+
+    this.tags.push(this.inputValue);
+    this.attachedTags.push(this.inputValue);
+
+    this.file.data.tags.push(this.inputValue);
+    await this.file.saveSync();
+
+    this.inputValue = '';
+  }
+
+  private get exampleTags() {
+    return _.filter(this.tags, t => {
+      if (this.attachedTags.length === 0) return this.tags;
+      for (const tag of this.attachedTags) {
+        return t !== tag;
+      }
+    });
+  }
 
   private async onDelete() {
     this.$progress.show();
     await this.file.delete();
-    const storage = new Storage(`/files/${this.file.id}`);
-    await storage.delete();
+    if (this.fileIcon.tag === 'image' || this.fileIcon.tag === 'video') {
+      const storage = new Storage(`/files/${this.file.id}`);
+      await storage.delete();
+    }
+
     this.$progress.off();
   }
 
@@ -102,7 +162,7 @@ export default class FileCard extends Vue {
       return {
         tag: 'ppt',
         kind: 'file',
-      icon: 'file-ppt',
+        icon: 'file-ppt',
         color: 'rgb(253, 117, 65)'
       };
     } else {
@@ -118,5 +178,7 @@ export default class FileCard extends Vue {
   private mounted() {
     this.file.data.kind = this.fileIcon.kind;
     this.file.saveSync();
+    this.attachedTags = this.file.data.tags;
+    this.tags = ['design', 'code', 'flow-chart'];
   }
 }

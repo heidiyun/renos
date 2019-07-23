@@ -87,6 +87,7 @@ export default class App extends Vue {
     projectFile.data.uploadDate = new Date().toUTCString();
     projectFile.data.fileType = file.type;
     projectFile.data.fileURL = url;
+    
     await projectFile.saveSync();
     this.$progress.off();
 

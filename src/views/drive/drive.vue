@@ -10,9 +10,9 @@
             <div class="content-title">빠른 액세스</div>
           </div>
           <div class="content px-4">
-            <v-layout wrap style="width:100%" pa-2>
+            <v-layout wrap class="card-container" style="width:100%" pa-2>
               <v-flex
-                style="width=325px; height : 250px;"
+                style="width=325px; height : 300px;"
                 xl2
                 lg3
                 md4

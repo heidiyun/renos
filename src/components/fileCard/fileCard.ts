@@ -5,6 +5,7 @@ import Bricks from 'bricks.js';
 import Opener from '../opener';
 import Collections from '@/models/collections';
 import _ from 'lodash';
+import User from '@/models/user';
 
 @Component({})
 export default class FileCard extends Vue {
@@ -24,6 +25,8 @@ export default class FileCard extends Vue {
   private inputValue: string = '';
   private visibleList = false;
   private mainTag = '';
+  private fileOwner = Collections.users.create(User);
+  private is: boolean = false;
 
   private async deleteTag(tag: string) {
     const index = this.file.data.tags.findIndex(t => {
@@ -35,8 +38,9 @@ export default class FileCard extends Vue {
     await this.file.saveSync();
   }
 
-  private async createTag() {
-    const tagName = this.inputValue;
+  private async createTag(tagName: string) {
+    // const tagName = this.inputValue;
+    this.visibleList = false;
     this.inputValue = '';
     if (tagName.length <= 0) {
       return;
@@ -210,9 +214,11 @@ export default class FileCard extends Vue {
     }
   }
 
-  private mounted() {
+  private async mounted() {
+    console.log('mounted', this.mainTag);
     this.file.data.kind = this.fileIcon.kind;
     this.file.saveSync();
+    this.fileOwner = await Collections.users.load(User, this.file.data.uid);
 
     if (this.file.data.tags.length >= 1 && this.file.data.tags[0].name === '') {
       this.file.data.tags.splice(0, 1);

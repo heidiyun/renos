@@ -24,21 +24,30 @@
         <a-input
           class="mt-3"
           v-model="inputValue"
-          @keypress.enter="createTag"
-          @focus="visibleList = true"
-          @focusout="visibleList = false"
+          @keypress.enter="createTag(inputValue)"
+          @click.stop="$refs.opener.open"
         ></a-input>
-
-        <v-card class="tag-list-container box-shadow" v-if="visibleList">
-          <a-list size="small" :dataSource="exampleTags">
-            <a-list-item class="list-item pl-4" slot="renderItem" slot-scope="item, index">
-              <a-tooltip v-if="item.length > 20" :key="item" :title="item">
-                <a-tag :key="item" :closable="true" color="blue">{{`${tag.slice(0, 20)}...`}}</a-tag>
-              </a-tooltip>
-              <a-tag :closable="false" color="blue">{{item}}</a-tag>
-            </a-list-item>
-          </a-list>
-        </v-card>
+        <opener ref="opener" @state="state => visibleList = state">
+          <v-card class="tag-list-container box-shadow" v-if="visibleList">
+            <a-list size="small" :dataSource="exampleTags">
+              <a-list-item
+                class="list-item pl-4"
+                @click.stop="createTag(item)"
+                slot="renderItem"
+                slot-scope="item, index"
+              >
+                <a-tooltip v-if="item.length > 20" :key="item" :title="item">
+                  <a-tag :key="item" :closable="true" color="blue">{{`${tag.slice(0, 20)}...`}}</a-tag>
+                </a-tooltip>
+                <a-tag :closable="false" color="blue">{{item}}</a-tag>
+                <v-spacer></v-spacer>
+                <div @click.stop="is=!is" class="mr-2 pl-2 list-detail-menu-container">
+                  <a-icon class="list-detail-menu" type="ellipsis" />
+                </div>
+              </a-list-item>
+            </a-list>
+          </v-card>
+        </opener>
 
         <div class="mt-3" style="overflow:auto; height:calc(100% - 90px);">
           <div
@@ -92,7 +101,7 @@
 
         <div>
           <div style="font-size:13px; display:inline;" class="pl-1">
-            Yunjeong Goo
+            {{fileOwner.data.name}}
             <a-tag
               v-if="mainTag===''"
               @click.stop="menu = !menu"

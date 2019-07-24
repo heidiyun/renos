@@ -1,5 +1,5 @@
 import { Vue, Component, Watch } from 'vue-property-decorator';
-import { Auth, FirestoreDocument, Storage } from '@/vue-common';
+import { Auth, FirestoreDocument, Storage, Log } from '@/vue-common';
 import Collections from '@/models/collections';
 import Project from '@/models/project';
 import User from '@/models/user';
@@ -20,20 +20,21 @@ export default class Drive extends Vue {
   private keyNum: number = 2;
   private commentList: Array<FirestoreDocument<Comment>> = [];
   private mainTag: string = '';
-  private tags = [
-    {
-      name: 'design',
-      color: '#dddfff'
-    },
-    {
-      name: 'code',
-      color: '#cccccc'
-    },
-    {
-      name: 'flow-chart',
-      color: '#999999'
-    }
-  ];
+  private selectedTags: string[] = [];
+  // private tags = [
+  //   {
+  //     name: 'design',
+  //     color: '#dddfff'
+  //   },
+  //   {
+  //     name: 'code',
+  //     color: '#cccccc'
+  //   },
+  //   {
+  //     name: 'flow-chart',
+  //     color: '#999999'
+  //   }
+  // ];
 
   private addTag(name: string, color: string) {
     this.project.data.tags.push({ name, color });
@@ -44,8 +45,8 @@ export default class Drive extends Vue {
     return this.project.data.tags;
   }
 
-  get latestAccessFileList() {
-    return _(this.fileList)
+  get latestAccessdFileList() {
+    const list = _(this.fileList)
       .sortBy(f => {
         return f.data.name;
       })
@@ -56,6 +57,25 @@ export default class Drive extends Vue {
         return this.$store.getters.selectedFileType === f.data.kind;
       })
       .value();
+
+    if (this.selectedTags.length <= 0) {
+      return list;
+    }
+    const result: Array<FirestoreDocument<ProjectFile>> = [];
+
+    list.forEach(f => {
+      const ret2 = _.map(f.data.tags, 'name');
+
+      if (this.selectedTags.every(r => ret2.includes(r))) {
+        result.push(f);
+      }
+    });
+
+    return result;
+  }
+
+  private onHandleSelectedTagChanged(e) {
+    this.selectedTags = e;
   }
 
   get currentProjectCommentList() {

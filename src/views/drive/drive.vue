@@ -6,8 +6,16 @@
           class="content-container"
           :style="showComment? {width:'calc(100vw - 500px)'} : {width : '100%'}"
         >
-          <div class="category px-4 py-2">
+          <div class="category px-4 py-2" style="display:flex">
             <div class="content-title">빠른 액세스</div>
+            <a-select
+              class="ml-5 pt-1"
+              @change="onHandleSelectedTagChanged"
+              mode="multiple"
+              placeholder="Please select"
+            >
+              <a-select-option v-for="tag in project.data.tags" :key="tag.name">{{tag.name}}</a-select-option>
+            </a-select>
           </div>
           <div class="content px-4">
             <v-layout wrap class="card-container" style="width:100%" pa-2>
@@ -18,7 +26,7 @@
                 md4
                 sm6
                 xs12
-                v-for=" (file,i) in latestAccessFileList"
+                v-for=" (file,i) in latestAccessdFileList"
                 :key="i"
                 px-2
                 py-3

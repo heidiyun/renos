@@ -17,31 +17,34 @@ export default class FileCard extends Vue {
   public isOwner!: boolean;
   private enableDelete: boolean = false;
   private menu: boolean = false;
-  private tags: Array<string> = [];
-  private attachedTags: Array<string> = [];
+  @Prop()
+  private tags!: [{ name: string; color: string }];
   private defaultTags = ['design', 'resource', 'code', 'layout'];
   private inputVisible: boolean = false;
   private inputValue: string = '';
   private visibleList = false;
+  private mainTag = '';
 
   private async deleteTag(tag: string) {
-    const index = this.attachedTags.findIndex(t => {
-      return t === tag;
+    const index = this.file.data.tags.findIndex(t => {
+      return t.name === tag;
     });
-    this.tags.splice(index, 1);
+    // this.tags.splice(index, 1);
 
     this.file.data.tags.splice(index, 1);
     await this.file.saveSync();
   }
 
   private async createTag() {
-    if (this.inputValue.length <= 0) {
+    const tagName = this.inputValue;
+    this.inputValue = '';
+    if (tagName.length <= 0) {
       return;
     }
 
     let isEqual = false;
-    for (const tag of this.attachedTags) {
-      if (tag === this.inputValue) {
+    for (const tag of this.file.data.tags) {
+      if (tag.name === tagName) {
         isEqual = true;
       }
     }
@@ -49,23 +52,38 @@ export default class FileCard extends Vue {
     if (isEqual) {
       return;
     }
-
-    this.tags.push(this.inputValue);
-    this.attachedTags.push(this.inputValue);
-
-    this.file.data.tags.push(this.inputValue);
+    this.file.data.tags.push({ name: tagName, color: '', selected: false });
     await this.file.saveSync();
 
-    this.inputValue = '';
+    for (const tag of this.tags) {
+      if (tagName === tag.name) {
+        return;
+      }
+    }
+    this.$emit('added-tag', tagName);
   }
 
   private get exampleTags() {
-    return _.filter(this.tags, t => {
-      if (this.attachedTags.length === 0) return this.tags;
-      for (const tag of this.attachedTags) {
-        return t !== tag;
-      }
-    });
+    // let ret;
+    // _(this.tags).forEach(t => {
+    //   if (this.file.data.tags.length === 0){ return this.tags};
+    //   for (const tag of this.file.data.tags) {
+    //    if (t !== tag) ret.push(t);
+    //   }
+    // })
+
+    const ret: string[] = [];
+    console.log(this.tags);
+
+    this.tags
+      .filter(t => {
+        return t.name.indexOf(this.inputValue) !== -1;
+      })
+      .forEach(t => {
+        ret.push(t.name);
+      });
+
+    return ret;
   }
 
   private async onDelete() {
@@ -103,6 +121,23 @@ export default class FileCard extends Vue {
   private showComment() {
     this.$store.commit('setSelectedFile', this.file);
     this.$emit('open-comment');
+  }
+
+  private pickMainTag(tag) {
+    if (this.mainTag !== '') {
+      const index = this.file.data.tags.findIndex(t => {
+        return this.mainTag === t.name;
+      });
+      this.file.data.tags[index].selected = false;
+    }
+
+    const index = this.file.data.tags.findIndex(t => {
+      return t.name === tag.name;
+    });
+    this.mainTag = tag.name;
+
+    this.file.data.tags[index].selected = true;
+    this.file.saveSync();
   }
 
   private get fileIcon() {
@@ -178,7 +213,16 @@ export default class FileCard extends Vue {
   private mounted() {
     this.file.data.kind = this.fileIcon.kind;
     this.file.saveSync();
-    this.attachedTags = this.file.data.tags;
-    this.tags = ['design', 'code', 'flow-chart'];
+
+    if (this.file.data.tags.length >= 1 && this.file.data.tags[0].name === '') {
+      this.file.data.tags.splice(0, 1);
+      this.file.saveSync();
+    }
+
+    for (const tag of this.file.data.tags) {
+      if (tag.selected) {
+        this.mainTag = tag.name;
+      }
+    }
   }
 }

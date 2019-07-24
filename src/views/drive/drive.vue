@@ -23,7 +23,13 @@
                 px-2
                 py-3
               >
-                <file-card :file="file" :isOwner="isOwner" @open-comment="openComment"></file-card>
+                <file-card
+                  :file="file"
+                  :tags="currentTag"
+                  :isOwner="isOwner"
+                  @added-tag="addTag"
+                  @open-comment="openComment"
+                ></file-card>
               </v-flex>
             </v-layout>
           </div>

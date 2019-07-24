@@ -20,6 +20,29 @@ export default class Drive extends Vue {
   private keyNum: number = 2;
   private commentList: Array<FirestoreDocument<Comment>> = [];
   private mainTag: string = '';
+  private tags = [
+    {
+      name: 'design',
+      color: '#dddfff'
+    },
+    {
+      name: 'code',
+      color: '#cccccc'
+    },
+    {
+      name: 'flow-chart',
+      color: '#999999'
+    }
+  ];
+
+  private addTag(name: string, color: string) {
+    this.project.data.tags.push({ name, color });
+    this.project.saveSync();
+  }
+
+  private get currentTag() {
+    return this.project.data.tags;
+  }
 
   get latestAccessFileList() {
     return _(this.fileList)

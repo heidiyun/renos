@@ -20,6 +20,8 @@ export default class Drive extends Vue {
   private commentList: Array<FirestoreDocument<Comment>> = [];
   private mainTag: string = '';
   private selectedTags: string[] = [];
+  private input;
+  private isDragging = false;
 
   // private tags = [
   //   {
@@ -35,6 +37,11 @@ export default class Drive extends Vue {
   //     color: '#999999'
   //   }
   // ];
+
+  private get Dragging() {
+    console.log(this.isDragging);
+    return true;
+  }
 
   private addTag(name: string, color: string) {
     this.project.data.tags.push({ name, color });
@@ -77,6 +84,29 @@ export default class Drive extends Vue {
     });
 
     return result;
+  }
+
+  private async onChange(e) {
+    this.$progress.show();
+    const file = e.target.files[0];
+    const projectFile = Collections.files.create(ProjectFile);
+
+    const storage = new Storage(`/files/${projectFile.id}`);
+    await storage.upload(file);
+    const url = await storage.getDownloadURL();
+
+    projectFile.data.name = file.name;
+    projectFile.data.pid = this.$store.getters.currentProject.id;
+    projectFile.data.uid = this.$store.getters.user.id;
+    projectFile.data.uploadDate = new Date().toUTCString();
+    projectFile.data.fileType = file.type;
+    projectFile.data.fileURL = url;
+
+    await projectFile.saveSync();
+    this.$progress.off();
+    document.body.removeChild(this.input);
+
+    // document.body.removeChild(input);
   }
 
   private onHandleSelectedTagChanged(e) {

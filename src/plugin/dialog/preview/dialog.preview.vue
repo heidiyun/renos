@@ -15,7 +15,6 @@
     </v-layout>
     <div class="content-layout">
       <v-img class="content" contain v-if="fileType.startsWith('image')" :src="fileURL"></v-img>
-
       <video
         class="content"
         :src="fileURL"

@@ -3,6 +3,18 @@
     <v-layout>
       <v-flex>
         <div
+          id="drop-zone"
+          v-bind:class="[isDragging?'drag-over':'']"
+          v-on:dragover="isDragging=true"
+          v-on:dragenter="isDragging=true"
+          v-on:dragleave="isDragging=false"
+        >
+          <div class="text-wrap">
+            <span></span>
+          </div>
+          <input type="file" @change="onChange" multiple />
+        </div>
+        <div
           class="content-container"
           :style="showComment? {width:'calc(100vw - 500px)'} : {width : '100%'}"
         >

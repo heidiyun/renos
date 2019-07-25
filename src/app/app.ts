@@ -61,6 +61,7 @@ export default class App extends Vue {
     editor: [],
     viewer: []
   };
+  private input;
 
   private onHandleChange(e) {
     this.$router.push(`/projects/${e}`);
@@ -85,13 +86,13 @@ export default class App extends Vue {
   }
 
   private uploadFile() {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', '*/*');
-    input.style.display = 'none';
-    input.addEventListener('change', this.onChange);
-    input.click();
-    document.body.appendChild(input);
+    this.input = document.createElement('input');
+    this.input.setAttribute('type', 'file');
+    this.input.setAttribute('accept', '*/*');
+    this.input.style.display = 'none';
+    this.input.addEventListener('change', this.onChange);
+    this.input.click();
+    document.body.appendChild(this.input);
   }
 
   private async onChange(e) {
@@ -112,6 +113,7 @@ export default class App extends Vue {
 
     await projectFile.saveSync();
     this.$progress.off();
+    document.body.removeChild(this.input);
 
     // document.body.removeChild(input);
   }

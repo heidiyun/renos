@@ -18,9 +18,12 @@ export default class CommentView extends Vue {
   private userName: string | null = null;
   private date: string = '';
   private isEdited: boolean = false;
+  private enableDelete = false;
 
   private onDelete() {
-    this.comment.delete();
+    if (this.comment.data.uid === this.$store.getters.user.id) {
+      this.comment.delete();
+    }
   }
 
   private showEditInput() {
@@ -73,5 +76,9 @@ export default class CommentView extends Vue {
     this.date = moment(this.comment.data.uploadDate).format(
       'YY년MM월DD일 HH:mm'
     );
+    if (this.comment.data.uid === this.$store.getters.user.id) {
+      this.enableDelete = true;
+    }
+    
   }
 }

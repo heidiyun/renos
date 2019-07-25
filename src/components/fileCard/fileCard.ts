@@ -1,7 +1,6 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { FirestoreDocument, Storage } from '@/vue-common';
 import ProjectFile from '@/models/projectFile';
-import Bricks from 'bricks.js';
 import Opener from '../opener';
 import Collections from '@/models/collections';
 import _ from 'lodash';
@@ -134,6 +133,10 @@ export default class FileCard extends Vue {
       });
       this.file.data.tags[index].selected = false;
     }
+    if (this.mainTag === tag.name) {
+      this.mainTag = '';
+      return;
+    }
 
     const index = this.file.data.tags.findIndex(t => {
       return t.name === tag.name;
@@ -215,7 +218,6 @@ export default class FileCard extends Vue {
   }
 
   private async mounted() {
-    console.log('mounted', this.mainTag);
     this.file.data.kind = this.fileIcon.kind;
     this.file.saveSync();
     this.fileOwner = await Collections.users.load(User, this.file.data.uid);

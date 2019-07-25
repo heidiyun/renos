@@ -16,11 +16,44 @@
         <v-btn large @click.stop="uploadFile" dark color="blue">
           <v-icon class="mr-2 ml-0" color="white">add</v-icon>파일 업로드
         </v-btn>
-        <a-menu style="width: 100%;" :defaultSelectedKeys="['1']" mode="inline">
+        <!-- <a-menu style="width: 100%;" :defaultSelectedKeys="['1']" mode="inline">
           <a-menu-item key="1" @click="$store.commit('setSelectedFileType', 'all')">전체</a-menu-item>
           <a-menu-item key="2" @click="$store.commit('setSelectedFileType', 'file')">문서</a-menu-item>
           <a-menu-item key="3" @click="$store.commit('setSelectedFileType', 'image')">이미지</a-menu-item>
           <a-menu-item key="4" @click="$store.commit('setSelectedFileType', 'video')">동영상</a-menu-item>
+        </a-menu>-->
+
+        <a-menu
+          style="width: 230px"
+          :openKeys="openKeys"
+          @openChange="onOpenChange"
+          :defaultOpenKeys="['sub1']"
+          :defaultSelectedKeys="['1']"
+          mode="inline"
+        >
+          <a-sub-menu key="sub1">
+            <span slot="title">
+              <a-icon type="folder" />
+              <span>분류</span>
+            </span>
+
+            <a-menu-item key="1" @click="clickMenuItem('kind', 'all')">전체</a-menu-item>
+            <a-menu-item key="2" @click="clickMenuItem('kind', 'file')">문서</a-menu-item>
+            <a-menu-item key="3" @click="clickMenuItem('kind', 'image')">이미지</a-menu-item>
+            <a-menu-item key="4" @click="clickMenuItem('kind', 'video')">동영상</a-menu-item>
+          </a-sub-menu>
+          <a-sub-menu key="sub2">
+            <span slot="title">
+              <a-icon type="user" />
+              <span>멤버</span>
+            </span>
+
+            <a-menu-item
+              v-for="(user,i) in currentProjectMembers"
+              :key="i"
+              @click="clickMenuItem('user', null,user)"
+            >{{user.data.name}}</a-menu-item>
+          </a-sub-menu>
         </a-menu>
       </v-flex>
     </v-navigation-drawer>

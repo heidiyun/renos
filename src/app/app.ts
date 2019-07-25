@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 
 import { Vue, Component } from 'vue-property-decorator';
-import { Auth, FirestoreDocument, Storage } from '@/vue-common';
+import { Auth, FirestoreDocument, Storage, Firebase } from '@/vue-common';
 import User from '@/models/user';
 import Collections from '@/models/collections';
 import ProjectCard from '@/components/projectCard';
@@ -19,6 +19,7 @@ import DialogSimple from '@/plugin/dialog';
 import ProjectFile from '@/models/projectFile';
 import FileCard from '@/components/fileCard';
 import CommentView from '@/components/commentView';
+import FirestoreCollectionQuery from '@/vue-common/firebase/firestore/collectionQuery';
 
 Vue.use(Antd);
 Vue.use(Spinner);
@@ -34,6 +35,14 @@ Vue.component('comment-view', CommentView);
 
 @Component({})
 export default class App extends Vue {
+  private admins = [['Management', 'people_outline'], ['Settings', 'settings']];
+  private cruds = [
+    ['Create', 'add'],
+    ['Read', 'insert_drive_file'],
+    ['Update', 'update'],
+    ['Delete', 'delete']
+  ];
+
   public $refs!: {
     opener: Opener;
   };
@@ -42,6 +51,8 @@ export default class App extends Vue {
   private projectList: Array<FirestoreDocument<Project>> = [];
   private snackbarText = '';
   private snackbar = false;
+  private rootSubmenuKeys = ['sub1', 'sub2'];
+  private openKeys: string[] = ['sub1'];
   private data = ['files', 'images', 'videos'];
   private categoryGroups: {
     [key: string]: Array<FirestoreDocument<Project>>;
@@ -60,6 +71,17 @@ export default class App extends Vue {
       return '';
     }
     return this.$store.getters.currentProject.data.name;
+  }
+
+  private onOpenChange(openKeys) {
+    const latestOpenKey = openKeys.find(
+      key => this.openKeys.indexOf(key) === -1
+    );
+    if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+      this.openKeys = openKeys;
+    } else {
+      this.openKeys = latestOpenKey ? [latestOpenKey] : [];
+    }
   }
 
   private uploadFile() {
@@ -87,11 +109,39 @@ export default class App extends Vue {
     projectFile.data.uploadDate = new Date().toUTCString();
     projectFile.data.fileType = file.type;
     projectFile.data.fileURL = url;
-    
+
     await projectFile.saveSync();
     this.$progress.off();
 
     // document.body.removeChild(input);
+  }
+
+  private get currentProjectMembers() {
+    if (this.$store.getters.currentProject !== undefined) {
+      const uids = Object.keys(this.$store.getters.currentProject.data.users);
+
+      const result: Array<FirestoreDocument<User>> = [];
+      for (const uid of uids) {
+        Collections.users
+          .createQuery('uid', '==', uid)
+          .onChange(User, (user, state) => {
+            if (state === 'added') {
+              result.push(user);
+            }
+          });
+      }
+      return result;
+    }
+  }
+
+  private clickMenuItem(menu: string, fileType?: string, user?: User) {
+    if (menu === 'kind') {
+      this.$store.commit('setSelectedFileType', fileType);
+      this.$store.commit('setSelectedUser', undefined);
+    } else if (menu === 'user') {
+      this.$store.commit('setSelectedUser', user);
+      this.$store.commit('setSelectedFileType', 'all');
+    }
   }
 
   private async createProject() {
@@ -138,12 +188,12 @@ export default class App extends Vue {
     }
   }
 
-  private mounted() {
+  private async mounted() {
     // User Data Set
+
     Auth.addChangeBeforeListener('login', async u => {
       if (u !== null) {
         const exist = await Collections.users.exist(u.uid);
-
         if (exist) {
           const user = await Collections.users.load(User, u.uid);
           this.$store.commit('setUser', user);
@@ -171,7 +221,9 @@ export default class App extends Vue {
           return;
         }
 
-        // this.$router.push('/projects');
+        if (this.$route.name === 'login') {
+          this.$router.push('/projects');
+        }
 
         // Project Data Set
         Collections.projects

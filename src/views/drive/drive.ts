@@ -6,7 +6,6 @@ import User from '@/models/user';
 import ProjectFile from '@/models/projectFile';
 import _ from 'lodash';
 import Comment from '@/models/comment';
-import Bricks from 'bricks.js';
 
 @Component({})
 export default class Drive extends Vue {
@@ -21,6 +20,7 @@ export default class Drive extends Vue {
   private commentList: Array<FirestoreDocument<Comment>> = [];
   private mainTag: string = '';
   private selectedTags: string[] = [];
+
   // private tags = [
   //   {
   //     name: 'design',
@@ -55,6 +55,11 @@ export default class Drive extends Vue {
           return true;
         }
         return this.$store.getters.selectedFileType === f.data.kind;
+      })
+      .filter(f => {
+        console.log(this.$store.getters.selectedUser);
+        if (this.$store.getters.selectedUser === undefined) return true;
+        return this.$store.getters.selectedUser.id === f.data.uid;
       })
       .value();
 

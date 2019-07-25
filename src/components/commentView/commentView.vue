@@ -21,8 +21,10 @@
               <v-icon small>more_vert</v-icon>
             </v-btn>
             <a-menu slot="overlay">
-              <a-menu-item key="0" @click="onDelete">삭제</a-menu-item>
-              <a-menu-item key="1" @click="showEditInput">수정</a-menu-item>
+              <a-menu-item key="0" @click="onDelete" v-if="enableDelete">삭제</a-menu-item>
+              <a-menu-item key="0" disabled @click="onDelete" v-else>삭제</a-menu-item>
+              <a-menu-item key="1" @click="showEditInput" v-if="enableDelete">수정</a-menu-item>
+              <a-menu-item key="0" disabled @click="showEditInput" v-else>수정</a-menu-item>
             </a-menu>
           </a-dropdown>
         </div>

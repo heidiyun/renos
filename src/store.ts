@@ -14,6 +14,7 @@ export interface State {
   currentProject: FirestoreDocument<Project> | undefined;
   selectedFile: FirestoreDocument<ProjectFile> | undefined;
   selectedFileType: string | undefined;
+  selectedUser: User | undefined;
 }
 
 export default new Vuex.Store<State>({
@@ -23,7 +24,8 @@ export default new Vuex.Store<State>({
     categoryGroups: undefined,
     currentProject: undefined,
     selectedFile: undefined,
-    selectedFileType: undefined
+    selectedFileType: undefined,
+    selectedUser: undefined
   },
   mutations: {
     setUser(state, payload) {
@@ -43,6 +45,9 @@ export default new Vuex.Store<State>({
     },
     setSelectedFileType(state, payload) {
       state.selectedFileType = payload;
+    },
+    setSelectedUser(state, payload) {
+      state.selectedUser = payload;
     }
   },
   getters: {
@@ -63,6 +68,9 @@ export default new Vuex.Store<State>({
     },
     selectedFileType(state) {
       return state.selectedFileType;
+    },
+    selectedUser(state) {
+      return state.selectedUser;
     }
   }
 });

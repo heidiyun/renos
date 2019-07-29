@@ -51,6 +51,7 @@ export default class App extends Vue {
   private projectList: Array<FirestoreDocument<Project>> = [];
   private snackbarText = '';
   private snackbar = false;
+  private result: Array<FirestoreDocument<User>> = [];
   private rootSubmenuKeys = ['sub1', 'sub2'];
   private openKeys: string[] = ['sub1'];
   private data = ['files', 'images', 'videos'];
@@ -119,21 +120,7 @@ export default class App extends Vue {
   }
 
   private get currentProjectMembers() {
-    if (this.$store.getters.currentProject !== undefined) {
-      const uids = Object.keys(this.$store.getters.currentProject.data.users);
-
-      const result: Array<FirestoreDocument<User>> = [];
-      for (const uid of uids) {
-        Collections.users
-          .createQuery('uid', '==', uid)
-          .onChange(User, (user, state) => {
-            if (state === 'added') {
-              result.push(user);
-            }
-          });
-      }
-      return result;
-    }
+    return this.result;
   }
 
   private clickMenuItem(menu: string, fileType?: string, user?: User) {
@@ -192,6 +179,20 @@ export default class App extends Vue {
 
   private async mounted() {
     // User Data Set
+
+    if (this.$store.getters.currentProject !== undefined) {
+      const uids = Object.keys(this.$store.getters.currentProject.data.users);
+
+      for (const uid of uids) {
+        Collections.users
+          .createQuery('uid', '==', uid)
+          .onChange(User, (user, state) => {
+            if (state === 'added') {
+              this.result.push(user);
+            }
+          });
+      }
+    }
 
     Auth.addChangeBeforeListener('login', async u => {
       if (u !== null) {

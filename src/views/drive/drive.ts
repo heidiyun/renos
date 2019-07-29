@@ -38,9 +38,9 @@ export default class Drive extends Vue {
   //   }
   // ];
 
-  private get Dragging() {
-    console.log(this.isDragging);
-    return true;
+  private get currentIsDragging() {
+    console.log(this.isDragging); 
+    return this.isDragging;
   }
 
   private addTag(name: string, color: string) {

@@ -17,8 +17,8 @@
   }
 }
 .drag-over {
-  color: white;
-  background: blue;
+  color: blue;
+  background-color: #2881dd !important;
 }
 
 #drop-zone {
@@ -27,6 +27,7 @@
   border-radius: 10px;
   position: absolute;
   opacity: 0;
+  pointer-events: none;
 }
 
 .text-wrap {

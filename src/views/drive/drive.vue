@@ -8,6 +8,7 @@
           v-on:dragover="isDragging=true"
           v-on:dragenter="isDragging=true"
           v-on:dragleave="isDragging=false"
+          :style="{pointerEvents : isDragging ? 'all' : 'none'}"
         >
           <div class="text-wrap">
             <span></span>
@@ -31,7 +32,7 @@
             </a-select>
           </div>
           <div class="content px-4">
-            <v-layout wrap class="card-container" style="width:100%" pa-2>
+            <v-layout wrap class="card-container" style="width:100%" pa-2 mb-5>
               <v-flex
                 style="width=325px; height : 300px;"
                 xl2

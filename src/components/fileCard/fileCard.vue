@@ -5,9 +5,25 @@
         <v-icon small color="white">more_vert</v-icon>
       </v-btn>
       <a-menu slot="overlay">
-        <a-menu-item key="0" @click="onDelete" v-if="enableDelete">삭제</a-menu-item>
-        <a-menu-item key="0" disabled @click="onDelete" v-else>삭제</a-menu-item>
+        <a-menu-item key="0" @click="onDelete" :disabled="enableDelete ? false:true ">삭제</a-menu-item>
         <a-menu-item key="1" @click="showComment">댓글 달기</a-menu-item>
+        <a-menu-item
+          key="2"
+          v-if="!file.data.pins[$store.getters.user.id]"
+          @click=" addBookmark"
+        >보관함에 추가</a-menu-item>
+        <a-menu-item key="2" v-else @click="removeBookmark">보관함에서 삭제</a-menu-item>
+        <a-menu-item
+          key="3"
+          @click="addMaterialDocument"
+          v-if="!file.data.isMaterialDocument"
+        >중요 문서함에 추가</a-menu-item>
+        <a-menu-item
+          key="3"
+          v-else
+          :disabled="file.data.ownerMaterialDocument === $store.getters.user.id ? false : true"
+          @click="removeMaterialDocument"
+        >중요 문서함에서 삭제</a-menu-item>
       </a-menu>
     </a-dropdown>
 
@@ -86,7 +102,7 @@
                 :color="tag.color"
               >{{`${tag.name.slice(0, 20)}...`}}</a-tag>
             </a-tooltip>
-            <a-tag :color="tag.selected ? tag.color : ''" class="mb-2">
+            <a-tag :color="tag.color" class="mb-2">
               {{tag.name}}
               <a-icon @click.stop="deleteTag(tag.name)" type="close" />
             </a-tag>

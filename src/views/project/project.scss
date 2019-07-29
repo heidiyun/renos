@@ -82,7 +82,6 @@
   // }
 
   .project-card-container {
-
     @include screen-xl {
       height: 16vw;
       padding: 32px;
@@ -92,7 +91,6 @@
       height: 20vw;
       padding: 20px;
       margin-bottom: 12px;
-
     }
 
     @include screen-md {

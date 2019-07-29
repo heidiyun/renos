@@ -16,6 +16,7 @@ export interface State {
   selectedFileType: string | undefined;
   selectedUser: User | undefined;
   projectMembers: User | undefined;
+  selectedMenu: string | undefined;
 }
 
 export default new Vuex.Store<State>({
@@ -27,7 +28,8 @@ export default new Vuex.Store<State>({
     selectedFile: undefined,
     selectedFileType: undefined,
     selectedUser: undefined,
-    projectMembers: undefined
+    projectMembers: undefined,
+    selectedMenu: undefined
   },
   mutations: {
     setUser(state, payload) {
@@ -53,6 +55,9 @@ export default new Vuex.Store<State>({
     },
     setProjectMembers(state, payload) {
       state.projectMembers = payload;
+    },
+    setSelectedMenu(state, payload) {
+      state.selectedMenu = payload;
     }
   },
   getters: {
@@ -79,6 +84,9 @@ export default new Vuex.Store<State>({
     },
     projectMembers(state) {
       return state.projectMembers;
+    },
+    selectedMenu(state) {
+      return state.selectedMenu;
     }
   }
 });

@@ -90,12 +90,20 @@ export default class Drive extends Vue {
         if (this.$store.getters.selectedUser === undefined) return true;
         return this.$store.getters.selectedUser.id === f.data.uid;
       })
+      .filter(f => {
+        if (this.$store.getters.selectedMenu === undefined) {
+          return true;
+        }
+        if (this.$store.getters.selectedMenu === 'material') {
+          return f.data.isMaterialDocument === true;
+        } else if (this.$store.getters.selectedMenu === 'bookmark') {
+          return f.data.pins[this.$store.getters.user.id];
+        }
+        return true;
+      })
       .value();
 
-    console.log(this.alignmentKeys.order);
-
     if (this.alignmentKeys.order === 'dsc') {
-      console.log('aldkj;afkl');
       list.reverse();
     }
 
@@ -116,6 +124,7 @@ export default class Drive extends Vue {
   }
 
   private async onChange(e) {
+    this.isDragging = false;
     this.$progress.show();
     const file = e.target.files[0];
     const projectFile = Collections.files.create(ProjectFile);

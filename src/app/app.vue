@@ -51,10 +51,16 @@
 
             <a-menu-item
               v-for="(user,i) in currentProjectMembers"
-              :key="i"
+              :key="i+4"
               @click="clickMenuItem('user', null,user)"
             >{{user.data.name}}</a-menu-item>
           </a-sub-menu>
+          <a-menu-item key="10" @click="clickMenuItem('material')">
+            <a-icon type="star" />중요
+          </a-menu-item>
+          <a-menu-item key="11" @click="clickMenuItem('bookmark')">
+            <a-icon type="inbox" />보관함
+          </a-menu-item>
         </a-menu>
       </v-flex>
     </v-navigation-drawer>

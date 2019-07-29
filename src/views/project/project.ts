@@ -57,8 +57,7 @@ export default class ProjectPage extends Vue {
 
   private get pinContainerHeight() {
     if (this.currentPinnedProjectList.length === 0) {
-      console.log('c');
-      return;
+      return '0px';
     }
 
     if (!this.showAll) {

@@ -8,12 +8,11 @@
           v-on:dragover="isDragging=true"
           v-on:dragenter="isDragging=true"
           v-on:dragleave="isDragging=false"
-          :style="{pointerEvents : isDragging ? 'all' : 'none'}"
         >
           <div class="text-wrap">
             <span></span>
-          </div>
-          <input type="file" @change="onChange" multiple />
+          </div> 
+          <input type="file" @click.stop.prevent @change="onChange" multiple />
         </div>
         <div
           class="content-container"

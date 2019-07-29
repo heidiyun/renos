@@ -98,6 +98,29 @@ export default class FileCard extends Vue {
     });
   }
 
+  private addBookmark() {
+    this.file.data.pins[this.$store.getters.user.id] = true;
+    this.file.saveSync();
+  }
+
+  private removeBookmark() {
+    console.log('remove');
+    this.file.data.pins[this.$store.getters.user.id] = false;
+    this.file.saveSync();
+  }
+
+  private addMaterialDocument() {
+    this.file.data.isMaterialDocument = true;
+    this.file.data.ownerMaterialDocument = this.$store.getters.user.id;
+    this.file.saveSync();
+  }
+
+  private removeMaterialDocument() {
+    this.file.data.isMaterialDocument = false;
+    this.file.data.ownerMaterialDocument = '';
+    this.file.saveSync();
+  }
+
   private async onDelete() {
     this.$progress.show();
     await this.file.delete();

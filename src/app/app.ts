@@ -142,12 +142,15 @@ export default class App extends Vue {
   }
 
   private clickMenuItem(menu: string, fileType?: string, user?: User) {
+    this.$store.commit('setSelectedMenu', undefined);
+    this.$store.commit('setSelectedFileType', 'all');
+    this.$store.commit('setSelectedUser', undefined);
     if (menu === 'kind') {
       this.$store.commit('setSelectedFileType', fileType);
-      this.$store.commit('setSelectedUser', undefined);
     } else if (menu === 'user') {
       this.$store.commit('setSelectedUser', user);
-      this.$store.commit('setSelectedFileType', 'all');
+    } else {
+      this.$store.commit('setSelectedMenu', menu);
     }
   }
 
@@ -200,7 +203,6 @@ export default class App extends Vue {
 
   private async mounted() {
     // User Data Set
-
     Auth.addChangeBeforeListener('login', async u => {
       if (u !== null) {
         const exist = await Collections.users.exist(u.uid);

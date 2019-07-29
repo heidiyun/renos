@@ -37,6 +37,10 @@ export default class FileCard extends Vue {
     await this.file.saveSync();
   }
 
+  private removeProjectTag(tag) {
+    this.$emit('remove-tag', tag);
+  }
+
   private async createTag(tagName: string, color?: string) {
     // const tagName = this.inputValue;
     this.visibleList = false;

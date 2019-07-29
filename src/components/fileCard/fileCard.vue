@@ -45,8 +45,26 @@
                 </a-tooltip>
                 <a-tag :closable="false" :color="item.color">{{item.name}}</a-tag>
                 <v-spacer></v-spacer>
-                <div @click.stop="is=!is" class="mr-2 pl-2 list-detail-menu-container">
-                  <a-icon class="list-detail-menu" type="ellipsis" />
+                <div
+                  @click.stop="is=!is"
+                  class="mr-2 pl-2 list-detail-menu-container"
+                  v-if="role === 'supervisor'"
+                >
+                  <v-menu offset-x>
+                    <template v-slot:activator="{ on }">
+                      <v-btn icon v-on="on" small class="ma-0">
+                        <a-icon class="list-detail-menu" type="ellipsis" />
+                      </v-btn>
+                    </template>
+                    <a-list
+                      size="small"
+                      bordered
+                      style="z-index:10; background:white; cursor:pointer"
+                      @click
+                    >
+                      <a-list-item @click="removeProjectTag(item)">삭제</a-list-item>
+                    </a-list>
+                  </v-menu>
                 </div>
               </a-list-item>
             </a-list>

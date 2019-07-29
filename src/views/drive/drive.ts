@@ -48,6 +48,15 @@ export default class Drive extends Vue {
     return this.isDragging;
   }
 
+  private removeTag(tag) {
+    console.log('removejf;lak');
+    const index = this.project.data.tags.findIndex(t => {
+      return t.name === tag.name;
+    });
+    this.project.data.tags.splice(index, 1);
+    this.project.saveSync();
+  }
+
   private addTag(name: string, color: string) {
     this.project.data.tags.push({ name, color });
     this.project.saveSync();

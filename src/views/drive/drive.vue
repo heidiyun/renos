@@ -19,17 +19,71 @@
           class="content-container"
           :style="showComment? {width:'calc(100vw - 500px)'} : {width : '100%'}"
         >
-          <div class="category px-4 py-2" style="display:flex">
-            <div class="content-title">빠른 액세스</div>
+          <div class="category px-3 pt-2" style="display:flex">
+            <div class="content-title"></div>
+            <a-input-group compact class="mt-3 ml-4" style="width:fit-content;">
+              <a-select labelInValue :defaultValue="{ key: 'tag' }" style="width: 120px">
+                <a-select-option value="tag">태그</a-select-option>
+                <a-select-option value="user">사용자</a-select-option>
+              </a-select>
+              <a-select
+                @change="onHandleSelectedTagChanged"
+                mode="multiple"
+                placeholder="tag select"
+                color="blue"
+                style="min-width:200px; max-width:fit-content;"
+              >
+                <a-select-option
+                  style="background:green;"
+                  v-for="tag in project.data.tags"
+                  :key="tag.name"
+                >
+                  <a-tag :color="tag.color">{{tag.name}}</a-tag>
+                </a-select-option>
+              </a-select>
+            </a-input-group>
 
-            <a-select
-              class="ml-5 pt-1"
-              @change="onHandleSelectedTagChanged"
-              mode="multiple"
-              placeholder="Please select"
+            <!-- <v-btn
+              v-if="role==='supervisor'"
+              flat
+              class="mx-3"
+              style="margin-top:12px;"
+              @click="on = !on"
             >
-              <a-select-option v-for="tag in project.data.tags" :key="tag.name">{{tag.name}}</a-select-option>
-            </a-select>
+              <a-icon type="user-add" />멤버관리
+            </v-btn>-->
+
+            <v-spacer></v-spacer>
+
+            <div style="display:flex; margin-top:12px" class="text-center mx-3">
+              <v-menu bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    class="ma-0"
+                    style="width:fit-content"
+                    flat
+                    v-on="on"
+                  >{{alignmentKey === 'name' ? '이름' : '업로드 시간'}}</v-btn>
+                </template>
+                <a-list
+                  size="small"
+                  bordered
+                  :dataSource="alignmentKeys.name"
+                  style="z-index:10; background:white; cursor:pointer"
+                >
+                  <a-list-item
+                    slot="renderItem"
+                    slot-scope="item, index"
+                    @click="alignmentKey= item === '이름' ? 'name' : 'uploadDate'"
+                  >{{item}}</a-list-item>
+                </a-list>
+              </v-menu>
+
+              <v-btn icon @click="changeAlignmentOrder" class="ma-0">
+                <v-icon small v-if="alignmentKeys.order === 'dsc'">arrow_downward</v-icon>
+                <v-icon small v-else>arrow_upward</v-icon>
+              </v-btn>
+            </div>
           </div>
           <div class="content px-4">
             <v-layout wrap class="card-container" style="width:100%" pa-2 mb-5>
@@ -48,7 +102,7 @@
                 <file-card
                   :file="file"
                   :tags="currentTag"
-                  :isOwner="isOwner"
+                  :role="role"
                   @added-tag="addTag"
                   @open-comment="openComment"
                 ></file-card>

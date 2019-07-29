@@ -32,14 +32,18 @@
             <a-list size="small" :dataSource="exampleTags">
               <a-list-item
                 class="list-item pl-4"
-                @click.stop="createTag(item)"
+                @click.stop="createTag(item.name, item.color === undefined ? undefined : item.color)"
                 slot="renderItem"
                 slot-scope="item, index"
               >
-                <a-tooltip v-if="item.length > 20" :key="item" :title="item">
-                  <a-tag :key="item" :closable="true" color="blue">{{`${tag.slice(0, 20)}...`}}</a-tag>
+                <a-tooltip v-if="item.length > 20" :key="item" :title="item.name">
+                  <a-tag
+                    :key="item"
+                    :closable="true"
+                    :color="item.color"
+                  >{{`${item.name.slice(0, 20)}...`}}</a-tag>
                 </a-tooltip>
-                <a-tag :closable="false" color="blue">{{item}}</a-tag>
+                <a-tag :closable="false" :color="item.color">{{item.name}}</a-tag>
                 <v-spacer></v-spacer>
                 <div @click.stop="is=!is" class="mr-2 pl-2 list-detail-menu-container">
                   <a-icon class="list-detail-menu" type="ellipsis" />
@@ -61,9 +65,10 @@
                 :key="tag"
                 :afterClose="() => deleteTag(tag)"
                 :closable="true"
+                :color="tag.color"
               >{{`${tag.name.slice(0, 20)}...`}}</a-tag>
             </a-tooltip>
-            <a-tag :color="tag.selected ? 'blue':''" class="mb-2">
+            <a-tag :color="tag.selected ? tag.color : ''" class="mb-2">
               {{tag.name}}
               <a-icon @click.stop="deleteTag(tag.name)" type="close" />
             </a-tag>

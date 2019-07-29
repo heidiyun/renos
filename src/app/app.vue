@@ -13,9 +13,10 @@
         <div class="logo-container">
           <span class="logo" @click="$router.push('/projects')">RENOS</span>
         </div>
-        <v-btn large @click.stop="uploadFile" dark color="blue">
+        <v-btn large @click.stop="uploadFile" dark color="blue" v-if="currentRoleOfUser">
           <v-icon class="mr-2 ml-0" color="white">add</v-icon>파일 업로드
         </v-btn>
+
         <!-- <a-menu style="width: 100%;" :defaultSelectedKeys="['1']" mode="inline">
           <a-menu-item key="1" @click="$store.commit('setSelectedFileType', 'all')">전체</a-menu-item>
           <a-menu-item key="2" @click="$store.commit('setSelectedFileType', 'file')">문서</a-menu-item>

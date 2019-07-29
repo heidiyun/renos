@@ -10,7 +10,7 @@ import Comment from '@/models/comment';
 @Component({})
 export default class Drive extends Vue {
   private members: Array<FirestoreDocument<User>> = [];
-  private isOwner: boolean = false;
+  private role: string = '';
   private project: FirestoreDocument<Project> = Collections.projects.create(
     Project
   );
@@ -22,6 +22,11 @@ export default class Drive extends Vue {
   private selectedTags: string[] = [];
   private input;
   private isDragging = false;
+  private alignmentKey = 'name';
+  private alignmentKeys = {
+    name: ['이름', '업로드 시간'],
+    order: 'asc'
+  };
 
   // private tags = [
   //   {
@@ -52,10 +57,18 @@ export default class Drive extends Vue {
     return this.project.data.tags;
   }
 
+  private changeAlignmentOrder() {
+    if (this.alignmentKeys.order === 'asc') {
+      this.alignmentKeys.order = 'dsc';
+    } else {
+      this.alignmentKeys.order = 'asc';
+    }
+  }
+
   get latestAccessdFileList() {
     const list = _(this.fileList)
       .sortBy(f => {
-        return f.data.name;
+        return f.data[this.alignmentKey];
       })
       .filter(f => {
         if (this.$store.getters.selectedFileType === 'all') {
@@ -69,6 +82,13 @@ export default class Drive extends Vue {
         return this.$store.getters.selectedUser.id === f.data.uid;
       })
       .value();
+
+    console.log(this.alignmentKeys.order);
+
+    if (this.alignmentKeys.order === 'dsc') {
+      console.log('aldkj;afkl');
+      list.reverse();
+    }
 
     if (this.selectedTags.length <= 0) {
       return list;
@@ -150,14 +170,14 @@ export default class Drive extends Vue {
     const users: Array<FirestoreDocument<User>> = [];
 
     for (const key of keys) {
-      if (this.project.data.users[key] === 'supervisor') {
-        if (key === this.$store.getters.user.id) {
-          this.isOwner = true;
-        }
+      if (key === this.$store.getters.user.id) {
+        this.role = this.project.data.users[key];
       }
+
       users.push(await Collections.users.load(User, key));
     }
     this.members = users;
+    this.$store.commit('setProjectMembers', this.members);
 
     this.fileList = [];
 
@@ -194,15 +214,6 @@ export default class Drive extends Vue {
           this.commentList.splice(index, 1, comment);
         }
       });
-
-    const uids = Object.keys(this.project.data.users);
-
-    const members: Array<FirestoreDocument<User>> = [];
-    for (const uid of uids) {
-      members.push(await Collections.users.load(User, uid));
-    }
-
-    this.$store.commit('setProjectMembers', members);
   }
 
   private async mounted() {

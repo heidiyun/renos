@@ -125,6 +125,22 @@ export default class App extends Vue {
     }
   }
 
+  private get currentRoleOfUser() {
+    if (this.$store.getters.currentProject === undefined) {
+      return false;
+    }
+
+    if (
+      this.$store.getters.currentProject.data.users[
+        this.$store.getters.user.id
+      ] === 'viewer'
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   private clickMenuItem(menu: string, fileType?: string, user?: User) {
     if (menu === 'kind') {
       this.$store.commit('setSelectedFileType', fileType);
@@ -156,6 +172,9 @@ export default class App extends Vue {
       `defaults/${Math.floor(Math.random() * 20) + 1}.jpg`
     );
     project.data.imageURL = await storage.getDownloadURL();
+    project.data.tags.push({ name: 'design', color: '#D81B60' });
+    project.data.tags.push({ name: 'code', color: '#8E24AA' });
+    project.data.tags.push({ name: 'flow-chart', color: '#E53935' });
 
     project.saveSync();
   }
@@ -181,22 +200,6 @@ export default class App extends Vue {
 
   private async mounted() {
     // User Data Set
-
-    if (this.$store.getters.currentProject !== undefined) {
-      const uids = Object.keys(this.$store.getters.currentProject.data.users);
-
-      const result: Array<FirestoreDocument<User>> = [];
-      for (const uid of uids) {
-        Collections.users
-          .createQuery('uid', '==', uid)
-          .onChange(User, (user, state) => {
-            if (state === 'added') {
-              result.push(user);
-            }
-          });
-      }
-      return result;
-    }
 
     Auth.addChangeBeforeListener('login', async u => {
       if (u !== null) {

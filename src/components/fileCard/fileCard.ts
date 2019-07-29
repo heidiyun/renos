@@ -14,7 +14,7 @@ export default class FileCard extends Vue {
   @Prop()
   public file!: FirestoreDocument<ProjectFile>;
   @Prop()
-  public isOwner!: boolean;
+  public role!: string;
   private enableDelete: boolean = false;
   private menu: boolean = false;
   @Prop()
@@ -37,7 +37,7 @@ export default class FileCard extends Vue {
     await this.file.saveSync();
   }
 
-  private async createTag(tagName: string) {
+  private async createTag(tagName: string, color?: string) {
     // const tagName = this.inputValue;
     this.visibleList = false;
     this.inputValue = '';
@@ -55,15 +55,29 @@ export default class FileCard extends Vue {
     if (isEqual) {
       return;
     }
-    this.file.data.tags.push({ name: tagName, color: '', selected: false });
-    await this.file.saveSync();
+
+    isEqual = false;
 
     for (const tag of this.tags) {
       if (tagName === tag.name) {
-        return;
+        isEqual = true;
+        color = tag.color;
       }
     }
-    this.$emit('added-tag', tagName);
+
+    const tagColor = '#' + ((Math.random() * 0xffffff) << 0).toString(16);
+    this.file.data.tags.push({
+      name: tagName,
+      color: color === undefined ? tagColor : color,
+      selected: false
+    });
+    await this.file.saveSync();
+
+    if (isEqual) {
+      return;
+    }
+
+    this.$emit('added-tag', tagName, tagColor);
   }
 
   private get exampleTags() {
@@ -75,18 +89,9 @@ export default class FileCard extends Vue {
     //   }
     // })
 
-    const ret: string[] = [];
-    console.log(this.tags);
-
-    this.tags
-      .filter(t => {
-        return t.name.indexOf(this.inputValue) !== -1;
-      })
-      .forEach(t => {
-        ret.push(t.name);
-      });
-
-    return ret;
+    return this.tags.filter(t => {
+      return t.name.indexOf(this.inputValue) !== -1;
+    });
   }
 
   private async onDelete() {
@@ -101,7 +106,10 @@ export default class FileCard extends Vue {
   }
 
   private isAuthorized() {
-    if (this.file.data.uid === this.$store.getters.user.id || this.isOwner) {
+    if (
+      this.file.data.uid === this.$store.getters.user.id ||
+      this.role === 'supervisor'
+    ) {
       this.enableDelete = true;
       return;
     } else {

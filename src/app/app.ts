@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import { Auth, FirestoreDocument, Storage, Firebase } from '@/vue-common';
 import User from '@/models/user';
 import Collections from '@/models/collections';
@@ -120,7 +120,9 @@ export default class App extends Vue {
   }
 
   private get currentProjectMembers() {
-    return this.result;
+    if (this.$store.getters.projectMembers !== undefined) {
+      return this.$store.getters.projectMembers;
+    }
   }
 
   private clickMenuItem(menu: string, fileType?: string, user?: User) {
@@ -183,15 +185,17 @@ export default class App extends Vue {
     if (this.$store.getters.currentProject !== undefined) {
       const uids = Object.keys(this.$store.getters.currentProject.data.users);
 
+      const result: Array<FirestoreDocument<User>> = [];
       for (const uid of uids) {
         Collections.users
           .createQuery('uid', '==', uid)
           .onChange(User, (user, state) => {
             if (state === 'added') {
-              this.result.push(user);
+              result.push(user);
             }
           });
       }
+      return result;
     }
 
     Auth.addChangeBeforeListener('login', async u => {

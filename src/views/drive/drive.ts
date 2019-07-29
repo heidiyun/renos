@@ -39,7 +39,7 @@ export default class Drive extends Vue {
   // ];
 
   private get currentIsDragging() {
-    console.log(this.isDragging); 
+    console.log(this.isDragging);
     return this.isDragging;
   }
 
@@ -194,6 +194,15 @@ export default class Drive extends Vue {
           this.commentList.splice(index, 1, comment);
         }
       });
+
+    const uids = Object.keys(this.project.data.users);
+
+    const members: Array<FirestoreDocument<User>> = [];
+    for (const uid of uids) {
+      members.push(await Collections.users.load(User, uid));
+    }
+
+    this.$store.commit('setProjectMembers', members);
   }
 
   private async mounted() {

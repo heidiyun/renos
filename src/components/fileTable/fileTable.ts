@@ -12,7 +12,8 @@ export default class FileTable extends Vue {
   private columns = [
     {
       title: '이름',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      width: '600px'
     },
     {
       title: '소유자',
@@ -32,7 +33,6 @@ export default class FileTable extends Vue {
           userName = user.data.name;
         }
       }
-
       return {
         name: f.data.name,
         userName: userName,

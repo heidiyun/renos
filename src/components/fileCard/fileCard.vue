@@ -1,5 +1,10 @@
 <template>
-  <v-card class="c-layout round" height="100%" flat @dblclick="showPreview">
+  <v-card
+    class="c-layout round"
+    height="100%"
+    flat
+    @dblclick="showPreview"
+  >
     <a-dropdown :trigger="['click']" v-if="!menu">
       <v-btn icon small class="more-icon" @click="isAuthorized">
         <v-icon small color="white">more_vert</v-icon>
@@ -144,7 +149,7 @@
             <a-tag
               v-if="currentFileMainTag===''"
               @click.stop="menu = !menu"
-              @dblclick.stop
+              @dbclick.stop
               style="float:right; background: #fff; borderStyle: dashed;"
             >
               <a-icon small type="plus" />Tag

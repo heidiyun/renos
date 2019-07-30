@@ -10,6 +10,7 @@ import User from '@/models/user';
 export default class FileCard extends Vue {
   public $refs!: {
     opener: Opener;
+    tagOpener: Opener;
   };
   @Prop()
   public file!: FirestoreDocument<ProjectFile>;

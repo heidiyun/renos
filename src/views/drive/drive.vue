@@ -55,8 +55,8 @@
             <v-spacer></v-spacer>
 
             <div style="display:flex; margin-top:12px" class="text-center mx-3">
-              <v-btn icon class="ma-0" @click="isTable = !isTable">
-                <a-icon :type="isTable ? 'appstore' : 'table' " />
+              <v-btn icon class="ma-0" @click="changeFileDisplayWay">
+                <a-icon :type="project.data.displayWay === 'table' ? 'appstore' : 'table' " />
               </v-btn>
               <div style="display:flex; ">
                 <v-menu bottom>
@@ -90,7 +90,14 @@
             </div>
           </div>
           <div class="content px-4">
-            <v-layout wrap class="card-container" style="width:100%;" pa-2 mb-5 v-if="!isTable">
+            <v-layout
+              wrap
+              class="card-container"
+              style="width:100%;"
+              pa-2
+              mb-5
+              v-if="project.data.displayWay === 'table'"
+            >
               <v-flex
                 style="width=325px; height : 300px;"
                 xl2

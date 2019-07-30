@@ -7,7 +7,6 @@ export default class DiadlogPreview extends Vue {
   private fileURL: string = '';
   private show: boolean = false;
 
-
   public on(fileName: string, fileType: string, fileURL: string) {
     this.show = true;
     this.fileName = fileName;

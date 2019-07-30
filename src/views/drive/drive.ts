@@ -31,6 +31,12 @@ export default class Drive extends Vue {
     return this.isDragging;
   }
 
+  private changeFileDisplayWay() {
+    this.project.data.displayWay =
+      this.project.data.displayWay === 'card' ? 'table' : 'card';
+    this.project.save();
+  }
+
   private removeTag(tag) {
     const index = this.project.data.tags.findIndex(t => {
       return t.name === tag.name;
@@ -45,6 +51,28 @@ export default class Drive extends Vue {
   }
 
   private get currentTag() {
+    this.project.data.tags.forEach(t => {
+      let hasTag = false;
+      if (t.name === 'design' || t.name === 'flow-chart' || t.name === 'code') {
+        hasTag = true;
+      }
+      this.fileList.forEach(f => {
+        f.data.tags.forEach(tag => {
+          if (tag.name === t.name) {
+            hasTag = true;
+          }
+        });
+      });
+
+      if (!hasTag) {
+        const index = this.project.data.tags.findIndex(tag => {
+          return t.name === tag.name;
+        });
+        this.project.data.tags.splice(index, 1);
+        this.project.save();
+      }
+    });
+
     return this.project.data.tags;
   }
 
@@ -89,7 +117,6 @@ export default class Drive extends Vue {
     }
 
     if (this.selectedTags.length <= 0) {
-      console.log(list);
       return list;
     }
     const result: Array<FirestoreDocument<ProjectFile>> = [];
@@ -101,7 +128,6 @@ export default class Drive extends Vue {
         result.push(f);
       }
     });
-
     return result;
   }
 

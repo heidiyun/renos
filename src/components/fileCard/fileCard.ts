@@ -104,7 +104,6 @@ export default class FileCard extends Vue {
   }
 
   private removeBookmark() {
-    console.log('remove');
     this.file.data.pins[this.$store.getters.user.id] = false;
     this.file.saveSync();
   }
@@ -182,6 +181,17 @@ export default class FileCard extends Vue {
     this.file.saveSync();
   }
 
+  private get currentFileMainTag() {
+    this.mainTag = '';
+    for (const tag of this.file.data.tags) {
+      if (tag.selected) {
+        this.mainTag = tag.name;
+      }
+    }
+
+    return this.mainTag;
+  }
+
   private get fileIcon() {
     // TODO 확장자 추가 or로 달고 image는 필요없음.
     const fileExtension = this.file.data.name.split('.');
@@ -256,16 +266,11 @@ export default class FileCard extends Vue {
     this.file.data.kind = this.fileIcon.kind;
     this.file.saveSync();
     this.fileOwner = await Collections.users.load(User, this.file.data.uid);
+    console.log(this.file.data.kind);
 
     if (this.file.data.tags.length >= 1 && this.file.data.tags[0].name === '') {
       this.file.data.tags.splice(0, 1);
       this.file.saveSync();
-    }
-
-    for (const tag of this.file.data.tags) {
-      if (tag.selected) {
-        this.mainTag = tag.name;
-      }
     }
   }
 }

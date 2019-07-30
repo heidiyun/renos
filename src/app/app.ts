@@ -20,6 +20,7 @@ import ProjectFile from '@/models/projectFile';
 import FileCard from '@/components/fileCard';
 import CommentView from '@/components/commentView';
 import FirestoreCollectionQuery from '@/vue-common/firebase/firestore/collectionQuery';
+import FileTable from '@/components/fileTable';
 
 Vue.use(Antd);
 Vue.use(Spinner);
@@ -32,6 +33,7 @@ Vue.component('progress-bar', ProgressBar);
 Vue.component('progress-mini', ProgressMini);
 Vue.component('file-card', FileCard);
 Vue.component('comment-view', CommentView);
+Vue.component('file-table', FileTable);
 
 @Component({})
 export default class App extends Vue {
@@ -99,6 +101,7 @@ export default class App extends Vue {
   private async onChange(e) {
     this.$progress.show();
     const file = e.target.files[0];
+    console.log(file);
     const projectFile = Collections.files.create(ProjectFile);
 
     const storage = new Storage(`/files/${projectFile.id}`);
@@ -111,12 +114,37 @@ export default class App extends Vue {
     projectFile.data.uploadDate = new Date().toUTCString();
     projectFile.data.fileType = file.type;
     projectFile.data.fileURL = url;
+    projectFile.data.fileSize = this.getReadableFileSizeString(file.size);
 
     await projectFile.saveSync();
     this.$progress.off();
     document.body.removeChild(this.input);
 
     // document.body.removeChild(input);
+  }
+
+  private getReadableFileSizeString(fileSizeInBytes) {
+    let i = 0;
+    const byteUnits = [
+      '바이트',
+      'KB',
+      ' MB',
+      ' GB',
+      ' TB',
+      'PB',
+      'EB',
+      'ZB',
+      'YB'
+    ];
+    if (fileSizeInBytes <= 1024) {
+    } else {
+      do {
+        fileSizeInBytes = fileSizeInBytes / 1024;
+        i++;
+      } while (fileSizeInBytes > 1024);
+    }
+
+    return Math.max(fileSizeInBytes, 0).toFixed(0) + byteUnits[i];
   }
 
   private get currentProjectMembers() {

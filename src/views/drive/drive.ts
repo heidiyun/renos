@@ -18,38 +18,20 @@ export default class Drive extends Vue {
   private showComment: boolean = false;
   private keyNum: number = 2;
   private commentList: Array<FirestoreDocument<Comment>> = [];
-  private mainTag: string = '';
   private selectedTags: string[] = [];
-  private input;
   private isDragging = false;
   private alignmentKey = 'name';
+  private isTable = false;
   private alignmentKeys = {
     name: ['이름', '업로드 시간'],
     order: 'asc'
   };
 
-  // private tags = [
-  //   {
-  //     name: 'design',
-  //     color: '#dddfff'
-  //   },
-  //   {
-  //     name: 'code',
-  //     color: '#cccccc'
-  //   },
-  //   {
-  //     name: 'flow-chart',
-  //     color: '#999999'
-  //   }
-  // ];
-
   private get currentIsDragging() {
-    console.log(this.isDragging);
     return this.isDragging;
   }
 
   private removeTag(tag) {
-    console.log('removejf;lak');
     const index = this.project.data.tags.findIndex(t => {
       return t.name === tag.name;
     });
@@ -86,7 +68,6 @@ export default class Drive extends Vue {
         return this.$store.getters.selectedFileType === f.data.kind;
       })
       .filter(f => {
-        console.log(this.$store.getters.selectedUser);
         if (this.$store.getters.selectedUser === undefined) return true;
         return this.$store.getters.selectedUser.id === f.data.uid;
       })
@@ -108,6 +89,7 @@ export default class Drive extends Vue {
     }
 
     if (this.selectedTags.length <= 0) {
+      console.log(list);
       return list;
     }
     const result: Array<FirestoreDocument<ProjectFile>> = [];
@@ -139,12 +121,56 @@ export default class Drive extends Vue {
     projectFile.data.uploadDate = new Date().toUTCString();
     projectFile.data.fileType = file.type;
     projectFile.data.fileURL = url;
+    projectFile.data.fileSize = this.getReadableFileSizeString(file.size);
 
     await projectFile.saveSync();
     this.$progress.off();
-    document.body.removeChild(this.input);
+  }
 
-    // document.body.removeChild(input);
+  private getReadableFileSizeString(fileSizeInBytes) {
+    let i = 0;
+    const byteUnits = [
+      '바이트',
+      'KB',
+      ' MB',
+      ' GB',
+      ' TB',
+      'PB',
+      'EB',
+      'ZB',
+      'YB'
+    ];
+    if (fileSizeInBytes <= 1024) {
+    } else {
+      do {
+        fileSizeInBytes = fileSizeInBytes / 1024;
+        i++;
+      } while (fileSizeInBytes > 1024);
+    }
+
+    return Math.max(fileSizeInBytes, 0).toFixed(0) + byteUnits[i];
+  }
+
+  private get currentProjectMembers() {
+    if (this.$store.getters.projectMembers !== undefined) {
+      return this.$store.getters.projectMembers;
+    }
+  }
+
+  private get currentRoleOfUser() {
+    if (this.$store.getters.currentProject === undefined) {
+      return false;
+    }
+
+    if (
+      this.$store.getters.currentProject.data.users[
+        this.$store.getters.user.id
+      ] === 'viewer'
+    ) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   private onHandleSelectedTagChanged(e) {

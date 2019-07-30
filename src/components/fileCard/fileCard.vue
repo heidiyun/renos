@@ -142,7 +142,7 @@
           <div style="font-size:13px; display:inline;" class="pl-1">
             {{fileOwner.data.name}}
             <a-tag
-              v-if="mainTag===''"
+              v-if="currentFileMainTag===''"
               @click.stop="menu = !menu"
               @dblclick.stop
               style="float:right; background: #fff; borderStyle: dashed;"

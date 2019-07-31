@@ -3,6 +3,7 @@ import User from './user';
 import ProjectFile from './projectFile';
 import Comment from './comment';
 import Project from './project';
+import ActivityBoard from './activityBoard';
 
 export default class Collections {
   public static readonly users: FirestoreCollection<
@@ -18,4 +19,8 @@ export default class Collections {
   public static readonly comments: FirestoreCollection<
     Comment
   > = new FirestoreCollection('/comments');
+
+  public static readonly activityBoards: FirestoreCollection<
+    ActivityBoard
+  > = new FirestoreCollection('/activities');
 }

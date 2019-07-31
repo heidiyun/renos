@@ -61,6 +61,9 @@
           <a-menu-item key="11" @click="clickMenuItem('bookmark')">
             <a-icon type="inbox" />보관함
           </a-menu-item>
+          <a-menu-item key="12" @click="clickMenuItem('activity-board')">
+            <a-icon type="notification" />활동보드
+          </a-menu-item>
         </a-menu>
       </v-flex>
     </v-navigation-drawer>

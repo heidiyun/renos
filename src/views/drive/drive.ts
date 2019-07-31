@@ -6,6 +6,8 @@ import User from '@/models/user';
 import ProjectFile from '@/models/projectFile';
 import _ from 'lodash';
 import Comment from '@/models/comment';
+import ActivityBoard from '@/models/activityBoard';
+import ActivityType from '@/models/ActivityType';
 
 @Component({})
 export default class Drive extends Vue {
@@ -21,7 +23,7 @@ export default class Drive extends Vue {
   private selectedTags: string[] = [];
   private isDragging = false;
   private alignmentKey = 'name';
-  private isTable = false;
+  private activities: Array<FirestoreDocument<ActivityBoard>> = [];
   private alignmentKeys = {
     name: ['이름', '업로드 시간'],
     order: 'asc'
@@ -148,8 +150,17 @@ export default class Drive extends Vue {
     projectFile.data.fileType = file.type;
     projectFile.data.fileURL = url;
     projectFile.data.fileSize = this.getReadableFileSizeString(file.size);
-
     await projectFile.saveSync();
+
+    const activities = Collections.activityBoards.create(ActivityBoard);
+
+    activities.data.activeUid = this.$store.getters.user.id;
+    activities.data.date = new Date().toUTCString();
+    activities.data.targetPid = this.project.id;
+    activities.data.targetFid = projectFile.id;
+    activities.data.type = ActivityType.UPLOAD;
+    await activities.saveSync();
+
     this.$progress.off();
   }
 
@@ -203,6 +214,12 @@ export default class Drive extends Vue {
     this.selectedTags = e;
   }
 
+  get currentActivities() {
+    return _.sortBy(this.activities, a => {
+      return a.data.date;
+    }).reverse();
+  }
+
   get currentProjectCommentList() {
     return _.filter(this.commentList, comment => {
       return comment.data.isProject === true;
@@ -248,6 +265,15 @@ export default class Drive extends Vue {
     }
     this.members = users;
     this.$store.commit('setProjectMembers', this.members);
+
+    Collections.activityBoards
+      .createQuery('targetPid', '==', this.project.id)
+      .onChange(ActivityBoard, (activity, state) => {
+        if (state === 'added') {
+          this.activities.push(activity);
+          console.log('added');
+        }
+      });
 
     this.fileList = [];
 

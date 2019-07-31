@@ -21,6 +21,7 @@ import FileCard from '@/components/fileCard';
 import CommentView from '@/components/commentView';
 import FirestoreCollectionQuery from '@/vue-common/firebase/firestore/collectionQuery';
 import FileTable from '@/components/fileTable';
+import ActivityCard from '@/components/activityCard';
 
 Vue.use(Antd);
 Vue.use(Spinner);
@@ -34,6 +35,7 @@ Vue.component('progress-mini', ProgressMini);
 Vue.component('file-card', FileCard);
 Vue.component('comment-view', CommentView);
 Vue.component('file-table', FileTable);
+Vue.component('activity-card', ActivityCard);
 
 @Component({})
 export default class App extends Vue {
@@ -177,7 +179,7 @@ export default class App extends Vue {
       this.$store.commit('setSelectedFileType', fileType);
     } else if (menu === 'user') {
       this.$store.commit('setSelectedUser', user);
-    } else {
+    } else if (menu) {
       this.$store.commit('setSelectedMenu', menu);
     }
   }

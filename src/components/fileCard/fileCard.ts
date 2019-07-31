@@ -5,6 +5,8 @@ import Opener from '../opener';
 import Collections from '@/models/collections';
 import _ from 'lodash';
 import User from '@/models/user';
+import ActivityBoard from '@/models/activityBoard';
+import ActivityType from '@/models/ActivityType';
 
 @Component({})
 export default class FileCard extends Vue {
@@ -109,10 +111,19 @@ export default class FileCard extends Vue {
     this.file.saveSync();
   }
 
-  private addMaterialDocument() {
+  private async addMaterialDocument() {
     this.file.data.isMaterialDocument = true;
     this.file.data.ownerMaterialDocument = this.$store.getters.user.id;
     this.file.saveSync();
+
+    const activities = Collections.activityBoards.create(ActivityBoard);
+
+    activities.data.activeUid = this.$store.getters.user.id;
+    activities.data.date = new Date().toUTCString();
+    activities.data.targetPid = this.$store.getters.currentProject.id;
+    activities.data.targetFid = this.file.id;
+    activities.data.type = ActivityType.SHARE;
+    await activities.saveSync();
   }
 
   private removeMaterialDocument() {

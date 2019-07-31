@@ -90,13 +90,22 @@
             </div>
           </div>
           <div class="content px-4">
+            <div
+              style="width:100%; height:100vh; "
+              class="px-3"
+              v-if="$store.getters.selectedMenu === 'activity-board'"
+            >
+              <div v-for=" (activity,i) in currentActivities" :key="i" class="mb-4">
+                <activity-card style="width:750px; height :200px;" :activity="activity"></activity-card>
+              </div>
+            </div>
             <v-layout
               wrap
               class="card-container"
               style="width:100%;"
               pa-2
               mb-5
-              v-if="project.data.displayWay === 'table'"
+              v-else-if="project.data.displayWay === 'card'"
             >
               <v-flex
                 style="width=325px; height : 300px;"
@@ -120,6 +129,7 @@
                 ></file-card>
               </v-flex>
             </v-layout>
+
             <v-layout v-else style="width:100%; height:100vh; ">
               <file-table :fileList="latestAccessdFileList"></file-table>
             </v-layout>
@@ -145,7 +155,7 @@
                 v-for="(comment,i) in currentProjectCommentList"
                 :key="`key1- ${i}`"
               >
-                <comment-view :comment="comment" :isInput="false" :keyNum="1"></comment-view>
+                <comment-view :comment="comment" :role="role" :isInput="false" :keyNum="1"></comment-view>
               </div>
               <div class="px-2 py-1">
                 <comment-view :comment="null" :isInput="true" :keyNum="1"></comment-view>
@@ -157,7 +167,7 @@
               style="width: 87%;height:calc(100vh - 200px); overflow-y:scroll; justify-content:center; "
             >
               <div class="px-2 py-1" v-for="(comment,i) in currentCommentList" :key="`key2- ${i}`">
-                <comment-view :comment="comment" :isInput="false" :keyNum="2"></comment-view>
+                <comment-view :comment="comment" :role="role" :isInput="false" :keyNum="2"></comment-view>
               </div>
               <div class="px-2 py-1">
                 <comment-view :comment="null" :isInput="true" :keyNum="2"></comment-view>

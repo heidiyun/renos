@@ -6,8 +6,10 @@ export default class Login extends Vue {
   private login() {
     if (this.$store.getters.user !== undefined) {
       this.$router.push('/projects');
-    } else {
+    } else { 
       Auth.signIn(SignInMethod.Google);
     }
   }
+
+  private mounted() {}
 }

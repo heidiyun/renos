@@ -94,6 +94,7 @@ export default class App extends Vue {
     this.input = document.createElement('input');
     this.input.setAttribute('type', 'file');
     this.input.setAttribute('accept', '*/*');
+    this.input.setAttribute('multiple', '');
     this.input.style.display = 'none';
     this.input.addEventListener('change', this.onChange);
     this.input.click();

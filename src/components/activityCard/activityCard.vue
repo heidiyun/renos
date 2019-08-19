@@ -17,11 +17,12 @@
           <span class="file-type" :style="{background : fileIcon.color}">{{fileIcon.tag}}</span>
           <span class="ml-2">{{file.data.name}}</span>
         </div>
-        <div
-          v-if="this.type === 'writeComment' || this.type === 'modifyComment'"
-        >{{activity.data.comment}}</div>
       </div>
+
       <div style="height:100%;">
+        <!-- <div
+          v-if="this.type === 'writeComment' || this.type === 'modifyComment'"
+        >{{activity.data.comment}}</div>-->
         <img
           style="height:100%"
           v-if="fileIcon.tag === 'image' && (this.type === 'upload')"

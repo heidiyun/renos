@@ -12,7 +12,13 @@
           <div class="text-wrap">
             <span></span>
           </div>
-          <input type="file" @click.stop.prevent @change="onChange" multiple />
+          <input
+            type="file"
+            @click.stop.prevent
+            @change="onChange"
+            v-if="currentRoleOfUser"
+            multiple
+          />
         </div>
         <div
           class="content-container"

@@ -6,10 +6,10 @@ export default class Project extends FirestoreDocumentData {
   public users: { [key: string]: string } = {};
   public pins: { [key: string]: boolean } = {};
   public displayWay: string = 'card';
-  public tags: [
-    {
-      name: string;
-      color: string;
-    }
-  ] = [{ name: '', color: '' }];
+  public tags: {
+    name: string;
+    color: string;
+  }[
+    
+  ] = [];
 }

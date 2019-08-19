@@ -13,11 +13,9 @@ export default class ProjectFile extends FirestoreDocumentData {
   public ownerMaterialDocument: string = '';
   public pins: { [key: string]: boolean } = {};
   public fileSize: string = '';
-  public tags: [
-    {
-      name: string;
-      color: string;
-      selected: boolean;
-    }
-  ] = [{ name: '', color: '', selected: false }];
+  public tags: {
+    name: string;
+    color: string;
+    selected: boolean;
+  }[] = [];
 }

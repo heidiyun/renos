@@ -8,8 +8,11 @@ export default class DialogInput extends Vue {
   private positive = '확인';
   private on: boolean = false;
 
-
-  public open(title: string, defaultText: string, negative: string, positive: string,
+  public open(
+    title: string,
+    defaultText: string,
+    negative: string,
+    positive: string
   ) {
     this.on = true;
     this.title = title;
@@ -21,7 +24,6 @@ export default class DialogInput extends Vue {
       this.resolve = resovle;
       this.reject = reject;
     });
-
   }
 
   private onClickPositive() {
@@ -37,13 +39,11 @@ export default class DialogInput extends Vue {
 
   private resolve = (text: string) => {
     // block
-  }
+  };
   private reject = () => {
     // block
-  }
+  };
   private onPositive = (a: string) => {
     // Empty Block
-  }
-
-
+  };
 }

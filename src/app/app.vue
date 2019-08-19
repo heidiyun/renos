@@ -11,7 +11,7 @@
     >
       <v-flex class="side-menu" pt-3>
         <div class="logo-container">
-          <span class="logo" @click="$router.push('/projects')">RENOS</span>
+          <span class="logo" @click="$router.push('/projects')">RABINET</span>
         </div>
         <v-btn large @click.stop="uploadFile" dark color="blue" v-if="currentRoleOfUser">
           <v-icon class="mr-2 ml-0" color="white">add</v-icon>파일 업로드
@@ -74,7 +74,7 @@
         <a-select-option value="all">전체</a-select-option>
         <a-select-option v-for="(project,i) in projectList " :key="i">{{project.data.name}}</a-select-option>
       </a-select>-->
-
+      <div class="title" v-if="$route.name === 'login' || $route.name === 'projects'">Rabinet</div>
       <v-select
         solo
         flat
@@ -119,7 +119,7 @@
           class="profile"
           :ripple="false"
           target="_blank"
-          v-if="$route.name !== 'login'"
+          v-if="$store.getters.user !== undefined"
           :style="{backgroundImage : $store.getters.user ? `url(${$store.getters.user.data.photoURL})` : ''}"
           @click.stop="$refs.opener.open"
         ></v-btn>

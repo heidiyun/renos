@@ -264,10 +264,6 @@ export default class App extends Vue {
           return;
         }
 
-        if (this.$route.name === 'login') {
-          this.$router.push('/projects');
-        }
-
         // Project Data Set
         Collections.projects
           // @ts-ignore

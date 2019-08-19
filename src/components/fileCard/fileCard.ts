@@ -21,84 +21,15 @@ export default class FileCard extends Vue {
   private enableDelete: boolean = false;
   private menu: boolean = false;
   @Prop()
-  private tags!: [{ name: string; color: string }];
+  private tags!: { name: string; color: string }[];
   private defaultTags = ['design', 'resource', 'code', 'layout'];
   private inputVisible: boolean = false;
-  private inputValue: string = '';
-  private visibleList = false;
   private mainTag = '';
   private fileOwner = Collections.users.create(User);
   private is: boolean = false;
 
-  private async deleteTag(tag: string) {
-    const index = this.file.data.tags.findIndex(t => {
-      return t.name === tag;
-    });
-    // this.tags.splice(index, 1);
-
-    this.file.data.tags.splice(index, 1);
-    await this.file.saveSync();
-  }
-
-  private removeProjectTag(tag) {
-    this.$emit('remove-tag', tag);
-  }
-
-  private async createTag(tagName: string, color?: string) {
-    // const tagName = this.inputValue;
-    this.visibleList = false;
-    this.inputValue = '';
-    if (tagName.length <= 0) {
-      return;
-    }
-
-    let isEqual = false;
-    for (const tag of this.file.data.tags) {
-      if (tag.name === tagName) {
-        isEqual = true;
-      }
-    }
-
-    if (isEqual) {
-      return;
-    }
-
-    isEqual = false;
-
-    for (const tag of this.tags) {
-      if (tagName === tag.name) {
-        isEqual = true;
-        color = tag.color;
-      }
-    }
-
-    const tagColor = '#' + ((Math.random() * 0xffffff) << 0).toString(16);
-    this.file.data.tags.push({
-      name: tagName,
-      color: color === undefined ? tagColor : color,
-      selected: false
-    });
-    await this.file.saveSync();
-
-    if (isEqual) {
-      return;
-    }
-
-    this.$emit('added-tag', tagName, tagColor);
-  }
-
-  private get exampleTags() {
-    // let ret;
-    // _(this.tags).forEach(t => {
-    //   if (this.file.data.tags.length === 0){ return this.tags};
-    //   for (const tag of this.file.data.tags) {
-    //    if (t !== tag) ret.push(t);
-    //   }
-    // })
-
-    return this.tags.filter(t => {
-      return t.name.indexOf(this.inputValue) !== -1;
-    });
+  private addTag() {
+    this.$dialogTag.on(this.file, this.tags);
   }
 
   private addBookmark() {

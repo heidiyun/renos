@@ -6,6 +6,12 @@
     .more-icon {
       opacity: 1;
     }
+
+    .card-title {
+      .add-tag {
+        opacity: 1;
+      }
+    }
   }
 
   .card-title {
@@ -20,6 +26,9 @@
         cursor: pointer;
         background: rgba(255, 0, 0, 0.2);
       }
+    }
+    .add-tag {
+      opacity: 0;
     }
 
     .tag-layout {

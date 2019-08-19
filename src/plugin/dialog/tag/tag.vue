@@ -1,24 +1,20 @@
 <template>
   <v-dialog v-model="show" max-width="395px" height="300px">
-    <v-card class="px-3 py-3" style="height: 300px;">
+    <v-card class="px-3 py-3" style="height: 100%;">
       <div style="display:flex; width:100%;">
         <div class="title font-weight-bold px-1">TAG</div>
         <v-spacer></v-spacer>
-        <v-btn small icon class="ma-0" @click="show=false; inputValue = ''">
-          <v-icon small style="align-content:space-between;">clear</v-icon>
-        </v-btn>
       </div>
 
-      <div>
-        <a-input-search
-          class="mt-3"
-          style="width: 350px"
-          v-model="inputValue"
-          @keypress.enter="createTag(inputValue)"
-          @click.stop="$refs.opener.open"
-        ></a-input-search>
-        <opener ref="opener" @state="state => visibleList = state">
-          <v-card class="tag-list-container box-shadow" style="width: 350px" v-if="visibleList">
+      <div style="display:flex; width:100%;">
+        <div class="pr-2" style="width:50%;">
+          <a-input-search
+            class="mt-3"
+            v-model="inputValue"
+            @keypress.enter="createTag(inputValue)"
+            @click.stop="$refs.opener.open"
+          ></a-input-search>
+          <div style="height : 260px; overflow:auto;">
             <a-list size="small" :dataSource="exampleTags">
               <a-list-item
                 class="list-item pl-4"
@@ -54,8 +50,8 @@
                 </div>
               </a-list-item>
             </a-list>
-          </v-card>
-        </opener>
+          </div>
+        </div>
 
         <div class="mt-3" style="overflow:auto; height:calc(100% - 90px);">
           <div
@@ -79,6 +75,10 @@
           </div>
         </div>
       </div>
+      <!-- <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn flat>I accept</v-btn>
+      </v-card-actions>-->
     </v-card>
   </v-dialog>
 </template>

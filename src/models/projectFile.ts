@@ -1,5 +1,17 @@
 import { FirestoreDocumentData } from '@/vue-common';
 
+
+
+export interface TagValue {
+  name: string;
+  selected: boolean;
+  count: number;
+}
+
+export interface Tags {
+  [key: string]: TagValue;
+}
+
 export default class ProjectFile extends FirestoreDocumentData {
   public name: string = '';
   public pid: string = '';
@@ -12,10 +24,7 @@ export default class ProjectFile extends FirestoreDocumentData {
   public isMaterialDocument: boolean = false;
   public ownerMaterialDocument: string = '';
   public pins: { [key: string]: boolean } = {};
-  public fileSize: string = '';
-  public tags: {
-    name: string;
-    color: string;
-    selected: boolean;
-  }[] = [];
+  public tags: Tags = {};
+  public fileSize: number = 0;
+
 }

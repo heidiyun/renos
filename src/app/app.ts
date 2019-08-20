@@ -22,6 +22,7 @@ import CommentView from '@/components/commentView';
 import FirestoreCollectionQuery from '@/vue-common/firebase/firestore/collectionQuery';
 import FileTable from '@/components/fileTable';
 import ActivityCard from '@/components/activityCard';
+import Util from '@/util';
 
 Vue.use(Antd);
 Vue.use(Spinner);
@@ -37,8 +38,19 @@ Vue.component('comment-view', CommentView);
 Vue.component('file-table', FileTable);
 Vue.component('activity-card', ActivityCard);
 
+declare module 'vue/types/vue' {
+  interface Vue {
+    $app: App;
+  }
+}
+
+
 @Component({})
 export default class App extends Vue {
+  public $refs!: {
+    opener: Opener;
+  };
+  public util = Util;
   private profileButtonClicked = false;
   private projects: Array<FirestoreDocument<Project>> = [];
   private projectList: Array<FirestoreDocument<Project>> = [];
@@ -51,18 +63,17 @@ export default class App extends Vue {
   private categoryGroups: {
     [key: string]: Array<FirestoreDocument<Project>>;
   } = {
-    supervisor: [],
-    editor: [],
-    viewer: []
-  };
+      supervisor: [],
+      editor: [],
+      viewer: []
+    };
   private input;
 
   private onHandleChange(e) {
     this.$router.push(`/projects/${e}`);
+
   }
-  public $refs!: {
-    opener: Opener;
-  };
+
 
   get currentProject() {
     if (this.$store.getters.currentProject === undefined) {
@@ -95,7 +106,7 @@ export default class App extends Vue {
 
   private async onChange(e) {
     this.$progress.show();
-    const file = e.target.files[0];
+    const file: File = e.target.files[0];
     console.log(file);
     const projectFile = Collections.files.create(ProjectFile);
 
@@ -109,36 +120,11 @@ export default class App extends Vue {
     projectFile.data.uploadDate = new Date().toUTCString();
     projectFile.data.fileType = file.type;
     projectFile.data.fileURL = url;
-    projectFile.data.fileSize = this.getReadableFileSizeString(file.size);
+    projectFile.data.fileSize = file.size;
 
     await projectFile.saveSync();
     this.$progress.off();
     document.body.removeChild(this.input);
-
-    // document.body.removeChild(input);
-  }
-
-  private getReadableFileSizeString(fileSizeInBytes) {
-    let i = 0;
-    const byteUnits = [
-      '바이트',
-      'KB',
-      'MB',
-      'GB',
-      'TB',
-      'PB',
-      'EB',
-      'ZB',
-      'YB'
-    ];
-    if (fileSizeInBytes > 1024) {
-      do {
-        fileSizeInBytes = fileSizeInBytes / 1024;
-        i++;
-      } while (fileSizeInBytes > 1024);
-    }
-
-    return Math.max(fileSizeInBytes, 0).toFixed(0) + byteUnits[i];
   }
 
   private get currentProjectMembers() {
@@ -154,7 +140,7 @@ export default class App extends Vue {
 
     if (
       this.$store.getters.currentProject.data.users[
-        this.$store.getters.user.id
+      this.$store.getters.user.id
       ] === 'viewer'
     ) {
       return false;
@@ -194,6 +180,8 @@ export default class App extends Vue {
       `defaults/${Math.floor(Math.random() * 20) + 1}.jpg`
     );
     project.data.imageURL = await storage.getDownloadURL();
+
+
     // project.data.tags.push({ name: 'design', color: '#D81B60' });
     // project.data.tags.push({ name: 'code', color: '#8E24AA' });
     // project.data.tags.push({ name: 'flow-chart', color: '#E53935' });
@@ -215,6 +203,9 @@ export default class App extends Vue {
     } else {
       return true;
     }
+  }
+  private created() {
+    Vue.prototype.$app = this;
   }
 
   private async mounted() {

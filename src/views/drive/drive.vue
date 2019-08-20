@@ -125,7 +125,6 @@
                 <file-card :file="file"
                            :tags="currentTag"
                            :role="role"
-                           @added-tag="addTag"
                            @remove-tag="removeTag"
                            @open-comment="openComment"></file-card>
               </v-flex>

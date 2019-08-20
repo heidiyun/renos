@@ -39,40 +39,34 @@ export default class Drive extends Vue {
   }
 
   private removeTag(tag) {
-    const index = this.project.data.tags.findIndex(t => {
-      return t.name === tag.name;
-    });
-    this.project.data.tags.splice(index, 1);
-    this.project.saveSync();
-  }
-
-  private addTag(name: string, color: string) {
-    this.project.data.tags.push({ name, color });
-    this.project.saveSync();
+    if (this.project.data.tags[tag] !== undefined) {
+      delete this.project.data.tags[tag];
+      this.project.saveSync();
+    }
   }
 
   private get currentTag() {
-    this.project.data.tags.forEach(t => {
-      let hasTag = false;
-      if (t.name === 'design' || t.name === 'flow-chart' || t.name === 'code') {
-        hasTag = true;
-      }
-      this.fileList.forEach(f => {
-        f.data.tags.forEach(tag => {
-          if (tag.name === t.name) {
-            hasTag = true;
-          }
-        });
-      });
+    // this.project.data.tags.forEach(t => {
+    //   let hasTag = false;
+    //   if (t.name === 'design' || t.name === 'flow-chart' || t.name === 'code') {
+    //     hasTag = true;
+    //   }
+    //   this.fileList.forEach(f => {
+    //     f.data.tags.forEach(tag => {
+    //       if (tag.name === t.name) {
+    //         hasTag = true;
+    //       }
+    //     });
+    //   });
 
-      if (!hasTag) {
-        const index = this.project.data.tags.findIndex(tag => {
-          return t.name === tag.name;
-        });
-        this.project.data.tags.splice(index, 1);
-        this.project.save();
-      }
-    });
+    //   if (!hasTag) {
+    //     const index = this.project.data.tags.findIndex(tag => {
+    //       return t.name === tag.name;
+    //     });
+    //     this.project.data.tags.splice(index, 1);
+    //     this.project.save();
+    //   }
+    // });
 
     return this.project.data.tags;
   }
@@ -152,7 +146,7 @@ export default class Drive extends Vue {
     projectFile.data.uploadDate = new Date().toUTCString();
     projectFile.data.fileType = file.type;
     projectFile.data.fileURL = url;
-    projectFile.data.fileSize = this.getReadableFileSizeString(file.size);
+    projectFile.data.fileSize = file.size;
     await projectFile.saveSync();
 
     const activities = Collections.activityBoards.create(ActivityBoard);
@@ -202,7 +196,7 @@ export default class Drive extends Vue {
 
     if (
       this.$store.getters.currentProject.data.users[
-        this.$store.getters.user.id
+      this.$store.getters.user.id
       ] === 'viewer'
     ) {
       return false;

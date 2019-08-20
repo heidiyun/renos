@@ -11,6 +11,6 @@ export default class ActivityBoard extends FirestoreDocumentData {
   public targetPid: string = '';
   public targetFid: string = '';
   public inviteeUid: string = '';
-  public comment : string = ''
+  public comment: string = '';
   public type: ActivityType | undefined = undefined;
 }

@@ -39,11 +39,11 @@ export default class DialogInput extends Vue {
 
   private resolve = (text: string) => {
     // block
-  };
+  }
   private reject = () => {
     // block
-  };
+  }
   private onPositive = (a: string) => {
     // Empty Block
-  };
+  }
 }

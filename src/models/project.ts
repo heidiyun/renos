@@ -1,4 +1,5 @@
 import { FirestoreDocumentData } from '@/vue-common';
+import { Tags } from './projectFile';
 
 
 
@@ -10,12 +11,11 @@ export default class Project extends FirestoreDocumentData {
   public pins: { [key: string]: boolean } = {};
   // DisplayWat 에 대한 타입 설정
   public displayWay: string = 'card';
-  public tags: Array<{
-    name: string;
-    color: string;
-  }> = [
-      { name: 'design', color: '#D81B60' },
-      { name: 'design', color: '#D81B60' },
-      { name: 'design', color: '#D81B60' }
-    ];
+  public tags: Tags = {
+    design: {
+      name: 'design',
+      selected: false,
+      count: 0,
+    }
+  };
 }

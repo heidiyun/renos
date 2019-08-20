@@ -1,6 +1,6 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { FirestoreDocument, Storage } from '@/vue-common';
-import ProjectFile from '@/models/projectFile';
+import ProjectFile, { Tags } from '@/models/projectFile';
 import Opener from '../opener';
 import Collections from '@/models/collections';
 import _ from 'lodash';
@@ -22,13 +22,19 @@ export default class FileCard extends Vue {
   private menu: boolean = false;
   // TODO TAG Type 정의
   @Prop()
-  private tags!: { name: string; color: string }[];
+  private tags!: Tags;
   private defaultTags = ['design', 'resource', 'code', 'layout'];
   private inputVisible: boolean = false;
-  private mainTag = '';
   private fileOwner = Collections.users.create(User);
   private is: boolean = false;
 
+  private get mainTag() {
+    let tag = '';
+    _.forEach(this.file.data.tags, (v, k) => {
+      if (v.selected) { tag = k; }
+    });
+    return tag;
+  }
   private addTag() {
     this.$dialogTag.on(this.file);
   }
@@ -104,37 +110,21 @@ export default class FileCard extends Vue {
     this.$emit('open-comment');
   }
 
-  private pickMainTag(tag) {
-    if (this.mainTag !== '') {
-      const index = this.file.data.tags.findIndex(t => {
-        return this.mainTag === t.name;
-      });
-      this.file.data.tags[index].selected = false;
-    }
-    if (this.mainTag === tag.name) {
-      this.mainTag = '';
-      return;
-    }
+  // private pickMainTag(tag) {
+  //   if (this.mainTag !== '') {
+  //     this.file.data.tags[this.mainTag].selected = false;
+  //   }
+  //   if (this.mainTag === tag.name) {
+  //     this.mainTag = '';
+  //     return;
+  //   }
+  //   this.mainTag = tag.name;
+  //   this.file.data.tags[tag].selected = true;
+  //   this.file.saveSync();
+  // }
 
-    const index = this.file.data.tags.findIndex(t => {
-      return t.name === tag.name;
-    });
-    this.mainTag = tag.name;
+  // TODO Change
 
-    this.file.data.tags[index].selected = true;
-    this.file.saveSync();
-  }
-
-  private get currentFileMainTag() {
-    this.mainTag = '';
-    for (const tag of this.file.data.tags) {
-      if (tag.selected) {
-        this.mainTag = tag.name;
-      }
-    }
-
-    return this.mainTag;
-  }
 
   private get fileIcon() {
     // TODO  Util로 뽑기
@@ -165,7 +155,7 @@ export default class FileCard extends Vue {
       fileExtension[1] === 'docx' ||
       fileExtension[1] === 'doc' ||
       this.file.data.fileType ===
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ) {
       return {
         tag: 'word',
@@ -177,7 +167,7 @@ export default class FileCard extends Vue {
       fileExtension[1] === 'xlsx' ||
       fileExtension[1] === 'xls' ||
       this.file.data.fileType ===
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ) {
       return {
         tag: 'excel',
@@ -188,7 +178,7 @@ export default class FileCard extends Vue {
     } else if (
       fileExtension[1] === 'pptx' ||
       this.file.data.fileType ===
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     ) {
       return {
         tag: 'ppt',
@@ -210,11 +200,10 @@ export default class FileCard extends Vue {
     this.file.data.kind = this.fileIcon.kind;
     this.file.saveSync();
     this.fileOwner = await Collections.users.load(User, this.file.data.uid);
+
+    // this.$app.util
     console.log(this.file.data.kind);
 
-    if (this.file.data.tags.length >= 1 && this.file.data.tags[0].name === '') {
-      this.file.data.tags.splice(0, 1);
-      this.file.saveSync();
-    }
+
   }
 }

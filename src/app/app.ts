@@ -47,9 +47,6 @@ export default class App extends Vue {
     ['Delete', 'delete']
   ];
 
-  public $refs!: {
-    opener: Opener;
-  };
   private profileButtonClicked = false;
   private projects: Array<FirestoreDocument<Project>> = [];
   private projectList: Array<FirestoreDocument<Project>> = [];
@@ -71,6 +68,9 @@ export default class App extends Vue {
   private onHandleChange(e) {
     this.$router.push(`/projects/${e}`);
   }
+  public $refs!: {
+    opener: Opener;
+  };
 
   get currentProject() {
     if (this.$store.getters.currentProject === undefined) {

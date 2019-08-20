@@ -29,7 +29,7 @@ export default class FileCard extends Vue {
   private is: boolean = false;
 
   private addTag() {
-    this.$dialogTag.on(this.file, this.tags);
+    this.$dialogTag.on(this.file);
   }
 
   private addBookmark() {

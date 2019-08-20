@@ -1,21 +1,16 @@
 <template>
-  <v-dialog v-model="show" max-width="395px" height="300px">
+  <v-dialog v-model="show" max-width="500px">
     <v-card class="px-3 py-3" style="height: 100%;">
       <div style="display:flex; width:100%;">
-        <div class="title font-weight-bold px-1">TAG</div>
-        <v-spacer></v-spacer>
+        <div class="title font-weight-bold px-1">TAG -</div>
+        <div class="subtitle-2">{{file.data.name}}</div>
       </div>
 
       <div style="display:flex; width:100%;">
         <div class="pr-2" style="width:50%;">
-          <a-input-search
-            class="mt-3"
-            v-model="inputValue"
-            @keypress.enter="createTag(inputValue)"
-            @click.stop="$refs.opener.open"
-          ></a-input-search>
-          <div style="height : 260px; overflow:auto;">
-            <a-list size="small" :dataSource="exampleTags">
+          <a-input-search class="mt-3" v-model="inputValue" @keypress.enter="createTag(inputValue)"></a-input-search>
+          <div style="height : 300px; overflow:auto;">
+            <a-list size="small" :dataSource="tags">
               <a-list-item
                 class="list-item pl-4"
                 @click.stop="createTag(item.name, item.color === undefined ? undefined : item.color)"
@@ -53,7 +48,7 @@
           </div>
         </div>
 
-        <div class="mt-3" style="overflow:auto; height:calc(100% - 90px);">
+        <div class="mt-3" style="overflow:auto; width:50%; height:300px;">
           <div
             style="display:inline"
             v-for="tag in file.data.tags"

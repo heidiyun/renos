@@ -169,16 +169,15 @@ export default class Drive extends Vue {
     const byteUnits = [
       '바이트',
       'KB',
-      ' MB',
-      ' GB',
-      ' TB',
+      'MB',
+      'GB',
+      'TB',
       'PB',
       'EB',
       'ZB',
       'YB'
     ];
-    if (fileSizeInBytes <= 1024) {
-    } else {
+    if (fileSizeInBytes > 1024) {
       do {
         fileSizeInBytes = fileSizeInBytes / 1024;
         i++;

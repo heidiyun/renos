@@ -1,19 +1,20 @@
 import { Vue, Component } from 'vue-property-decorator';
-import { FirestoreDocument } from '@/vue-common';
+import { FirestoreDocument, Log } from '@/vue-common';
 import ProjectFile from '@/models/projectFile';
+import Project from '@/models/project';
+import Collections from '@/models/collections';
 
 @Component({})
 export default class DialogTag extends Vue {
-  private show: boolean = true;
+  private show: boolean = false;
   private inputValue: string = '';
   private visibleList = false;
   private file!: FirestoreDocument<ProjectFile>;
-  private tags!: { name: string; color: string }[];
+  private tags: { name: string; color: string }[] = [];
 
-  public on(file: FirestoreDocument<ProjectFile>, tags) {
+  public on(file: FirestoreDocument<ProjectFile>) {
     this.show = true;
     this.file = file;
-    this.tags = tags;
   }
 
   public off() {
@@ -74,6 +75,11 @@ export default class DialogTag extends Vue {
       return;
     }
 
-    this.$emit('added-tag', tagName, tagColor);
+    const project = await Collections.projects.load(
+      Project,
+      this.file.data.pid
+    );
+    project.data.tags.push({ name: tagName, color: tagColor });
+    project.saveSync();
   }
 }

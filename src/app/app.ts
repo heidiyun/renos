@@ -39,17 +39,10 @@ Vue.component('activity-card', ActivityCard);
 
 @Component({})
 export default class App extends Vue {
-  private admins = [['Management', 'people_outline'], ['Settings', 'settings']];
-  private cruds = [
-    ['Create', 'add'],
-    ['Read', 'insert_drive_file'],
-    ['Update', 'update'],
-    ['Delete', 'delete']
-  ];
-
   public $refs!: {
     opener: Opener;
   };
+
   private profileButtonClicked = false;
   private projects: Array<FirestoreDocument<Project>> = [];
   private projectList: Array<FirestoreDocument<Project>> = [];
@@ -62,10 +55,10 @@ export default class App extends Vue {
   private categoryGroups: {
     [key: string]: Array<FirestoreDocument<Project>>;
   } = {
-    supervisor: [],
-    editor: [],
-    viewer: []
-  };
+      supervisor: [],
+      editor: [],
+      viewer: []
+    };
   private input;
 
   private onHandleChange(e) {
@@ -131,16 +124,15 @@ export default class App extends Vue {
     const byteUnits = [
       '바이트',
       'KB',
-      ' MB',
-      ' GB',
-      ' TB',
+      'MB',
+      'GB',
+      'TB',
       'PB',
       'EB',
       'ZB',
       'YB'
     ];
-    if (fileSizeInBytes <= 1024) {
-    } else {
+    if (fileSizeInBytes > 1024) {
       do {
         fileSizeInBytes = fileSizeInBytes / 1024;
         i++;
@@ -163,7 +155,7 @@ export default class App extends Vue {
 
     if (
       this.$store.getters.currentProject.data.users[
-        this.$store.getters.user.id
+      this.$store.getters.user.id
       ] === 'viewer'
     ) {
       return false;
@@ -172,6 +164,7 @@ export default class App extends Vue {
     }
   }
 
+  // TODO 구현 방법 체크.
   private clickMenuItem(menu: string, fileType?: string, user?: User) {
     this.$store.commit('setSelectedMenu', undefined);
     this.$store.commit('setSelectedFileType', 'all');
@@ -206,12 +199,13 @@ export default class App extends Vue {
       `defaults/${Math.floor(Math.random() * 20) + 1}.jpg`
     );
     project.data.imageURL = await storage.getDownloadURL();
-    project.data.tags.push({ name: 'design', color: '#D81B60' });
-    project.data.tags.push({ name: 'code', color: '#8E24AA' });
-    project.data.tags.push({ name: 'flow-chart', color: '#E53935' });
+    // project.data.tags.push({ name: 'design', color: '#D81B60' });
+    // project.data.tags.push({ name: 'code', color: '#8E24AA' });
+    // project.data.tags.push({ name: 'flow-chart', color: '#E53935' });
 
     project.saveSync();
   }
+  // TODO DELETE ...
   private goToProject(pid: string) {
     this.$router.push(`/myprojects/${pid}`);
   }

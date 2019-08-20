@@ -28,7 +28,6 @@ export default class Drive extends Vue {
     name: ['이름', '업로드 시간'],
     order: 'asc'
   };
-
   private get currentIsDragging() {
     return this.isDragging;
   }
@@ -98,7 +97,7 @@ export default class Drive extends Vue {
         return this.$store.getters.selectedFileType === f.data.kind;
       })
       .filter(f => {
-        if (this.$store.getters.selectedUser === undefined) return true;
+        if (this.$store.getters.selectedUser === undefined) { return true; }
         return this.$store.getters.selectedUser.id === f.data.uid;
       })
       .filter(f => {
@@ -112,11 +111,21 @@ export default class Drive extends Vue {
         }
         return true;
       })
+      .filter(f => {
+        if (this.selectedTags.length === 0) {
+          return true;
+        } else {
+          const fileTags = _.map(f.data.tags, 'name');
+          return this.selectedTags.every(tag => fileTags.includes(tag));
+        }
+      })
       .value();
 
     if (this.alignmentKeys.order === 'dsc') {
       list.reverse();
     }
+
+    return list;
 
     if (this.selectedTags.length <= 0) {
       return list;
@@ -164,27 +173,25 @@ export default class Drive extends Vue {
     this.$progress.off();
   }
 
-  private getReadableFileSizeString(fileSizeInBytes) {
+  private getReadableFileSizeString(fileSizeInBytes: number) {
     let i = 0;
     const byteUnits = [
       '바이트',
       'KB',
-      ' MB',
-      ' GB',
-      ' TB',
+      'MB',
+      'GB',
+      'TB',
       'PB',
       'EB',
       'ZB',
       'YB'
     ];
-    if (fileSizeInBytes <= 1024) {
-    } else {
+    if (fileSizeInBytes > 1024) {
       do {
         fileSizeInBytes = fileSizeInBytes / 1024;
         i++;
       } while (fileSizeInBytes > 1024);
     }
-
     return Math.max(fileSizeInBytes, 0).toFixed(0) + byteUnits[i];
   }
 
@@ -201,7 +208,7 @@ export default class Drive extends Vue {
 
     if (
       this.$store.getters.currentProject.data.users[
-        this.$store.getters.user.id
+      this.$store.getters.user.id
       ] === 'viewer'
     ) {
       return false;
@@ -260,7 +267,6 @@ export default class Drive extends Vue {
       if (key === this.$store.getters.user.id) {
         this.role = this.project.data.users[key];
       }
-
       users.push(await Collections.users.load(User, key));
     }
     this.members = users;

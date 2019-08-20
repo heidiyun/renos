@@ -8,6 +8,7 @@
   text-align: center;
   line-height: 180px;
 }
+
 .side-menu {
   max-width: 240px;
   height: calc(100vh - 64px);
@@ -26,17 +27,19 @@
     }
   }
 }
-.drag-over {
-  color: blue;
-  background-color: #2881dd !important;
-}
+
 
 #drop-zone {
   width: calc(100% - 20px);
   height: calc(100vh - 64px);
   border-radius: 10px;
   position: absolute;
-  opacity: 0;
+  opacity: 1;
+
+  &.drag-over {
+    color: blue;
+    background-color: #2881dd !important;
+  }
 }
 
 .text-wrap {
@@ -78,6 +81,7 @@
     height: 60px;
     border-bottom: 1px solid rgb(202, 202, 202);
     padding: 2px 12px;
+
     .project-title {
       width: fit-content;
       height: 100%;

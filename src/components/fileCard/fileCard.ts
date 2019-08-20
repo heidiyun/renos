@@ -20,6 +20,7 @@ export default class FileCard extends Vue {
   public role!: string;
   private enableDelete: boolean = false;
   private menu: boolean = false;
+  // TODO TAG Type 정의
   @Prop()
   private tags!: { name: string; color: string }[];
   private defaultTags = ['design', 'resource', 'code', 'layout'];
@@ -164,7 +165,7 @@ export default class FileCard extends Vue {
       fileExtension[1] === 'docx' ||
       fileExtension[1] === 'doc' ||
       this.file.data.fileType ===
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ) {
       return {
         tag: 'word',
@@ -176,7 +177,7 @@ export default class FileCard extends Vue {
       fileExtension[1] === 'xlsx' ||
       fileExtension[1] === 'xls' ||
       this.file.data.fileType ===
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ) {
       return {
         tag: 'excel',
@@ -187,7 +188,7 @@ export default class FileCard extends Vue {
     } else if (
       fileExtension[1] === 'pptx' ||
       this.file.data.fileType ===
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     ) {
       return {
         tag: 'ppt',

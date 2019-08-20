@@ -9,6 +9,7 @@ import {
 } from '@/vue-common';
 import _ from 'lodash';
 
+
 @Component({})
 export default class ProjectPage extends Vue {
   public $refs!: {

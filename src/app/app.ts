@@ -39,6 +39,7 @@ Vue.component('activity-card', ActivityCard);
 
 @Component({})
 export default class App extends Vue {
+
   public $refs!: {
     opener: Opener;
   };
@@ -64,6 +65,9 @@ export default class App extends Vue {
   private onHandleChange(e) {
     this.$router.push(`/projects/${e}`);
   }
+  public $refs!: {
+    opener: Opener;
+  };
 
   get currentProject() {
     if (this.$store.getters.currentProject === undefined) {

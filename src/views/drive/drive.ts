@@ -84,34 +84,28 @@ export default class Drive extends Vue {
       this.alignmentKeys.order = 'asc';
     }
   }
-
+  // TODO
   get latestAccessdFileList() {
     const list = _(this.fileList)
       .sortBy(f => {
         return f.data[this.alignmentKey];
       })
       .filter(f => {
-        if (this.$store.getters.selectedFileType === 'all') {
+        if (this.$store.getters.selectedMenu === 'all') {
           return true;
         }
-        return this.$store.getters.selectedFileType === f.data.kind;
-      })
-      .filter(f => {
-        if (this.$store.getters.selectedUser === undefined) {
-          return true;
+        switch (this.$store.getters.selectedMenu) {
+          case 'image':
+          case 'video':
+          case 'file':
+            return this.$store.getters.selectedMenu === f.data.kind;
+          case 'material':
+            return f.data.isMaterialDocument === true;
+          case 'bookmark':
+            return f.data.pins[this.$store.getters.user.id];
+          default:
+            return this.$store.getters.selectedMenu === f.data.uid;
         }
-        return this.$store.getters.selectedUser.id === f.data.uid;
-      })
-      .filter(f => {
-        if (this.$store.getters.selectedMenu === undefined) {
-          return true;
-        }
-        if (this.$store.getters.selectedMenu === 'material') {
-          return f.data.isMaterialDocument === true;
-        } else if (this.$store.getters.selectedMenu === 'bookmark') {
-          return f.data.pins[this.$store.getters.user.id];
-        }
-        return true;
       })
       .filter(f => {
         if (this.selectedTags.length === 0) {

@@ -137,7 +137,7 @@ export default class FileCard extends Vue {
   }
 
   private get fileIcon() {
-    // TODO 확장자 추가 or로 달고 image는 필요없음.
+    // TODO  Util로 뽑기
     const fileExtension = this.file.data.name.split('.');
     if (this.file.data.fileType.startsWith('image')) {
       return {
@@ -165,7 +165,7 @@ export default class FileCard extends Vue {
       fileExtension[1] === 'docx' ||
       fileExtension[1] === 'doc' ||
       this.file.data.fileType ===
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ) {
       return {
         tag: 'word',
@@ -177,7 +177,7 @@ export default class FileCard extends Vue {
       fileExtension[1] === 'xlsx' ||
       fileExtension[1] === 'xls' ||
       this.file.data.fileType ===
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ) {
       return {
         tag: 'excel',
@@ -188,7 +188,7 @@ export default class FileCard extends Vue {
     } else if (
       fileExtension[1] === 'pptx' ||
       this.file.data.fileType ===
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     ) {
       return {
         tag: 'ppt',

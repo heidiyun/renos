@@ -38,10 +38,10 @@
               <span>분류</span>
             </span>
 
-            <a-menu-item key="1" @click="clickMenuItem('kind', 'all')">전체</a-menu-item>
-            <a-menu-item key="2" @click="clickMenuItem('kind', 'file')">문서</a-menu-item>
-            <a-menu-item key="3" @click="clickMenuItem('kind', 'image')">이미지</a-menu-item>
-            <a-menu-item key="4" @click="clickMenuItem('kind', 'video')">동영상</a-menu-item>
+            <a-menu-item key="1" @click="clickMenuItem( 'all')">전체</a-menu-item>
+            <a-menu-item key="2" @click="clickMenuItem( 'file')">문서</a-menu-item>
+            <a-menu-item key="3" @click="clickMenuItem( 'image')">이미지</a-menu-item>
+            <a-menu-item key="4" @click="clickMenuItem( 'video')">동영상</a-menu-item>
           </a-sub-menu>
           <a-sub-menu key="sub2">
             <span slot="title">
@@ -52,7 +52,7 @@
             <a-menu-item
               v-for="(user,i) in currentProjectMembers"
               :key="i+4"
-              @click="clickMenuItem('user', null,user)"
+              @click="clickMenuItem('user',user.data.uid)"
             >{{user.data.name}}</a-menu-item>
           </a-sub-menu>
           <a-menu-item key="10" @click="clickMenuItem('material')">

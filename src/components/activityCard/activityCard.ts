@@ -25,7 +25,6 @@ export default class ActivityCard extends Vue {
   private explanation: string = '';
 
   private get fileIcon() {
-    // TODO 확장자 추가 or로 달고 image는 필요없음.
     const fileExtension = this.file.data.name.split('.');
     if (this.file.data.fileType.startsWith('image')) {
       return {

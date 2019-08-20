@@ -164,15 +164,13 @@ export default class App extends Vue {
   }
 
   // TODO 구현 방법 체크.
-  private clickMenuItem(menu: string, fileType?: string, user?: User) {
-    this.$store.commit('setSelectedMenu', undefined);
-    this.$store.commit('setSelectedFileType', 'all');
-    this.$store.commit('setSelectedUser', undefined);
-    if (menu === 'kind') {
-      this.$store.commit('setSelectedFileType', fileType);
-    } else if (menu === 'user') {
-      this.$store.commit('setSelectedUser', user);
-    } else if (menu) {
+  private clickMenuItem(menu: string, uid?: string) {
+    if (menu === 'user') {
+      if (uid === undefined) {
+        return;
+      }
+      this.$store.commit('setSelectedMenu', uid);
+    } else {
       this.$store.commit('setSelectedMenu', menu);
     }
   }
@@ -204,10 +202,6 @@ export default class App extends Vue {
 
     project.saveSync();
   }
-  // TODO DELETE ...
-  private goToProject(pid: string) {
-    this.$router.push(`/myprojects/${pid}`);
-  }
 
   get currentProjectList() {
     return _.map(this.projectList, project => {
@@ -226,6 +220,8 @@ export default class App extends Vue {
   }
 
   private async mounted() {
+    this.$store.commit('setSelectedMenu', 'all');
+
     // User Data Set
     Auth.addChangeBeforeListener('login', async u => {
       if (u !== null) {

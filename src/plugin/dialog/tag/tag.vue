@@ -10,7 +10,7 @@
         <div class="pr-2" style="width:50%;">
           <a-input-search class="mt-3" v-model="inputValue" @keypress.enter="createTag(inputValue)"></a-input-search>
           <div style="height : 300px; overflow:auto;">
-            <a-list size="small" :dataSource="tags">
+            <a-list size="small" :dataSource="exampleTags">
               <a-list-item
                 class="list-item pl-4"
                 @click.stop="createTag(item.name, item.color === undefined ? undefined : item.color)"

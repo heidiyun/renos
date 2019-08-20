@@ -39,11 +39,6 @@ Vue.component('activity-card', ActivityCard);
 
 @Component({})
 export default class App extends Vue {
-
-  public $refs!: {
-    opener: Opener;
-  };
-
   private profileButtonClicked = false;
   private projects: Array<FirestoreDocument<Project>> = [];
   private projectList: Array<FirestoreDocument<Project>> = [];
@@ -56,10 +51,10 @@ export default class App extends Vue {
   private categoryGroups: {
     [key: string]: Array<FirestoreDocument<Project>>;
   } = {
-      supervisor: [],
-      editor: [],
-      viewer: []
-    };
+    supervisor: [],
+    editor: [],
+    viewer: []
+  };
   private input;
 
   private onHandleChange(e) {
@@ -159,7 +154,7 @@ export default class App extends Vue {
 
     if (
       this.$store.getters.currentProject.data.users[
-      this.$store.getters.user.id
+        this.$store.getters.user.id
       ] === 'viewer'
     ) {
       return false;

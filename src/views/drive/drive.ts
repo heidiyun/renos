@@ -97,7 +97,9 @@ export default class Drive extends Vue {
         return this.$store.getters.selectedFileType === f.data.kind;
       })
       .filter(f => {
-        if (this.$store.getters.selectedUser === undefined) { return true; }
+        if (this.$store.getters.selectedUser === undefined) {
+          return true;
+        }
         return this.$store.getters.selectedUser.id === f.data.uid;
       })
       .filter(f => {
@@ -208,7 +210,7 @@ export default class Drive extends Vue {
 
     if (
       this.$store.getters.currentProject.data.users[
-      this.$store.getters.user.id
+        this.$store.getters.user.id
       ] === 'viewer'
     ) {
       return false;

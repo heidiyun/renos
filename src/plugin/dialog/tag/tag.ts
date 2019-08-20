@@ -11,10 +11,13 @@ export default class DialogTag extends Vue {
   private visibleList = false;
   private file!: FirestoreDocument<ProjectFile>;
   private tags: { name: string; color: string }[] = [];
-
-  public on(file: FirestoreDocument<ProjectFile>) {
+  private project: FirestoreDocument<Project> = Collections.projects.create(
+    Project
+  );
+  public async on(file: FirestoreDocument<ProjectFile>) {
     this.show = true;
     this.file = file;
+    this.project = await Collections.projects.load(Project, file.data.pid);
   }
 
   public off() {
@@ -30,9 +33,17 @@ export default class DialogTag extends Vue {
     //   }
     // })
 
-    return this.tags.filter(t => {
+    return this.project.data.tags.filter(t => {
       return t.name.indexOf(this.inputValue) !== -1;
     });
+  }
+  private async deleteTag(tag: string) {
+    const index = this.file.data.tags.findIndex(t => {
+      return t.name === tag;
+    });
+
+    this.file.data.tags.splice(index, 1);
+    await this.file.saveSync();
   }
 
   private async createTag(tagName: string, color?: string) {
@@ -75,11 +86,7 @@ export default class DialogTag extends Vue {
       return;
     }
 
-    const project = await Collections.projects.load(
-      Project,
-      this.file.data.pid
-    );
-    project.data.tags.push({ name: tagName, color: tagColor });
-    project.saveSync();
+    this.project.data.tags.push({ name: tagName, color: tagColor });
+    this.project.saveSync();
   }
 }

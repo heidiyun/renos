@@ -162,8 +162,6 @@ export default class App extends Vue {
       return true;
     }
   }
-
-  // TODO 구현 방법 체크.
   private clickMenuItem(menu: string, uid?: string) {
     if (menu === 'user') {
       if (uid === undefined) {

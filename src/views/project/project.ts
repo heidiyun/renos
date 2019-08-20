@@ -141,7 +141,6 @@ export default class ProjectPage extends Vue {
     // return projectList;
 
     // TODO Review
-
     const projectList: Array<FirestoreDocument<Project>> = this.$store.getters
       .projectList;
     return _(projectList)

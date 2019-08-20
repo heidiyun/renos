@@ -91,9 +91,15 @@ export default class Drive extends Vue {
         return f.data[this.alignmentKey];
       })
       .filter(f => {
+        const fileTags = _.map(f.data.tags, 'name');
+        if (!this.selectedTags.every(tag => fileTags.includes(tag))) {
+          return false;
+        }
+
         if (this.$store.getters.selectedMenu === 'all') {
           return true;
         }
+
         switch (this.$store.getters.selectedMenu) {
           case 'image':
           case 'video':
@@ -105,14 +111,6 @@ export default class Drive extends Vue {
             return f.data.pins[this.$store.getters.user.id];
           default:
             return this.$store.getters.selectedMenu === f.data.uid;
-        }
-      })
-      .filter(f => {
-        if (this.selectedTags.length === 0) {
-          return true;
-        } else {
-          const fileTags = _.map(f.data.tags, 'name');
-          return this.selectedTags.every(tag => fileTags.includes(tag));
         }
       })
       .value();

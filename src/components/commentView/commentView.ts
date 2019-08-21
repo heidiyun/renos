@@ -6,6 +6,7 @@ import User from '@/models/user';
 import moment from 'moment';
 import ActivityBoard from '@/models/activityBoard';
 import ActivityType from '@/models/ActivityType';
+import util from '@/util';
 
 @Component({})
 export default class CommentView extends Vue {
@@ -61,30 +62,24 @@ export default class CommentView extends Vue {
     const comments = Collections.comments.create(Comment);
     comments.data.content = this.commentModel;
 
-    const activities = Collections.activityBoards.create(ActivityBoard);
+    const uid = this.$store.getters.user.id;
+    const fid = this.$store.getters.selectedFile.id;
+    const pid = this.$store.getters.currentProject.id;
 
     if (this.keyNum === 1) {
       comments.data.pid = this.$store.getters.currentProject.id;
       comments.data.isProject = true;
-      activities.data.type = ActivityType.WRITECOMMENT;
+
+      util.saveActivity(ActivityType.WRITECOMMENT, uid, pid, null, comments.id);
     } else if (this.keyNum === 2) {
       comments.data.fid = this.$store.getters.selectedFile.id;
       comments.data.pid = this.$store.getters.currentProject.id;
-
-      activities.data.targetFid = this.$store.getters.selectedFile.id;
-      activities.data.type = ActivityType.WRITECOMMENT;
+      util.saveActivity(ActivityType.WRITECOMMENT, uid, pid, fid, comments.id);
     }
     comments.data.uid = this.$store.getters.user.id;
     comments.data.uploadDate = new Date().toUTCString();
     comments.saveSync();
     this.commentModel = '';
-
-    activities.data.activeUid = this.$store.getters.user.id;
-    activities.data.date = new Date().toUTCString();
-    activities.data.targetPid = this.$store.getters.currentProject.id;
-    activities.data.comment = comments.data.content;
-
-    await activities.saveSync();
   }
 
   private async mounted() {

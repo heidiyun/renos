@@ -7,6 +7,7 @@ import _ from 'lodash';
 import User from '@/models/user';
 import ActivityBoard from '@/models/activityBoard';
 import ActivityType from '@/models/ActivityType';
+import util from '@/util';
 
 @Component({})
 export default class FileCard extends Vue {
@@ -31,7 +32,9 @@ export default class FileCard extends Vue {
   private get mainTag() {
     let tag = '';
     _.forEach(this.file.data.tags, (v, k) => {
-      if (v.selected) { tag = k; }
+      if (v.selected) {
+        tag = k;
+      }
     });
     return tag;
   }
@@ -52,16 +55,14 @@ export default class FileCard extends Vue {
   private async addMaterialDocument() {
     this.file.data.isMaterialDocument = true;
     this.file.data.ownerMaterialDocument = this.$store.getters.user.id;
+    this.file.data.shareDate = new Date().toUTCString();
     this.file.saveSync();
 
-    const activities = Collections.activityBoards.create(ActivityBoard);
+    const uid = this.$store.getters.user.id;
+    const pid = this.$store.getters.currentProject.id;
+    const fid = this.file.id;
 
-    activities.data.activeUid = this.$store.getters.user.id;
-    activities.data.date = new Date().toUTCString();
-    activities.data.targetPid = this.$store.getters.currentProject.id;
-    activities.data.targetFid = this.file.id;
-    activities.data.type = ActivityType.SHARE;
-    await activities.saveSync();
+    util.saveActivity(ActivityType.SHARE, uid, pid, fid, null);
   }
 
   private removeMaterialDocument() {
@@ -125,7 +126,6 @@ export default class FileCard extends Vue {
 
   // TODO Change
 
-
   private get fileIcon() {
     // TODO  Util로 뽑기
     const fileExtension = this.file.data.name.split('.');
@@ -155,7 +155,7 @@ export default class FileCard extends Vue {
       fileExtension[1] === 'docx' ||
       fileExtension[1] === 'doc' ||
       this.file.data.fileType ===
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ) {
       return {
         tag: 'word',
@@ -167,7 +167,7 @@ export default class FileCard extends Vue {
       fileExtension[1] === 'xlsx' ||
       fileExtension[1] === 'xls' ||
       this.file.data.fileType ===
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ) {
       return {
         tag: 'excel',
@@ -178,7 +178,7 @@ export default class FileCard extends Vue {
     } else if (
       fileExtension[1] === 'pptx' ||
       this.file.data.fileType ===
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     ) {
       return {
         tag: 'ppt',
@@ -203,7 +203,5 @@ export default class FileCard extends Vue {
 
     // this.$app.util
     console.log(this.file.data.kind);
-
-
   }
 }

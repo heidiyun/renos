@@ -20,6 +20,7 @@
         <v-layout wrap px-5 pb-4>
           <v-flex
             class="project-card-container"
+            style="height:300px;"
             xl3
             lg3
             md4
@@ -28,7 +29,7 @@
             v-for=" (project,i) in currentPinnedProjectList"
             :key="i"
           >
-            <div style=" height:100%;" @click.stop="selected = project.id">
+            <div style="height:100%;" @click.stop="selected = project.id">
               <project-card
                 :project="project"
                 :selected="selected === project.id"
@@ -72,6 +73,7 @@
       <v-layout class="content-layout" px-5 pb-5 wrap style="width:100%;">
         <v-flex
           class="project-card-container"
+          style="height:300px"
           xl3
           lg3
           md4

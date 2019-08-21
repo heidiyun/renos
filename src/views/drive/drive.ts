@@ -130,37 +130,6 @@ export default class Drive extends Vue {
     return result;
   }
 
-  private async onChange(e) {
-    this.isDragging = false;
-    this.$progress.show();
-    const file = e.target.files[0];
-    const projectFile = Collections.files.create(ProjectFile);
-
-    const storage = new Storage(`/files/${projectFile.id}`);
-    await storage.upload(file);
-    const url = await storage.getDownloadURL();
-
-    projectFile.data.name = file.name;
-    projectFile.data.pid = this.$store.getters.currentProject.id;
-    projectFile.data.uid = this.$store.getters.user.id;
-    projectFile.data.uploadDate = new Date().toUTCString();
-    projectFile.data.fileType = file.type;
-    projectFile.data.fileURL = url;
-    projectFile.data.fileSize = file.size;
-    await projectFile.saveSync();
-
-    const activities = Collections.activityBoards.create(ActivityBoard);
-
-    activities.data.activeUid = this.$store.getters.user.id;
-    activities.data.date = new Date().toUTCString();
-    activities.data.targetPid = this.project.id;
-    activities.data.targetFid = projectFile.id;
-    activities.data.type = ActivityType.UPLOAD;
-    await activities.saveSync();
-
-    this.$progress.off();
-  }
-
   private getReadableFileSizeString(fileSizeInBytes: number) {
     let i = 0;
     const byteUnits = [
@@ -196,7 +165,7 @@ export default class Drive extends Vue {
 
     if (
       this.$store.getters.currentProject.data.users[
-      this.$store.getters.user.id
+        this.$store.getters.user.id
       ] === 'viewer'
     ) {
       return false;

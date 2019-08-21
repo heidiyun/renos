@@ -35,7 +35,7 @@ export default class FileTable extends Vue {
       }
       return {
         name: f.data.name,
-        userName: userName,
+        userName,
         fileSize: f.data.fileSize
       };
     });

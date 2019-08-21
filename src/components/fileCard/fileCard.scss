@@ -1,5 +1,4 @@
 .c-layout {
-  // width: 100%;
   transition: height 0.2s;
 
   &:hover {
@@ -76,7 +75,6 @@
           }
         }
 
-        // border-bottom: none;
         &:hover {
           cursor: pointer;
           background-color: rgba(233, 233, 233, 0.5);

@@ -44,7 +44,6 @@ declare module 'vue/types/vue' {
   }
 }
 
-
 @Component({})
 export default class App extends Vue {
   public $refs!: {
@@ -63,17 +62,15 @@ export default class App extends Vue {
   private categoryGroups: {
     [key: string]: Array<FirestoreDocument<Project>>;
   } = {
-      supervisor: [],
-      editor: [],
-      viewer: []
-    };
+    supervisor: [],
+    editor: [],
+    viewer: []
+  };
   private input;
 
   private onHandleChange(e) {
     this.$router.push(`/projects/${e}`);
-
   }
-
 
   get currentProject() {
     if (this.$store.getters.currentProject === undefined) {
@@ -99,32 +96,16 @@ export default class App extends Vue {
     this.input.setAttribute('accept', '*/*');
     this.input.setAttribute('multiple', '');
     this.input.style.display = 'none';
-    this.input.addEventListener('change', this.onChange);
+
+    this.input.addEventListener('change', e => {
+      this.util.saveFile(
+        e,
+        this.$store.getters.currentProject.id,
+        this.$store.getters.user.id
+      );
+    });
     this.input.click();
     document.body.appendChild(this.input);
-  }
-
-  private async onChange(e) {
-    this.$progress.show();
-    const file: File = e.target.files[0];
-    console.log(file);
-    const projectFile = Collections.files.create(ProjectFile);
-
-    const storage = new Storage(`/files/${projectFile.id}`);
-    await storage.upload(file);
-    const url = await storage.getDownloadURL();
-
-    projectFile.data.name = file.name;
-    projectFile.data.pid = this.$store.getters.currentProject.id;
-    projectFile.data.uid = this.$store.getters.user.id;
-    projectFile.data.uploadDate = new Date().toUTCString();
-    projectFile.data.fileType = file.type;
-    projectFile.data.fileURL = url;
-    projectFile.data.fileSize = file.size;
-
-    await projectFile.saveSync();
-    this.$progress.off();
-    document.body.removeChild(this.input);
   }
 
   private get currentProjectMembers() {
@@ -140,7 +121,7 @@ export default class App extends Vue {
 
     if (
       this.$store.getters.currentProject.data.users[
-      this.$store.getters.user.id
+        this.$store.getters.user.id
       ] === 'viewer'
     ) {
       return false;
@@ -180,7 +161,6 @@ export default class App extends Vue {
       `defaults/${Math.floor(Math.random() * 20) + 1}.jpg`
     );
     project.data.imageURL = await storage.getDownloadURL();
-
 
     // project.data.tags.push({ name: 'design', color: '#D81B60' });
     // project.data.tags.push({ name: 'code', color: '#8E24AA' });

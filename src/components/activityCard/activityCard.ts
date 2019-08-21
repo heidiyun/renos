@@ -94,13 +94,15 @@ export default class ActivityCard extends Vue {
   }
 
   private async mounted() {
-    if (this.activity.data.type === undefined) return;
+    if (this.activity.data.type === undefined) {
+      return;
+    }
     this.type = this.activity.data.type;
     this.date = moment(this.activity.data.date).format('YYYY년 MM월 DD일');
     this.user = await Collections.users.load(
       User,
       this.activity.data.activeUid
-    );
+  );
 
     switch (this.type) {
       case ActivityType.INVITE:
@@ -124,8 +126,7 @@ export default class ActivityCard extends Vue {
         this.explanation = '이(가) 중요 문서함에 파일을 공유했습니다.';
         break;
       case ActivityType.WRITECOMMENT:
-        if (this.activity.data.targetFid === '') {
-        } else {
+        if (this.activity.data.targetFid !== '') {
           this.file = await Collections.files.load(
             ProjectFile,
             this.activity.data.targetFid

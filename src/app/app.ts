@@ -62,10 +62,10 @@ export default class App extends Vue {
   private categoryGroups: {
     [key: string]: Array<FirestoreDocument<Project>>;
   } = {
-    supervisor: [],
-    editor: [],
-    viewer: []
-  };
+      supervisor: [],
+      editor: [],
+      viewer: []
+    };
   private input;
 
   private onHandleChange(e) {
@@ -121,7 +121,7 @@ export default class App extends Vue {
 
     if (
       this.$store.getters.currentProject.data.users[
-        this.$store.getters.user.id
+      this.$store.getters.user.id
       ] === 'viewer'
     ) {
       return false;
@@ -212,7 +212,7 @@ export default class App extends Vue {
       }
     });
 
-    this.$store.commit('setSelectedFileType', 'all');
+    // this.$store.commit('setSelectedFileType', 'all');
 
     Auth.addChangeListener(
       'project',

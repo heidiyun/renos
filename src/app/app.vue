@@ -1,47 +1,47 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      app
-      floating
-      :temporary="$route.name === 'projects'"
-      :permanent="$route.name !== 'projects'"
-      width="230px;"
-      style="overflow:hidden;"
-      v-if="$route.name !== 'login'"
-    >
-      <v-flex class="side-menu" pt-3>
+    <v-navigation-drawer app
+                         floating
+                         :temporary="$route.name === 'projects'"
+                         :permanent="$route.name !== 'projects'"
+                         width="230px;"
+                         style="overflow:hidden;"
+                         v-if="$route.name !== 'login'">
+      <v-flex class="side-menu"
+              pt-3>
         <div class="logo-container">
-          <span class="logo" @click="$router.push('/projects')">RABINET</span>
+          <span class="logo"
+                @click="$router.push('/projects')">RABINET</span>
         </div>
-        <v-btn large @click.stop="uploadFile" dark color="blue" v-if="currentRoleOfUser">
-          <v-icon class="mr-2 ml-0" color="white">add</v-icon>파일 업로드
+        <v-btn large
+               @click.stop="uploadFile"
+               dark
+               color="blue"
+               v-if="currentRoleOfUser">
+          <v-icon class="mr-2 ml-0"
+                  color="white">add</v-icon>파일 업로드
         </v-btn>
 
-        <!-- <a-menu style="width: 100%;" :defaultSelectedKeys="['1']" mode="inline">
-          <a-menu-item key="1" @click="$store.commit('setSelectedFileType', 'all')">전체</a-menu-item>
-          <a-menu-item key="2" @click="$store.commit('setSelectedFileType', 'file')">문서</a-menu-item>
-          <a-menu-item key="3" @click="$store.commit('setSelectedFileType', 'image')">이미지</a-menu-item>
-          <a-menu-item key="4" @click="$store.commit('setSelectedFileType', 'video')">동영상</a-menu-item>
-        </a-menu>-->
-
-        <a-menu
-          style="width: 230px"
-          :openKeys="openKeys"
-          @openChange="onOpenChange"
-          :defaultOpenKeys="['sub1']"
-          :defaultSelectedKeys="['1']"
-          mode="inline"
-        >
+        <a-menu style="width: 230px"
+                :openKeys="openKeys"
+                @openChange="onOpenChange"
+                :defaultOpenKeys="['sub1']"
+                :defaultSelectedKeys="['1']"
+                mode="inline">
           <a-sub-menu key="sub1">
             <span slot="title">
               <a-icon type="folder" />
               <span>분류</span>
             </span>
 
-            <a-menu-item key="1" @click="clickMenuItem( 'all')">전체</a-menu-item>
-            <a-menu-item key="2" @click="clickMenuItem( 'file')">문서</a-menu-item>
-            <a-menu-item key="3" @click="clickMenuItem( 'image')">이미지</a-menu-item>
-            <a-menu-item key="4" @click="clickMenuItem( 'video')">동영상</a-menu-item>
+            <a-menu-item key="1"
+                         @click="clickMenuItem( 'all')">전체</a-menu-item>
+            <a-menu-item key="2"
+                         @click="clickMenuItem( 'file')">문서</a-menu-item>
+            <a-menu-item key="3"
+                         @click="clickMenuItem( 'image')">이미지</a-menu-item>
+            <a-menu-item key="4"
+                         @click="clickMenuItem( 'video')">동영상</a-menu-item>
           </a-sub-menu>
           <a-sub-menu key="sub2">
             <span slot="title">
@@ -49,50 +49,45 @@
               <span>멤버</span>
             </span>
 
-            <a-menu-item
-              v-for="(user,i) in currentProjectMembers"
-              :key="i+4"
-              @click="clickMenuItem('user',user.data.uid)"
-            >{{user.data.name}}</a-menu-item>
+            <a-menu-item v-for="(user,i) in currentProjectMembers"
+                         :key="i+4"
+                         @click="clickMenuItem('user',user.data.uid)">{{user.data.name}}</a-menu-item>
           </a-sub-menu>
-          <a-menu-item key="10" @click="clickMenuItem('material')">
+          <a-menu-item key="10"
+                       @click="clickMenuItem('material')">
             <a-icon type="star" />중요
           </a-menu-item>
-          <a-menu-item key="11" @click="clickMenuItem('bookmark')">
+          <a-menu-item key="11"
+                       @click="clickMenuItem('bookmark')">
             <a-icon type="inbox" />보관함
           </a-menu-item>
-          <a-menu-item key="12" @click="clickMenuItem('activity-board')">
+          <a-menu-item key="12"
+                       @click="clickMenuItem('activity-board')">
             <a-icon type="notification" />활동보드
           </a-menu-item>
         </a-menu>
       </v-flex>
     </v-navigation-drawer>
-    <v-toolbar app color="white" flat height="90px;">
-      <!-- <v-toolbar-title cl`ass="headline text-uppercase">RENOS</v-toolbar-title> -->
-
-      <!-- <a-select class="ml-3" defaultValue="all" style="width: 120px;">
-        <a-select-option value="all">전체</a-select-option>
-        <a-select-option v-for="(project,i) in projectList " :key="i">{{project.data.name}}</a-select-option>
-      </a-select>-->
-      <div class="title" v-if="$route.name === 'login' || $route.name === 'projects'">Rabinet</div>
-      <v-select
-        solo
-        flat
-        v-if="showSelect"
-        :items="projectList"
-        item-text="data.name"
-        item-value="id"
-        :label="currentProject"
-        @change="onHandleChange"
-        style="max-width :fit-content;"
-      >
+    <v-toolbar app
+               color="white"
+               flat
+               height="90px;">
+      <div class="title"
+           v-if="$route.name === 'login' || $route.name === 'projects'">Rabinet</div>
+      <v-select solo
+                flat
+                v-if="showSelect"
+                :items="projectList"
+                item-text="data.name"
+                item-value="id"
+                :label="currentProject"
+                @change="onHandleChange"
+                style="max-width :fit-content;">
         <template v-slot:prepend-item>
           <v-list-tile>
             <v-list-tile-content>
-              <v-list-tile-title
-                class="select-all-tile"
-                @click="$router.push('/projects')"
-              >모든 프로젝트 보기</v-list-tile-title>
+              <v-list-tile-title class="select-all-tile"
+                                 @click="$router.push('/projects')">모든 프로젝트 보기</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
           <v-divider class="mt-2"></v-divider>
@@ -101,34 +96,40 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        @click.stop="createProject"
-        dark
-        color="blue"
-        round
-        v-if="$route.name==='projects'"
-        class="mr-5"
-      >
-        <v-icon class="mr-2 ml-0" color="white">add</v-icon>프로젝트 생성
+      <v-btn @click.stop="createProject"
+             dark
+             color="blue"
+             round
+             v-if="$route.name==='projects'"
+             class="mr-5">
+        <v-icon class="mr-2 ml-0"
+                color="white">add</v-icon>프로젝트 생성
       </v-btn>
 
-      <opener ref="opener" @state="state => profileButtonClicked = state">
-        <v-btn
-          flat
-          icon
-          class="profile"
-          :ripple="false"
-          target="_blank"
-          v-if="$store.getters.user !== undefined"
-          :style="{backgroundImage : $store.getters.user ? `url(${$store.getters.user.data.photoURL})` : ''}"
-          @click.stop="$refs.opener.open"
-        ></v-btn>
-        <profile-card v-if="profileButtonClicked" @close="profileButtonClicked  = false"></profile-card>
+      <opener ref="opener"
+              @state="state => profileButtonClicked = state">
+        <v-btn flat
+               icon
+               class="profile"
+               :ripple="false"
+               target="_blank"
+               v-if="$store.getters.user !== undefined"
+               :style="{backgroundImage : $store.getters.user ? `url(${$store.getters.user.data.photoURL})` : ''}"
+               @click.stop="$refs.opener.open"></v-btn>
+        <profile-card v-if="profileButtonClicked"
+                      @close="profileButtonClicked  = false"></profile-card>
       </opener>
     </v-toolbar>
-    <v-snackbar v-model="snackbar" bottom left :timeout="Number(6000)">
+    <v-snackbar v-model="snackbar"
+                bottom
+                left
+                :timeout="Number(6000)">
       {{snackbarText}}
-      <v-btn color="gray" icon small flat @click="snackbar = false">
+      <v-btn color="gray"
+             icon
+             small
+             flat
+             @click="snackbar = false">
         <v-icon small>clear</v-icon>
       </v-btn>
     </v-snackbar>

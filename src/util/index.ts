@@ -111,5 +111,6 @@ export default {
       activities.data.comment = comments.id;
     }
     await activities.saveSync();
-  }
+  }, 
+  
 };

@@ -14,10 +14,9 @@ import Project from '@/models/project';
 export default class CommentView extends Vue {
   @Prop()
   public comment!: FirestoreDocument<Comment>;
+
   @Prop()
-  public isInput!: boolean;
-  @Prop()
-  public keyNum!: number;
+  public commentType!: string;
   @Prop()
   public role!: string;
   private commentModel: string = '';
@@ -70,14 +69,14 @@ export default class CommentView extends Vue {
     const fid = this.$store.getters.selectedFile.id;
     const pid = this.$store.getters.currentProject.id;
 
-    if (this.keyNum === 1) {
+    if (this.commentType === 'project-comment-tab') {
       comments.data.pid = this.$store.getters.currentProject.id;
       comments.data.isProject = true;
 
       util.saveActivity(ActivityType.WRITECOMMENT, uid, pid, null, comments.id);
 
       notification.data.type = NotificationType.COMMENT_PROJECT;
-    } else if (this.keyNum === 2) {
+    } else if (this.commentType === 'file-comment-tab') {
       comments.data.fid = this.$store.getters.selectedFile.id;
       comments.data.pid = this.$store.getters.currentProject.id;
       util.saveActivity(ActivityType.WRITECOMMENT, uid, pid, fid, comments.id);
@@ -109,16 +108,13 @@ export default class CommentView extends Vue {
   }
 
   private async mounted() {
-    const user = await Collections.users.load(
-      User,
-      this.comment.data.uid
-    );
+    const user = await Collections.users.load(User, this.comment.data.uid);
 
     this.photoUrl = user.data.photoURL;
     this.userName = user.data.name;
 
     if (this.comment === null) {
-      return;채
+      return;
     }
 
     this.date = moment(this.comment.data.uploadDate).format(

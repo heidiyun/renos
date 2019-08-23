@@ -26,6 +26,7 @@ import Util from '@/util';
 import Comment from '@/models/comment';
 import NotificationView from '@/components/notificationView';
 import Notification from '@/models/notification';
+import CommentWriteView from '@/components/commentWriteView';
 
 Vue.use(Antd);
 Vue.use(Spinner);
@@ -41,6 +42,7 @@ Vue.component('comment-view', CommentView);
 Vue.component('file-table', FileTable);
 Vue.component('activity-card', ActivityCard);
 Vue.component('notification-view', NotificationView);
+Vue.component('comment-write-view', CommentWriteView);
 
 declare module 'vue/types/vue' {
   interface Vue {

@@ -119,6 +119,7 @@
           v-if="showNotifications"
           @close="showNotifications  = false"
         >
+          <div v-if="notifications.length===0" class="no-new-notification-sign pt-2">새로운 알림이 없습니다.</div>
           <div v-for="noti in notifications" :key="noti.id">
             <notification-view :noti="noti"></notification-view>
           </div>

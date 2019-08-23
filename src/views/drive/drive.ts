@@ -7,7 +7,6 @@ import ProjectFile from '@/models/projectFile';
 import _ from 'lodash';
 import Comment from '@/models/comment';
 import ActivityBoard from '@/models/activityBoard';
-import ActivityType from '@/models/ActivityType';
 
 @Component({})
 export default class Drive extends Vue {
@@ -18,7 +17,7 @@ export default class Drive extends Vue {
   );
   private fileList: Array<FirestoreDocument<ProjectFile>> = [];
   private showComment: boolean = false;
-  private keyNum: number = 2;
+  private commentTabKey: string = 'file-comment-tab';
   private commentList: Array<FirestoreDocument<Comment>> = [];
   private selectedTags: string[] = [];
   private isDragging = false;
@@ -131,28 +130,6 @@ export default class Drive extends Vue {
     return result;
   }
 
-  private getReadableFileSizeString(fileSizeInBytes: number) {
-    let i = 0;
-    const byteUnits = [
-      '바이트',
-      'KB',
-      'MB',
-      'GB',
-      'TB',
-      'PB',
-      'EB',
-      'ZB',
-      'YB'
-    ];
-    if (fileSizeInBytes > 1024) {
-      do {
-        fileSizeInBytes = fileSizeInBytes / 1024;
-        i++;
-      } while (fileSizeInBytes > 1024);
-    }
-    return Math.max(fileSizeInBytes, 0).toFixed(0) + byteUnits[i];
-  }
-
   private get currentProjectMembers() {
     if (this.$store.getters.projectMembers !== undefined) {
       return this.$store.getters.projectMembers;
@@ -195,7 +172,7 @@ export default class Drive extends Vue {
     if (!this.showComment) {
       return;
     }
-    this.keyNum;
+    this.commentTabKey;
     const list = _(this.commentList).filter(comment => {
       return comment.data.fid === this.$store.getters.selectedFile.id;
     });

@@ -142,14 +142,17 @@
         <div style="display:flex;">
           <div
             class="pa-3 subheading font-weight-medium comment-title"
-          >{{ keyNum === 1 ? project.data.name : $store.getters.selectedFile.data.name }}</div>
+          >{{ commentTabKey === 'project-comment-tab' ? project.data.name : $store.getters.selectedFile.data.name }}</div>
           <v-btn icon flat @click="showComment=false;">
             <v-icon>clear</v-icon>
           </v-btn>
         </div>
 
-        <a-tabs defaultActiveKey="2" @change="keyNum === 1 ? keyNum=2 : keyNum = 1">
-          <a-tab-pane tab="프로젝트 댓글" key="1">
+        <a-tabs
+          defaultActiveKey="file-comment-tab"
+          @change="commentTabKey === 'project-comment-tab' ? commentTabKey='file-comment-tab' : commentTabKey='project-comment-tab'"
+        >
+          <a-tab-pane tab="프로젝트 댓글" key="project-comment-tab">
             <div class="project-commnet-window">
               <div
                 class="px-2 py-1"
@@ -157,20 +160,20 @@
                 v-for="(comment,i) in currentProjectCommentList"
                 :key="`key1- ${i}`"
               >
-                <comment-view :comment="comment" :role="role" :isInput="false" :keyNum="1"></comment-view>
+                <comment-view :comment="comment" :role="role" :commentType="commentTabKey"></comment-view>
               </div>
               <div class="px-2 py-1">
-                <comment-view :comment="null" :role="role" :isInput="true" :keyNum="1"></comment-view>
+                <comment-write-view :commentType="commentTabKey"></comment-write-view>
               </div>
             </div>
           </a-tab-pane>
-          <a-tab-pane tab="파일 댓글" key="2">
+          <a-tab-pane tab="파일 댓글" key="file-comment-tab">
             <div class="file-comment-window">
               <div class="px-2 py-1" v-for="(comment,i) in currentCommentList" :key="`key2- ${i}`">
-                <comment-view :comment="comment" :role="role" :isInput="false" :keyNum="2"></comment-view>
+                <comment-view :comment="comment" :role="role" :commentType="commentTabKey"></comment-view>
               </div>
               <div class="px-2 py-1">
-                <comment-view :comment="null" :isInput="true" :keyNum="2"></comment-view>
+                <comment-write-view :commentType="commentTabKey"></comment-write-view>
               </div>
             </div>
           </a-tab-pane>

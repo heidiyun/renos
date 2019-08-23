@@ -1,6 +1,5 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { FirestoreDocument } from '@/vue-common';
-import Comment from '@/models/comment';
 import Collections from '@/models/collections';
 import Notification, { NotificationType } from '@/models/notification';
 import User from '@/models/user';

@@ -1,4 +1,4 @@
-$nav-height : 90px;
+$nav-height: 90px;
 
 .bin {
   width: 80%;
@@ -68,8 +68,6 @@ $nav-height : 90px;
   align-content: flex-start;
   height: calc(100vh - #{$nav-height});
   overflow: scroll;
-
-
 
   .category {
     width: 100%;

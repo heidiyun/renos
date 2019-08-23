@@ -3,6 +3,7 @@ import Vue from 'vue';
 import DialogInput from './input/dialog.input';
 import DialogPreview from './preview/dialog.preview';
 import DialogTag from './tag/tag';
+import DialogMemberManagement from './memberManagement/dialog.memberManagement';
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -10,6 +11,7 @@ declare module 'vue/types/vue' {
     $dialogInput: DialogInput;
     $dialogPreview: DialogPreview;
     $dialogTag: DialogTag;
+    $dialogMemberManagement: DialogMemberManagement;
   }
 }
 
@@ -36,5 +38,11 @@ export default {
     const dialogTag = new DialogTag();
     dialogTag.$mount(document.body.appendChild(document.createElement('div')));
     Vue.prototype.$dialogTag = dialogTag;
+
+    const dialogMemberManagement = new DialogMemberManagement();
+    dialogMemberManagement.$mount(
+      document.body.appendChild(document.createElement('div'))
+    );
+    Vue.prototype.$dialogMemberManagement = dialogMemberManagement;
   }
 };

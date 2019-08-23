@@ -7,7 +7,7 @@ import Collections from '@/models/collections';
 import ProjectCard from '@/components/projectCard';
 import ProgressBar from '@/components/progress';
 import ProgressMini from '@/components/progress-mini';
-import Project from '@/models/project';
+import Project, { UserType } from '@/models/project';
 import Spinner from '@/vue-common/plugins/spinner';
 import Progress from '@/plugin/progress';
 import _ from 'lodash';
@@ -23,6 +23,9 @@ import FirestoreCollectionQuery from '@/vue-common/firebase/firestore/collection
 import FileTable from '@/components/fileTable';
 import ActivityCard from '@/components/activityCard';
 import Util from '@/util';
+import Comment from '@/models/comment';
+import NotificationView from '@/components/notificationView';
+import Notification from '@/models/notification';
 
 Vue.use(Antd);
 Vue.use(Spinner);
@@ -37,6 +40,7 @@ Vue.component('file-card', FileCard);
 Vue.component('comment-view', CommentView);
 Vue.component('file-table', FileTable);
 Vue.component('activity-card', ActivityCard);
+Vue.component('notification-view', NotificationView);
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -47,7 +51,8 @@ declare module 'vue/types/vue' {
 @Component({})
 export default class App extends Vue {
   public $refs!: {
-    opener: Opener;
+    profileOpener: Opener;
+    notiOpener: Opener;
   };
   public util = Util;
   private profileButtonClicked = false;
@@ -58,19 +63,21 @@ export default class App extends Vue {
   private result: Array<FirestoreDocument<User>> = [];
   private rootSubmenuKeys = ['sub1', 'sub2'];
   private openKeys: string[] = ['sub1'];
-  private data = ['files', 'images', 'videos'];
   private categoryGroups: {
     [key: string]: Array<FirestoreDocument<Project>>;
   } = {
-      supervisor: [],
-      editor: [],
-      viewer: []
-    };
+    supervisor: [],
+    editor: [],
+    viewer: []
+  };
+  private showNotifications: boolean = false;
   private input;
+  private comments: Array<FirestoreDocument<Comment>> = [];
 
   private onHandleChange(e) {
     this.$router.push(`/projects/${e}`);
   }
+  public notifications: Array<FirestoreDocument<Notification>> = [];
 
   get currentProject() {
     if (this.$store.getters.currentProject === undefined) {
@@ -121,7 +128,7 @@ export default class App extends Vue {
 
     if (
       this.$store.getters.currentProject.data.users[
-      this.$store.getters.user.id
+        this.$store.getters.user.id
       ] === 'viewer'
     ) {
       return false;
@@ -155,7 +162,7 @@ export default class App extends Vue {
     const project = Collections.projects.create(Project);
     project.data.name = projectTitle;
     project.data.users = {
-      [`${this.$store.getters.user.id}`]: 'supervisor'
+      [`${this.$store.getters.user.id}`]: UserType.SUPERVISOR
     };
     const storage = new Storage(
       `defaults/${Math.floor(Math.random() * 20) + 1}.jpg`
@@ -252,6 +259,21 @@ export default class App extends Vue {
             this.projects = this.projectList;
             this.$store.commit('setProjectList', this.projectList);
             this.$store.commit('setCategoryGroups', this.categoryGroups);
+          });
+
+        Collections.notifications
+          // @ts-ignore
+          .createQuery('recipientUid', 'array-contains', u.uid)
+          .query('check', '==', false)
+          .onChange(Notification, (noti, state) => {
+            if (state === 'added') {
+              this.notifications.push(noti);
+            } else if (state === 'removed') {
+              const index = this.notifications.findIndex(n => {
+                return n.id === noti.id;
+              });
+              this.notifications.splice(index, 1);
+            }
           });
       },
       true

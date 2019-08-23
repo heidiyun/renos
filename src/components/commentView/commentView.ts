@@ -7,6 +7,8 @@ import moment from 'moment';
 import ActivityBoard from '@/models/activityBoard';
 import ActivityType from '@/models/ActivityType';
 import util from '@/util';
+import Notification, { NotificationType } from '@/models/notification';
+import Project from '@/models/project';
 
 @Component({})
 export default class CommentView extends Vue {
@@ -25,6 +27,7 @@ export default class CommentView extends Vue {
   private isEdited: boolean = false;
   private enableDelete = false;
   private enableModify = false;
+  private recipientUids: string[] = [];
 
   private onDelete() {
     if (this.comment.data.uid === this.$store.getters.user.id) {
@@ -46,7 +49,6 @@ export default class CommentView extends Vue {
   }
 
   private onEdit() {
-    console.log('dlkfsjlfjk');
     this.comment.update({
       content: this.commentModel
     });
@@ -62,6 +64,8 @@ export default class CommentView extends Vue {
     const comments = Collections.comments.create(Comment);
     comments.data.content = this.commentModel;
 
+    const notification = Collections.notifications.create(Notification);
+
     const uid = this.$store.getters.user.id;
     const fid = this.$store.getters.selectedFile.id;
     const pid = this.$store.getters.currentProject.id;
@@ -71,20 +75,45 @@ export default class CommentView extends Vue {
       comments.data.isProject = true;
 
       util.saveActivity(ActivityType.WRITECOMMENT, uid, pid, null, comments.id);
+
+      notification.data.type = NotificationType.COMMENT_PROJECT;
     } else if (this.keyNum === 2) {
       comments.data.fid = this.$store.getters.selectedFile.id;
       comments.data.pid = this.$store.getters.currentProject.id;
       util.saveActivity(ActivityType.WRITECOMMENT, uid, pid, fid, comments.id);
+
+      notification.data.type = NotificationType.COMMENT_FILE;
+      notification.data.fid = fid;
     }
     comments.data.uid = this.$store.getters.user.id;
     comments.data.uploadDate = new Date().toUTCString();
     comments.saveSync();
+
+    const project = await Collections.projects.load(
+      Project,
+      this.$store.getters.currentProject.id
+    );
+
+    this.recipientUids = Object.keys(project.data.users).filter(key => {
+      return this.$store.getters.user.id !== key;
+    });
+
+    notification.data.activistUid = uid;
+    notification.data.commentId = comments.id;
+    notification.data.pid = pid;
+    notification.data.recipientUid = this.recipientUids;
+    notification.data.check = false;
+    notification.save();
+
     this.commentModel = '';
   }
 
   private async mounted() {
-    const user = await Collections.users.load(User, this.$store.getters.user.id);
-    console.log('user', user);
+    const user = await Collections.users.load(
+      User,
+      this.$store.getters.user.id
+    );
+
     this.photoUrl = user.data.photoURL;
     this.userName = user.data.name;
 

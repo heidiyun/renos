@@ -8,6 +8,8 @@ import User from '@/models/user';
 import ActivityBoard from '@/models/activityBoard';
 import ActivityType from '@/models/ActivityType';
 import util from '@/util';
+import Notification, { NotificationType } from '@/models/notification';
+import Project from '@/models/project';
 
 @Component({})
 export default class FileCard extends Vue {
@@ -63,6 +65,24 @@ export default class FileCard extends Vue {
     const fid = this.file.id;
 
     util.saveActivity(ActivityType.SHARE, uid, pid, fid, null);
+
+    const notification = Collections.notifications.create(Notification);
+    const project = await Collections.projects.load(
+      Project,
+      this.$store.getters.currentProject.id
+    );
+
+    const recipientUids = Object.keys(project.data.users).filter(key => {
+      return this.$store.getters.user.id !== key;
+    });
+
+    notification.data.activistUid = uid;
+    notification.data.pid = pid;
+    notification.data.fid = fid;
+    notification.data.recipientUid = recipientUids;
+    notification.data.type = NotificationType.SHARE;
+
+    notification.save();
   }
 
   private removeMaterialDocument() {
@@ -202,6 +222,5 @@ export default class FileCard extends Vue {
     this.fileOwner = await Collections.users.load(User, this.file.data.uid);
 
     // this.$app.util
-    console.log(this.file.data.kind);
   }
 }

@@ -6,4 +6,6 @@ enum ActivityType {
   MODIFYCOMMENT = 'modifyComment'
 }
 
+
+
 export default ActivityType;

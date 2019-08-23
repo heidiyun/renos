@@ -55,6 +55,20 @@ html {
   }
 }
 
+.notification-card {
+  width: 500px;
+  height: 500px;
+  position: absolute;
+  right: 55px;
+  top: 70px;
+  overflow: auto;
+  z-index: 10;
+
+  .notification-list {
+    width: 100%;
+  }
+}
+
 .box-shadow {
   box-shadow: 0px 3px 20px 1px rgba(0, 0, 0, 0.1);
   transform: translate(0, 0px);

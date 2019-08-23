@@ -28,6 +28,7 @@ export default class Drive extends Vue {
     name: ['이름', '업로드 시간'],
     order: 'asc'
   };
+
   private get currentIsDragging() {
     return this.isDragging;
   }
@@ -234,7 +235,6 @@ export default class Drive extends Vue {
       .onChange(ActivityBoard, (activity, state) => {
         if (state === 'added') {
           this.activities.push(activity);
-          console.log('added');
         }
       });
 

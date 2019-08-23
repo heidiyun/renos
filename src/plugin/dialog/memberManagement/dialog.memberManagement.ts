@@ -15,7 +15,7 @@ export default class DialogMemberManagement extends Vue {
   private users: string[] = [];
   private currentUserId: string = '';
   private currentProjectId: string = '';
-  private emails: string[] = [];
+  private invalidEmail: boolean = false;
   // private rules = [value => this.emails.includes(value) || ''];
 
   public open(currentUserId: string, currentProjectId: string) {
@@ -28,12 +28,18 @@ export default class DialogMemberManagement extends Vue {
     this.on = false;
   }
 
+  private async checkValidEmail() {}
+
   private async sendInvitation() {
+    const user = await Collections.users
+      .createQuery('email', '==', this.emailInputValue)
+      .exec(User);
+    this.invalidEmail = _.isEmpty(user);
+    if (this.invalidEmail) {
+      return;
+    }
+
     const noti = await Collections.notifications.create(Notification);
-    const users = await Collections.users.get(User);
-    const user = _.filter(users, u => {
-      return u.data.email === this.emailInputValue;
-    });
 
     noti.data.activistUid = this.currentUserId;
     noti.data.recipientUid = [user[0].data.uid];
@@ -44,6 +50,7 @@ export default class DialogMemberManagement extends Vue {
     noti.data.type = NotificationType.INVITATION;
     noti.data.check = false;
     await noti.saveSync();
+
     this.off();
   }
 

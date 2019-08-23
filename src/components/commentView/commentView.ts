@@ -111,14 +111,14 @@ export default class CommentView extends Vue {
   private async mounted() {
     const user = await Collections.users.load(
       User,
-      this.$store.getters.user.id
+      this.comment.data.uid
     );
 
     this.photoUrl = user.data.photoURL;
     this.userName = user.data.name;
 
     if (this.comment === null) {
-      return;
+      return;채
     }
 
     this.date = moment(this.comment.data.uploadDate).format(

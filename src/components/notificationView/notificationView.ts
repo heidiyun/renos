@@ -36,6 +36,8 @@ export default class NotificationView extends Vue {
       ] = this.noti.data.projectRole;
     }
     await project.saveSync();
+
+    this.checkNotification();
   }
 
   private created() {

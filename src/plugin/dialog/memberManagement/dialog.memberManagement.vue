@@ -8,6 +8,8 @@
         <v-text-field
           class="mx-4"
           v-model="emailInputValue"
+          @blur="checkValidEmail"
+          :error-messages="invalidEmail ? '없는 사용자 이메일 입니다.' : ''"
           placeholder="이메일 주소 추가"
           :persistent-hint="true"
         ></v-text-field>

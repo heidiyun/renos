@@ -64,7 +64,6 @@ export default class FileCard extends Vue {
     const pid = this.$store.getters.currentProject.id;
     const fid = this.file.id;
 
-    const notification = Collections.notifications.create(Notification);
     const project = await Collections.projects.load(
       Project,
       this.$store.getters.currentProject.id
@@ -74,14 +73,16 @@ export default class FileCard extends Vue {
       return this.$store.getters.user.id !== key;
     });
 
-    notification.data.activistUid = uid;
-    notification.data.pid = pid;
-    notification.data.fid = fid;
-    notification.data.recipientUid = recipientUids;
-    notification.data.type = NotificationType.SHARE;
 
-    notification.save();
-
+    util.saveNotification(
+      NotificationType.SHARE,
+      uid,
+      pid,
+      fid,
+      null,
+      null,
+      null
+    );
     util.saveActivity(ActivityType.SHARE, uid, pid, fid, null, null, null);
   }
 

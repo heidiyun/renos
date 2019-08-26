@@ -164,19 +164,35 @@ export default {
   ) {
     const notification = Collections.notifications.create(Notification);
     notification.data.type = notificationType;
-    notification.data.fid = fid;
+
+    if (fid !== null) {
+      const file = await Collections.files.load(ProjectFile, fid);
+      notification.data.fileName = file.data.name;
+    }
+
     const project = await Collections.projects.load(Project, pid);
 
     const recipientUids = Object.keys(project.data.users).filter(key => {
       return activistUid !== key;
     });
 
-    notification.data.activistUid = activistUid;
-    notification.data.commentId = comment.id;
+    if (comment !== null) {
+      const commentContent = await Collections.comments.load(
+        Comment,
+        comment.id
+      );
+      notification.data.comment = commentContent.data.content;
+    }
+
+    notification.data.activeUid = activistUid;
     notification.data.pid = pid;
     notification.data.recipientUid = recipientUids;
-    notification.data.projectRole = projectRole;
-    notification.data.invitationMessage = invitationMessage;
+    if (projectRole !== null) {
+      notification.data.projectRole = projectRole;
+    }
+    if (invitationMessage !== null) {
+      notification.data.invitationMessage = invitationMessage;
+    }
     notification.data.check = false;
     notification.save();
   }

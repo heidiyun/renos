@@ -95,14 +95,15 @@
           </div>
           <div class="content px-4">
             <div
-              style="width:100%;"
+              style="width:100%; "
               class="px-3"
               v-if="$store.getters.selectedMenu === 'activity-board'"
             >
               <div v-for=" (activity,i) in currentActivities" :key="i" class="mb-4">
-                <activity-card style="width:750px; height:fit-content" :activity="activity"></activity-card>
+                <activity-card style="width:900px; height:fit-content" :activity="activity"></activity-card>
               </div>
             </div>
+
             <v-layout
               wrap
               class="card-container"

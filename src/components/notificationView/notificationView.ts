@@ -38,8 +38,8 @@ export default class NotificationView extends Vue {
 
     util.saveActivity(
       ActivityType.INVITE,
-      this.noti.data.activistUid,
-      this.$store.getters.currentProject.id,
+      this.$store.getters.user.id,
+      this.noti.data.pid,
       null,
       null,
       this.$store.getters.user.id,
@@ -54,20 +54,15 @@ export default class NotificationView extends Vue {
   }
 
   private async mounted() {
+    this.activistUser = await Collections.users.load(
+      User,
+      this.noti.data.activeUid
+    );
+
     const project = await Collections.projects.load(
       Project,
       this.noti.data.pid
     );
-
-    this.activistUser = await Collections.users.load(
-      User,
-      this.noti.data.activistUid
-    );
-
-    let file;
-    if (this.noti.data.fid !== null) {
-      file = await Collections.files.load(ProjectFile, this.noti.data.fid);
-    }
 
     switch (this.type) {
       case NotificationType.INVITATION:
@@ -77,10 +72,10 @@ export default class NotificationView extends Vue {
         this.notiMessage = `${this.activistUser.data.name}이(가) ${project.data.name}에 댓글을 작성했습니다.`;
         break;
       case NotificationType.COMMENT_FILE:
-        this.notiMessage = `${this.activistUser.data.name}이(가) ${project.data.name}의 ${file.data.name}에 댓글을 작성했습니다.`;
+        this.notiMessage = `${this.activistUser.data.name}이(가) ${project.data.name}의 ${this.noti.data.fileName}에 댓글을 작성했습니다.`;
         break;
       case NotificationType.SHARE:
-        this.notiMessage = `${this.activistUser.data.name}이(가) ${project.data.name}의 ${file.data.name}을 공유했습니다.`;
+        this.notiMessage = `${this.activistUser.data.name}이(가) ${project.data.name}의 ${this.noti.data.fileName}을 공유했습니다.`;
         break;
     }
   }

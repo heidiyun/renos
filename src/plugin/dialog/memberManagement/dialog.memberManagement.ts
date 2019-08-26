@@ -4,6 +4,7 @@ import Collections from '@/models/collections';
 import User from '@/models/user';
 import _ from 'lodash';
 import Notification, { NotificationType } from '@/models/notification';
+import util from '@/util';
 
 @Component({})
 export default class DialogMemberManagement extends Vue {
@@ -38,7 +39,7 @@ export default class DialogMemberManagement extends Vue {
 
     const noti = await Collections.notifications.create(Notification);
 
-    noti.data.activistUid = this.currentUserId;
+    noti.data.activeUid = this.currentUserId;
     noti.data.recipientUid = [user[0].data.uid];
     noti.data.pid = this.currentProjectId;
     noti.data.projectRole = this.defaultValue;

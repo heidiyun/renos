@@ -31,7 +31,7 @@
         size="small"
         type="primary"
         v-if="commentModel.length !== 0"
-        @click="registerComment"
+        @click="onEdit"
       >수정</a-button>
 
       <a-button size="small" @click="onCancel">취소</a-button>

@@ -13,7 +13,7 @@
         type="primary"
         class="mr-1"
         :disabled="ui.inputValue.length === 0"
-        @click="saveComment"
+        @click="registerComment"
       >등록</a-button>
       <a-button size="small" @click="cleanInputValue">취소</a-button>
     </div>

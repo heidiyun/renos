@@ -4,17 +4,13 @@ import Comment from '@/models/comment';
 import Collections from '@/models/collections';
 import User from '@/models/user';
 import moment from 'moment';
-import ActivityBoard from '@/models/activityBoard';
-import ActivityType from '@/models/ActivityType';
 import util from '@/util';
-import Notification, { NotificationType } from '@/models/notification';
-import Project from '@/models/project';
+import ActivityType from '@/models/ActivityType';
 
 @Component({})
 export default class CommentView extends Vue {
   @Prop()
   public comment!: FirestoreDocument<Comment>;
-
   @Prop()
   public commentType!: string;
   @Prop()
@@ -26,14 +22,12 @@ export default class CommentView extends Vue {
   private isEdited: boolean = false;
   private enableDelete = false;
   private enableModify = false;
-  private recipientUids: string[] = [];
 
   private onDelete() {
     if (this.comment.data.uid === this.$store.getters.user.id) {
       this.comment.delete();
     }
   }
-
   private showEditInput() {
     this.isEdited = true;
     this.commentModel = this.comment.data.content;
@@ -53,58 +47,27 @@ export default class CommentView extends Vue {
     });
     this.commentModel = '';
     this.isEdited = false;
-  }
-
-  private async registerComment() {
-    if (this.isEdited) {
-      this.onEdit();
-      return;
-    }
-    const comments = Collections.comments.create(Comment);
-    comments.data.content = this.commentModel;
-
-    const notification = Collections.notifications.create(Notification);
-
-    const uid = this.$store.getters.user.id;
-    const fid = this.$store.getters.selectedFile.id;
-    const pid = this.$store.getters.currentProject.id;
 
     if (this.commentType === 'project-comment-tab') {
-      comments.data.pid = this.$store.getters.currentProject.id;
-      comments.data.isProject = true;
-
-      util.saveActivity(ActivityType.WRITECOMMENT, uid, pid, null, comments.id);
-
-      notification.data.type = NotificationType.COMMENT_PROJECT;
-    } else if (this.commentType === 'file-comment-tab') {
-      comments.data.fid = this.$store.getters.selectedFile.id;
-      comments.data.pid = this.$store.getters.currentProject.id;
-      util.saveActivity(ActivityType.WRITECOMMENT, uid, pid, fid, comments.id);
-
-      notification.data.type = NotificationType.COMMENT_FILE;
-      notification.data.fid = fid;
+      util.saveActivity(
+        ActivityType.MODIFYCOMMENT,
+        this.$store.getters.user.id,
+        this.$store.getters.currentProject.id,
+        null,
+        this.comment.id,
+        null,
+        null
+      );
     }
-    comments.data.uid = this.$store.getters.user.id;
-    comments.data.uploadDate = new Date().toUTCString();
-    comments.saveSync();
-
-    const project = await Collections.projects.load(
-      Project,
-      this.$store.getters.currentProject.id
+    util.saveActivity(
+      ActivityType.MODIFYCOMMENT,
+      this.$store.getters.user.id,
+      this.$store.getters.currentProject.id,
+      this.comment.data.fid,
+      this.comment.id,
+      null,
+      null
     );
-
-    this.recipientUids = Object.keys(project.data.users).filter(key => {
-      return this.$store.getters.user.id !== key;
-    });
-
-    notification.data.activistUid = uid;
-    notification.data.commentId = comments.id;
-    notification.data.pid = pid;
-    notification.data.recipientUid = this.recipientUids;
-    notification.data.check = false;
-    notification.save();
-
-    this.commentModel = '';
   }
 
   private async mounted() {

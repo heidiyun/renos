@@ -4,6 +4,11 @@ import Collections from '@/models/collections';
 import { Storage } from '@/vue-common';
 import ActivityBoard from '@/models/activityBoard';
 import ActivityType from '@/models/ActivityType';
+import Notification, { NotificationType } from '@/models/notification';
+import Project from '@/models/project';
+import User from '@/models/user';
+import ActivityCard from '@/components/activityCard';
+import Comment from '@/models/comment';
 
 function HSVtoRGB(h, s, v) {
   let r;
@@ -96,21 +101,83 @@ export default {
       projectFile.data.fileSize = file.size;
 
       await projectFile.saveSync();
-      this.saveActivity(ActivityType.UPLOAD, uid, pid, projectFile.id, null);
+      this.saveActivity(
+        ActivityType.UPLOAD,
+        uid,
+        pid,
+        projectFile.id,
+        null,
+        null
+      );
     }
   },
-  async saveActivity(activityType, uid, pid, fid?, comments?) {
+  async saveActivity(
+    activityType,
+    uid,
+    pid,
+    fid?,
+    comments?,
+    inviteeUid?,
+    inviteeRole?
+  ) {
     const activities = Collections.activityBoards.create(ActivityBoard);
 
-    activities.data.activeUid = uid;
-    activities.data.date = new Date().toUTCString();
-    activities.data.targetPid = pid;
-    activities.data.targetFid = fid;
-    activities.data.type = activityType;
-    if (comments !== null) {
-      activities.data.comment = comments.id;
+    const user = await Collections.users.load(User, uid);
+
+    if (fid !== null) {
+      const file = await Collections.files.load(ProjectFile, fid);
+      activities.data.fileName = file.data.name;
+      activities.data.fileType = file.data.fileType;
+      activities.data.fileURL = file.data.fileURL;
     }
+
+    if (inviteeUid !== null) {
+      const invitee = await Collections.users.load(User, inviteeUid);
+      activities.data.inviteeUserName = invitee.data.name;
+      activities.data.inviteeUserPhotoURL = invitee.data.photoURL;
+      activities.data.inviteeRole = inviteeRole;
+    }
+
+    if (comments !== null) {
+      const comment = await Collections.comments.load(Comment, comments);
+      activities.data.comment = comment.data.content;
+    }
+
+    activities.data.date = new Date().toUTCString();
+    activities.data.activeUserName = user.data.name;
+    activities.data.activeUserPhotoURL = user.data.photoURL;
+    activities.data.targetPid = pid;
+
+    activities.data.type = activityType;
+
     await activities.saveSync();
-  }, 
-  
+  },
+
+  async saveNotification(
+    notificationType,
+    activistUid,
+    pid,
+    fid?,
+    comment?,
+    projectRole?,
+    invitationMessage?
+  ) {
+    const notification = Collections.notifications.create(Notification);
+    notification.data.type = notificationType;
+    notification.data.fid = fid;
+    const project = await Collections.projects.load(Project, pid);
+
+    const recipientUids = Object.keys(project.data.users).filter(key => {
+      return activistUid !== key;
+    });
+
+    notification.data.activistUid = activistUid;
+    notification.data.commentId = comment.id;
+    notification.data.pid = pid;
+    notification.data.recipientUid = recipientUids;
+    notification.data.projectRole = projectRole;
+    notification.data.invitationMessage = invitationMessage;
+    notification.data.check = false;
+    notification.save();
+  }
 };

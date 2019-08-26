@@ -5,6 +5,8 @@ import Notification, { NotificationType } from '@/models/notification';
 import User from '@/models/user';
 import Project, { UserType } from '@/models/project';
 import ProjectFile from '@/models/projectFile';
+import util from '@/util';
+import ActivityType from '@/models/ActivityType';
 
 @Component({})
 export default class NotificationView extends Vue {
@@ -26,8 +28,6 @@ export default class NotificationView extends Vue {
       Project,
       this.noti.data.pid
     );
-    if (this.noti.data.projectRole !== undefined) {
-    }
 
     if (this.noti.data.projectRole !== undefined) {
       project.data.users[
@@ -35,6 +35,16 @@ export default class NotificationView extends Vue {
       ] = this.noti.data.projectRole;
     }
     await project.saveSync();
+
+    util.saveActivity(
+      ActivityType.INVITE,
+      this.noti.data.activistUid,
+      this.$store.getters.currentProject.id,
+      null,
+      null,
+      this.$store.getters.user.id,
+      this.noti.data.projectRole
+    );
 
     this.checkNotification();
   }
@@ -55,30 +65,22 @@ export default class NotificationView extends Vue {
     );
 
     let file;
-    if (this.noti.data.fid !== '') {
+    if (this.noti.data.fid !== null) {
       file = await Collections.files.load(ProjectFile, this.noti.data.fid);
     }
 
     switch (this.type) {
       case NotificationType.INVITATION:
-        this.notiMessage = `${this.activistUser.data.name}이(가) ${
-          project.data.name
-        }에 초대했습니다.`;
+        this.notiMessage = `${this.activistUser.data.name}이(가) ${project.data.name}에 초대했습니다.`;
         break;
       case NotificationType.COMMENT_PROJECT:
-        this.notiMessage = `${this.activistUser.data.name}이(가) ${
-          project.data.name
-        }에 댓글을 작성했습니다.`;
+        this.notiMessage = `${this.activistUser.data.name}이(가) ${project.data.name}에 댓글을 작성했습니다.`;
         break;
       case NotificationType.COMMENT_FILE:
-        this.notiMessage = `${this.activistUser.data.name}이(가) ${
-          project.data.name
-        }의 ${file.data.name}에 댓글을 작성했습니다.`;
+        this.notiMessage = `${this.activistUser.data.name}이(가) ${project.data.name}의 ${file.data.name}에 댓글을 작성했습니다.`;
         break;
       case NotificationType.SHARE:
-        this.notiMessage = `${this.activistUser.data.name}이(가) ${
-          project.data.name
-        }의 ${file.data.name}을 공유했습니다.`;
+        this.notiMessage = `${this.activistUser.data.name}이(가) ${project.data.name}의 ${file.data.name}을 공유했습니다.`;
         break;
     }
   }

@@ -15,7 +15,7 @@
           <input
             type="file"
             @click.stop.prevent
-            @change="e => {isDragging = false; $app.util.saveFile(e, $store.getters.currentProject.id, $store.getters.user.id)}"
+            @change="e => {isDragging = false;  $app.util.saveFile(e, $store.getters.currentProject.id, $store.getters.user.id); }"
             v-if="currentRoleOfUser"
             multiple
           />
@@ -69,19 +69,20 @@
                       style="width:fit-content;"
                       flat
                       v-on="on"
-                    >{{alignmentKey === 'name' ? '이름' : '업로드 시간'}}</v-btn>
+                    >{{alignmentKey.name}}</v-btn>
                   </template>
                   <a-list
                     size="small"
                     bordered
-                    :dataSource="alignmentKeys.name"
+                    :dataSource="alignmentKeys.keys"
                     style="z-index:10; background:white; cursor:pointer"
                   >
                     <a-list-item
                       slot="renderItem"
                       slot-scope="item"
-                      @click="alignmentKey= item === '이름' ? 'name' : 'shareDate'"
-                    >{{item}}</a-list-item>
+                      v-if="item.key === 'shareDate' ? $store.getters.selectedMenu === 'material' ? true: false : true"
+                      @click="alignmentKey= item"
+                    >{{item.name}}</a-list-item>
                   </a-list>
                 </v-menu>
 
@@ -99,7 +100,7 @@
               v-if="$store.getters.selectedMenu === 'activity-board'"
             >
               <div v-for=" (activity,i) in currentActivities" :key="i" class="mb-4">
-                <activity-card style="wi`dth:750px; height :200px;" :activity="activity"></activity-card>
+                <activity-card style="width:750px; height:fit-content" :activity="activity"></activity-card>
               </div>
             </div>
             <v-layout

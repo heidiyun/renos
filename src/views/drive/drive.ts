@@ -21,16 +21,28 @@ export default class Drive extends Vue {
   private commentList: Array<FirestoreDocument<Comment>> = [];
   private selectedTags: string[] = [];
   private isDragging = false;
-  private alignmentKey = 'name';
   private activities: Array<FirestoreDocument<ActivityBoard>> = [];
   private alignmentKeys = {
-    name: ['이름', '업로드 시간'],
+    keys: [
+      {
+        name: '이름',
+        key: 'name'
+      },
+      {
+        name: '업로드 시간',
+        key: 'uploadDate'
+      },
+      {
+        name: '공유한 시간',
+        key: 'shareDate'
+      }
+    ],
     order: 'asc'
   };
-
-  private get currentIsDragging() {
-    return this.isDragging;
-  }
+  private alignmentKey: {
+    name: string;
+    key: string;
+  } = this.alignmentKeys.keys[0];
 
   private changeFileDisplayWay() {
     this.project.data.displayWay =
@@ -82,7 +94,7 @@ export default class Drive extends Vue {
   get latestAccessdFileList() {
     const list = _(this.fileList)
       .sortBy(f => {
-        return f.data[this.alignmentKey];
+        return f.data[this.alignmentKey.key];
       })
       .filter(f => {
         const fileTags = _.map(f.data.tags, 'name');
@@ -182,6 +194,7 @@ export default class Drive extends Vue {
 
   @Watch('$route', { deep: true })
   private onChangeRoute() {
+    console.log(this.$route.query);
     this.initailize();
   }
 
@@ -211,6 +224,7 @@ export default class Drive extends Vue {
       .createQuery('targetPid', '==', this.project.id)
       .onChange(ActivityBoard, (activity, state) => {
         if (state === 'added') {
+          
           this.activities.push(activity);
         }
       });

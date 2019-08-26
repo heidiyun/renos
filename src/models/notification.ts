@@ -12,9 +12,9 @@ export default class Notification extends FirestoreDocumentData {
   public activistUid: string = '';
   public recipientUid: string[] = [];
   public pid: string = '';
-  public fid: string = '';
-  public commentId: string = '';
-  public invitationMessage: string = '';
+  public fid: string | null = null;
+  public commentId: string | null = null;
+  public invitationMessage: string | null = null;
   public date: string = '';
   public projectRole: UserType | undefined;
   public type: NotificationType | undefined;

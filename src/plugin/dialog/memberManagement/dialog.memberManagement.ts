@@ -16,7 +16,6 @@ export default class DialogMemberManagement extends Vue {
   private currentUserId: string = '';
   private currentProjectId: string = '';
   private invalidEmail: boolean = false;
-  // private rules = [value => this.emails.includes(value) || ''];
 
   public open(currentUserId: string, currentProjectId: string) {
     this.on = true;
@@ -27,8 +26,6 @@ export default class DialogMemberManagement extends Vue {
   public off() {
     this.on = false;
   }
-
-  private async checkValidEmail() {}
 
   private async sendInvitation() {
     const user = await Collections.users
@@ -53,6 +50,4 @@ export default class DialogMemberManagement extends Vue {
 
     this.off();
   }
-
-  public async mounted() {}
 }

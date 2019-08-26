@@ -19,7 +19,6 @@ import DialogSimple from '@/plugin/dialog';
 import ProjectFile from '@/models/projectFile';
 import FileCard from '@/components/fileCard';
 import CommentView from '@/components/commentView';
-import FirestoreCollectionQuery from '@/vue-common/firebase/firestore/collectionQuery';
 import FileTable from '@/components/fileTable';
 import ActivityCard from '@/components/activityCard';
 import Util from '@/util';
@@ -57,6 +56,7 @@ export default class App extends Vue {
     notiOpener: Opener;
   };
   public util = Util;
+  public notifications: Array<FirestoreDocument<Notification>> = [];
   private profileButtonClicked = false;
   private projects: Array<FirestoreDocument<Project>> = [];
   private projectList: Array<FirestoreDocument<Project>> = [];
@@ -79,7 +79,6 @@ export default class App extends Vue {
   private onHandleChange(e) {
     this.$router.push(`/projects/${e}`);
   }
-  public notifications: Array<FirestoreDocument<Notification>> = [];
 
   get currentProject() {
     if (this.$store.getters.currentProject === undefined) {
@@ -146,6 +145,9 @@ export default class App extends Vue {
       this.$store.commit('setSelectedMenu', uid);
     } else {
       this.$store.commit('setSelectedMenu', menu);
+
+      // this.$route.query = { q: menu };
+      // this.$router.push({ name: 'project', query: { q: menu } });
     }
   }
 
@@ -276,6 +278,10 @@ export default class App extends Vue {
               });
               this.notifications.splice(index, 1);
             }
+
+            _.sortBy(this.notifications, n => {
+              return n.data.date;
+            });
           });
       },
       true

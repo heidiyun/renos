@@ -64,8 +64,6 @@ export default class FileCard extends Vue {
     const pid = this.$store.getters.currentProject.id;
     const fid = this.file.id;
 
-    util.saveActivity(ActivityType.SHARE, uid, pid, fid, null);
-
     const notification = Collections.notifications.create(Notification);
     const project = await Collections.projects.load(
       Project,
@@ -83,6 +81,8 @@ export default class FileCard extends Vue {
     notification.data.type = NotificationType.SHARE;
 
     notification.save();
+
+    util.saveActivity(ActivityType.SHARE, uid, pid, fid, null, null, null);
   }
 
   private removeMaterialDocument() {

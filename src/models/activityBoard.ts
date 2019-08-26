@@ -1,16 +1,19 @@
-import { FirestoreDocument, FirestoreDocumentData } from '@/vue-common';
-import User from './user';
-import Collections from './collections';
-import Project from './project';
-import ProjectFile from './projectFile';
+import { FirestoreDocumentData } from '@/vue-common';
+
 import ActivityType from './ActivityType';
+import { UserType } from './project';
 
 export default class ActivityBoard extends FirestoreDocumentData {
   public date: string = '';
-  public activeUid: string = '';
+  public activeUserName: string = '';
+  public activeUserPhotoURL: string = '';
   public targetPid: string = '';
-  public targetFid: string = '';
-  public inviteeUid: string = '';
+  public fileName: string = '';
+  public fileType: string = '';
+  public fileURL: string = '';
+  public inviteeUserName: string = '';
+  public inviteeRole: UserType|undefined;
+  public inviteeUserPhotoURL: string = '';
   public comment: string = '';
   public type: ActivityType | undefined = undefined;
 }

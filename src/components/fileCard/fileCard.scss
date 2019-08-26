@@ -122,5 +122,10 @@
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     overflow: hidden;
+
+    .card-image {
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
   }
 }

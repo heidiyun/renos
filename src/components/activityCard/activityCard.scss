@@ -1,3 +1,12 @@
+.comment-container {
+  max-width: 500px;
+  max-height: 200px;
+  word-break: break-all;
+  overflow: auto;
+  color: rgba(0, 0, 0, 0.5);
+  margin-left: 60px;
+}
+
 .file-type {
   display: inline-block;
   background: green;

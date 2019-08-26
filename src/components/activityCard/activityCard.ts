@@ -25,33 +25,33 @@ export default class ActivityCard extends Vue {
   private explanation: string = '';
 
   private get fileIcon() {
-    const fileExtension = this.file.data.name.split('.');
-    if (this.file.data.fileType.startsWith('image')) {
+    const fileExtension = this.activity.data.fileName.split('.');
+    if (this.activity.data.fileType.startsWith('image')) {
       return {
         tag: 'image',
         kind: 'image',
         icon: 'image',
         color: 'rgb(240,180,0)'
       };
-    } else if (this.file.data.fileType.startsWith('application/pdf')) {
+    } else if (this.activity.data.fileType.startsWith('application/pdf')) {
       return {
         tag: 'pdf',
         kind: 'file',
         icon: 'file-pdf',
         color: 'rgb(233,67,52)'
       };
-    } else if (this.file.data.fileType.startsWith('video')) {
+    } else if (this.activity.data.fileType.startsWith('video')) {
       return {
         tag: 'video',
         kind: 'video',
         icon: 'video-camera',
-        playable: this.file.data.name.endsWith('.mp4'),
+        playable: this.activity.data.fileName.endsWith('.mp4'),
         color: 'rgb(217, 48, 37)'
       };
     } else if (
       fileExtension[1] === 'docx' ||
       fileExtension[1] === 'doc' ||
-      this.file.data.fileType ===
+      this.activity.data.fileType ===
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ) {
       return {
@@ -63,7 +63,7 @@ export default class ActivityCard extends Vue {
     } else if (
       fileExtension[1] === 'xlsx' ||
       fileExtension[1] === 'xls' ||
-      this.file.data.fileType ===
+      this.activity.data.fileType ===
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ) {
       return {
@@ -74,7 +74,7 @@ export default class ActivityCard extends Vue {
       };
     } else if (
       fileExtension[1] === 'pptx' ||
-      this.file.data.fileType ===
+      this.activity.data.fileType ===
         'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     ) {
       return {
@@ -99,40 +99,26 @@ export default class ActivityCard extends Vue {
     }
     this.type = this.activity.data.type;
     this.date = moment(this.activity.data.date).format('YYYY년 MM월 DD일');
-    this.user = await Collections.users.load(
-      User,
-      this.activity.data.activeUid
-  );
 
     switch (this.type) {
       case ActivityType.INVITE:
-        this.invitee = await Collections.users.load(
-          User,
-          this.activity.data.inviteeUid
-        );
+        this.explanation = `이(가) ${this.activity.data.inviteeRole}로 프로젝트에 참여했습니다.`;
         break;
       case ActivityType.UPLOAD:
-        this.file = await Collections.files.load(
-          ProjectFile,
-          this.activity.data.targetFid
-        );
         this.explanation = '이(가) 파일을 업로드 했습니다.';
         break;
       case ActivityType.SHARE:
-        this.file = await Collections.files.load(
-          ProjectFile,
-          this.activity.data.targetFid
-        );
-        this.explanation = '이(가) 중요 문서함에 파일을 공유했습니다.';
+        this.explanation = `이(가) 중요 문서함에 ${this.activity.data.fileName}을 공유했습니다.`;
         break;
       case ActivityType.WRITECOMMENT:
-        if (this.activity.data.targetFid !== '') {
-          this.file = await Collections.files.load(
-            ProjectFile,
-            this.activity.data.targetFid
-          );
+        if (this.activity.data.fileName !== null) {
+          this.explanation = `이(가) ${this.activity.data.fileName}에 댓글을 작성했습니다.`;
+        } else {
+          this.explanation = '이(가) 프로젝트에 댓글을 작성했습니다.';
         }
-        this.explanation = '이(가) 댓글을 작성했습니다.';
+        break;
+      case ActivityType.MODIFYCOMMENT:
+        this.explanation = '이(가) 댓글을 수정했습니다.';
         break;
     }
 

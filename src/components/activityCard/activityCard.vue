@@ -24,11 +24,16 @@
         <div class="comment-container">{{activity.data.comment}}</div>
       </div>
 
-      <div style="height:130px;" class="mt-3" v-if="type==='upload'">
+      <div class="file-preview-container mt-3" v-if="type==='upload'">
         <!-- <div
           v-if="this.type === 'writeComment' || this.type === 'modifyComment'"
         >{{activity.data.comment}}</div>-->
-        <img style="height:100%" v-if="fileIcon.tag === 'image' " :src="activity.data.fileURL" />
+        <img
+          style="height:100%; width:100%;"
+          class="px-3"
+          v-if="fileIcon.tag === 'image' "
+          :src="activity.data.fileURL"
+        />
 
         <div
           style="height:100%; display:flex; justify-content:center; align-items:center;"

@@ -10,6 +10,7 @@ import ActivityType from '@/models/ActivityType';
 import util from '@/util';
 import Notification, { NotificationType } from '@/models/notification';
 import Project from '@/models/project';
+import Comment from '@/models/comment';
 
 @Component({})
 export default class FileCard extends Vue {
@@ -73,7 +74,6 @@ export default class FileCard extends Vue {
       return this.$store.getters.user.id !== key;
     });
 
-
     util.saveNotification(
       NotificationType.SHARE,
       uid,
@@ -99,6 +99,13 @@ export default class FileCard extends Vue {
       const storage = new Storage(`/files/${this.file.id}`);
       await storage.delete();
     }
+
+    const comments = await Collections.comments
+      .createQuery('fid', '==', this.file.id)
+      .exec(Comment);
+    _.forEach(comments, async c => {
+      await c.delete();
+    });
 
     this.$progress.off();
   }

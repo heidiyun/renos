@@ -1,9 +1,9 @@
 export default {
-  apiKey: 'AIzaSyDO4JJwMXI80cUeA63Qmo86OwDQcqeDRr4',
-  authDomain: 'renos-71d5d.firebaseapp.com',
-  databaseURL: 'https://renos-71d5d.firebaseio.com',
-  projectId: 'renos-71d5d',
-  storageBucket: 'gs://renos-71d5d.appspot.com',
-  messagingSenderId: '669566112458',
-  appId: '1:669566112458:web:0598d50a7ef48f37'
+  apiKey: 'AIzaSyBg6NLJqkXypV6qQNnmkjuDbPF9e1lNbqs',
+  authDomain: 'rabinet-4d186.firebaseapp.com',
+  databaseURL: 'https://rabinet-4d186.firebaseio.com',
+  projectId: 'rabinet-4d186',
+  storageBucket: 'gs://rabinet-4d186.appspot.com/',
+  messagingSenderId: '1062815762078',
+  appId: '1:1062815762078:web:d4a58391ec8b5291'
 };

@@ -7,7 +7,7 @@ import Collections from '@/models/collections';
 import ProjectCard from '@/components/projectCard';
 import ProgressBar from '@/components/progress';
 import ProgressMini from '@/components/progress-mini';
-import Project, { UserType } from '@/models/project';
+import Project, { UserType, displayWay } from '@/models/project';
 import Spinner from '@/vue-common/plugins/spinner';
 import Progress from '@/plugin/progress';
 import _ from 'lodash';
@@ -78,6 +78,10 @@ export default class App extends Vue {
 
   private onHandleChange(e) {
     this.$router.push(`/projects/${e}`);
+  }
+
+  private goHome() {
+    window.location.assign('/');
   }
 
   get currentProject() {
@@ -171,6 +175,9 @@ export default class App extends Vue {
     const storage = new Storage(
       `defaults/${Math.floor(Math.random() * 20) + 1}.jpg`
     );
+    project.data.displayWay = {
+      [`${this.$store.getters.user.id}`]: displayWay.CARDVIEW
+    };
     project.data.imageURL = await storage.getDownloadURL();
 
     // project.data.tags.push({ name: 'design', color: '#D81B60' });
@@ -242,7 +249,7 @@ export default class App extends Vue {
               this.projectList.push(project);
             } else if (state === 'removed') {
               const index = this.projectList.findIndex(p => {
-                this.snackbar = true;
+                // this.snackbar = true;
                 this.snackbarText = '프로젝트가 삭제되었습니다.';
                 return p.id === project.id;
               });
@@ -252,7 +259,7 @@ export default class App extends Vue {
                 return p.id === project.id;
               });
               this.projectList.splice(index, 1, project);
-              this.snackbar = true;
+              // this.snackbar = true;
               this.snackbarText = '변경사항이 적용되었습니다.';
               this.$progress.off();
             }

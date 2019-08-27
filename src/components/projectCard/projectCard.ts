@@ -3,6 +3,10 @@ import { FirestoreDocument, Storage } from '@/vue-common';
 import Project from '@/models/project';
 import User from '@/models/user';
 import Collections from '@/models/collections';
+import Comment from '@/models/comment';
+import _ from 'lodash';
+import Notification from '@/models/notification';
+import ProjectFile from '@/models/projectFile';
 
 @Component({})
 export default class ProjectCard extends Vue {
@@ -20,9 +24,36 @@ export default class ProjectCard extends Vue {
   private selected: string = '';
   private pinned: boolean = false;
 
-  private removeProject() {
+  private async removeProject() {
     const storage = new Storage(`images/${this.project.id}`);
-    storage.delete();
+
+    try {
+      storage.delete();
+    } catch (e) {
+      console.log(e);
+    }
+
+    const comments = await Collections.comments
+      .createQuery('pid', '==', this.project.id)
+      .exec(Comment);
+    _.forEach(comments, async c => {
+      await c.delete();
+    });
+
+    const notifications = await Collections.notifications
+      .createQuery('pid', '==', this.project.id)
+      .exec(Notification);
+    _.forEach(notifications, async noti => {
+      await noti.delete();
+    });
+
+    const files = await Collections.files
+      .createQuery('pid', '==', this.project.id)
+      .exec(ProjectFile);
+    _.forEach(files, async f => {
+      await f.delete();
+    });
+
     this.project.delete();
     this.removeDialog = false;
   }
@@ -47,9 +78,7 @@ export default class ProjectCard extends Vue {
     try {
       await this.$dialogSimple.open(
         '계속하시겠습니까?',
-        `공유 드라이브 ${
-        this.project.data.name
-        }이(가) 모든 사용자로부터 삭제되며 이 작업은 실행취소할 수 없습니다.`,
+        `공유 드라이브 ${this.project.data.name}이(가) 모든 사용자로부터 삭제되며 이 작업은 실행취소할 수 없습니다.`,
         '취소',
         '프로젝트 삭제'
       );

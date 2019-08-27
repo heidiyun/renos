@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="showProgress" persistent width="400px">
     <div class="progress-container">
-      <v-progress-circular color="green" indeterminate></v-progress-circular>
+      <v-progress-circular color="blue" indeterminate></v-progress-circular>
     </div>
   </v-dialog>
 </template>

@@ -5,7 +5,6 @@ import Project from '@/models/project';
 import Collections from '@/models/collections';
 import _ from 'lodash';
 
-
 @Component({})
 export default class DialogTag extends Vue {
   private show: boolean = false;
@@ -36,16 +35,15 @@ export default class DialogTag extends Vue {
     }
   }
   private setMainTag(tag: TagValue) {
-    _.forEach(this.file.data.tags, v => v.selected = false);
+    _.forEach(this.file.data.tags, v => (v.selected = false));
     Vue.set(tag, 'selected', true);
   }
 
   private async createTag(tagName: string, color?: string) {
     // const tagName = this.inputValue;
-    console.log('created tag called');
+
     this.inputValue = '';
     if (_.isEmpty(tagName)) {
-      console.log('exit');
       return;
     }
 
@@ -53,7 +51,7 @@ export default class DialogTag extends Vue {
       Vue.set(this.file.data.tags, tagName, {
         name: tagName,
         count: 0,
-        selected: false,
+        selected: false
       });
     }
     await this.file.saveSync();
@@ -62,7 +60,7 @@ export default class DialogTag extends Vue {
       Vue.set(this.project.data.tags, tagName, {
         name: tagName,
         count: 0,
-        selected: false,
+        selected: false
       });
       await this.project.saveSync();
     }

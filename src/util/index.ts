@@ -80,7 +80,7 @@ export default {
   getNameToColor(name) {
     const sha = sha1(name);
     const r = parseInt(sha[0] + sha[1], 16);
-    const c = HSVtoRGB(r / 256, 0.5, 0.6);
+    const c = HSVtoRGB(r / 256, 0.5, 0.9);
     return `rgb(${c.r},${c.g},${c.b})`;
   },
   async saveFile(e, pid: string, uid: string) {

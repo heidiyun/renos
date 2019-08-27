@@ -5,21 +5,23 @@
         <v-icon small color="white">more_vert</v-icon>
       </v-btn>
       <a-menu slot="overlay">
-        <a-menu-item key="0" @click="onDelete" :disabled="enableDelete ? false:true ">삭제</a-menu-item>
-        <a-menu-item key="1" @click="showComment">댓글 달기</a-menu-item>
+        <a-menu-item key="deleete" @click="onDelete" :disabled="enableDelete ? false:true ">삭제</a-menu-item>
+        <a-menu-item key="tag" @click="addTag">태그 추가</a-menu-item>
+        <a-menu-item key="comment" @click="showComment">댓글 달기</a-menu-item>
+
         <a-menu-item
-          key="2"
+          key="bookmark"
           v-if="!file.data.pins[$store.getters.user.id]"
           @click=" addBookmark"
         >보관함에 추가</a-menu-item>
-        <a-menu-item key="2" v-else @click="removeBookmark">보관함에서 삭제</a-menu-item>
+        <a-menu-item key="bookmark-remove" v-else @click="removeBookmark">보관함에서 삭제</a-menu-item>
         <a-menu-item
-          key="3"
+          key="material"
           @click="addMaterialDocument"
           v-if="!file.data.isMaterialDocument"
         >중요 문서함에 추가</a-menu-item>
         <a-menu-item
-          key="3"
+          key="material-remove"
           v-else
           :disabled="file.data.ownerMaterialDocument === $store.getters.user.id ? false : true"
           @click="removeMaterialDocument"
@@ -29,11 +31,9 @@
 
     <div class="card-image-container" style="padding:1px;">
       <v-img
-      
         :src="file.data.fileURL"
         height="100%"
         class="card-image"
-      
         v-if="fileIcon.tag === 'image'"
       ></v-img>
       <video
@@ -71,7 +71,7 @@
             >
               <a-icon small type="plus" />Tag
             </a-tag>
-            <div v-else @click.stop="menu = !menu" class="mr-2 px-1 main-tag">#{{mainTag}}</div>
+            <div v-else class="mr-2 px-1 main-tag">#{{mainTag}}</div>
           </div>
         </div>
       </div>

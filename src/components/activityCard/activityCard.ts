@@ -93,11 +93,16 @@ export default class ActivityCard extends Vue {
     }
   }
 
+  private created() {
+    if (this.activity.data.type !== undefined) {
+      this.type = this.activity.data.type;
+    }
+  }
   private async mounted() {
     if (this.activity.data.type === undefined) {
       return;
     }
-    this.type = this.activity.data.type;
+
     this.date = moment(this.activity.data.date).format('YYYY년 MM월 DD일');
 
     switch (this.type) {

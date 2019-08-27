@@ -23,12 +23,29 @@
         <div class="content-container">
           <div class="category px-3 pt-2" style="display:flex">
             <div class="content-title"></div>
-            <a-input-group compact class="mt-3 ml-4" style="width:fit-content;">
-              <a-select labelInValue :defaultValue="{ key: 'tag' }" style="width: 120px">
-                <a-select-option value="tag">태그</a-select-option>
-                <a-select-option value="user">사용자</a-select-option>
-              </a-select>
+            <a-input-group
+              compact
+              class="mt-3 ml-4"
+              style="width:fit-content;"
+              v-if="$store.getters.selectedMenu !== 'activity-board'"
+            >
               <a-select
+                labelInValue
+                @select="onChange"
+                :defaultValue="{ key: 'tag' }"
+                style="width: 120px"
+              >
+                <a-select-option value="tag">태그</a-select-option>
+                <a-select-option value="file">파일명</a-select-option>
+              </a-select>
+              <a-input
+                style="width: 200px"
+                placeholder="search file"
+                v-if="selectKey === 'file'"
+                v-model="searchFileInputValue"
+              />
+              <a-select
+                v-else
                 @change="onHandleSelectedTagChanged"
                 mode="multiple"
                 placeholder="tag select"
@@ -37,10 +54,10 @@
               >
                 <a-select-option
                   style="background:green;"
-                  v-for="tag in project.data.tags"
+                  v-for="tag in projectTags"
                   :key="tag.name"
                 >
-                  <a-tag :color="tag.color">{{tag.name}}</a-tag>
+                  <a-tag :color="$app.util.getNameToColor(tag.name)">{{tag.name}}</a-tag>
                 </a-select-option>
               </a-select>
             </a-input-group>
@@ -59,7 +76,9 @@
 
             <div style="display:flex; margin-top:12px" class="text-center mx-3">
               <v-btn icon class="ma-0" @click="changeFileDisplayWay">
-                <a-icon :type="project.data.displayWay === 'table' ? 'appstore' : 'table' " />
+                <a-icon
+                  :type="project.data.displayWay[$store.getters.user.id] === 'tableView' ? 'appstore' : 'table' "
+                />
               </v-btn>
               <div style="display:flex; ">
                 <v-menu bottom>
@@ -110,7 +129,7 @@
               style="width:100%;"
               pa-2
               mb-5
-              v-else-if="project.data.displayWay === 'card'"
+              v-else-if="project.data.displayWay[$store.getters.user.id] === 'cardView'"
             >
               <v-flex
                 style="height: 300px;"

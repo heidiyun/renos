@@ -18,7 +18,7 @@
         </v-btn>
 
         <a-menu
-          style="width: 230px"
+          style="width: 230px; border-right: 0px;"
           :openKeys="openKeys"
           @openChange="onOpenChange"
           :defaultOpenKeys="['sub1']"
@@ -61,7 +61,12 @@
       </v-flex>
     </v-navigation-drawer>
     <v-toolbar app color="white" flat height="90px;">
-      <div class="title" v-if="$route.name === 'login' || $route.name === 'projects'">Rabinet</div>
+      <div
+        class="title"
+        style="cursor:pointer"
+        v-if="$route.name === 'login' || $route.name === 'projects'"
+        @click="goHome"
+      >Rabinet</div>
       <v-select
         solo
         flat
@@ -101,9 +106,10 @@
 
       <v-btn
         icon
+        v-if="showSelect"
         @click="$dialogMemberManagement.open($store.getters.user.id, $store.getters.currentProject.id)"
       >
-        <a-icon style="font-size:16px" type="setting" />
+        <a-icon style="font-size:16px" type="share-alt" />
       </v-btn>
 
       <opener ref="notiOpener" @state="state => showNotifications = state">
@@ -146,7 +152,7 @@
         <v-icon small>clear</v-icon>
       </v-btn>
     </v-snackbar>
-    <v-content>
+    <v-content class="content-layout">
       <router-view></router-view>
     </v-content>
   </v-app>

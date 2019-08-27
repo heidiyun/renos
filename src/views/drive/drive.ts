@@ -1,7 +1,7 @@
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { Auth, FirestoreDocument, Storage, Log } from '@/vue-common';
 import Collections from '@/models/collections';
-import Project from '@/models/project';
+import Project, { displayWay } from '@/models/project';
 import User from '@/models/user';
 import ProjectFile from '@/models/projectFile';
 import _ from 'lodash';
@@ -21,6 +21,8 @@ export default class Drive extends Vue {
   private commentList: Array<FirestoreDocument<Comment>> = [];
   private selectedTags: string[] = [];
   private isDragging = false;
+  private selectKey = '';
+  private searchFileInputValue = '';
   private activities: Array<FirestoreDocument<ActivityBoard>> = [];
   private alignmentKeys = {
     keys: [
@@ -45,8 +47,11 @@ export default class Drive extends Vue {
   } = this.alignmentKeys.keys[0];
 
   private changeFileDisplayWay() {
-    this.project.data.displayWay =
-      this.project.data.displayWay === 'card' ? 'table' : 'card';
+    this.project.data.displayWay[this.$store.getters.user.id] =
+      this.project.data.displayWay[this.$store.getters.user.id] ===
+      displayWay.CARDVIEW
+        ? displayWay.TABLEVIEW
+        : displayWay.CARDVIEW;
     this.project.save();
   }
 
@@ -55,6 +60,10 @@ export default class Drive extends Vue {
       delete this.project.data.tags[tag];
       this.project.saveSync();
     }
+  }
+
+  private onChange(e) {
+    this.selectKey = e.key;
   }
 
   private get currentTag() {
@@ -99,6 +108,10 @@ export default class Drive extends Vue {
       .filter(f => {
         const fileTags = _.map(f.data.tags, 'name');
         if (!this.selectedTags.every(tag => fileTags.includes(tag))) {
+          return false;
+        }
+
+        if (f.data.name.indexOf(this.searchFileInputValue) === -1) {
           return false;
         }
 
@@ -202,6 +215,10 @@ export default class Drive extends Vue {
     this.showComment = true;
   }
 
+  private get projectTags() {
+    return this.project.data.tags;
+  }
+
   private async initailize() {
     const pid = this.$route.params.projectName;
     this.project = await Collections.projects.load(Project, pid);
@@ -224,7 +241,6 @@ export default class Drive extends Vue {
       .createQuery('targetPid', '==', this.project.id)
       .onChange(ActivityBoard, (activity, state) => {
         if (state === 'added') {
-          
           this.activities.push(activity);
         }
       });
@@ -235,6 +251,7 @@ export default class Drive extends Vue {
       .createQuery('pid', '==', this.project.id)
       .onChange(ProjectFile, (file, state) => {
         if (state === 'added') {
+          this.$progress.off();
           this.fileList.push(file);
         } else if (state === 'removed') {
           const index = _.findIndex(this.fileList, f => f.id === file.id);
@@ -267,6 +284,7 @@ export default class Drive extends Vue {
   }
 
   private async mounted() {
+    this.$progress.show();
     Auth.addChangeListener('driveAuth', async () => {
       this.initailize();
     });

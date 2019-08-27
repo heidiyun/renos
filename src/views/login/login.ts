@@ -7,6 +7,7 @@ export default class Login extends Vue {
   private login() {
     if (this.$store.getters.user !== undefined) {
       this.$router.push('/projects');
+      // window.location.assign('/');
       return;
     }
     Auth.signIn(SignInMethod.Google);

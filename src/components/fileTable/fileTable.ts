@@ -3,6 +3,7 @@ import { FirestoreDocument, Auth } from '@/vue-common';
 import ProjectFile from '@/models/projectFile';
 import Collections from '@/models/collections';
 import User from '@/models/user';
+import util from '@/util';
 
 @Component({})
 export default class FileTable extends Vue {
@@ -26,7 +27,7 @@ export default class FileTable extends Vue {
   ];
 
   private get currentFileList() {
-    return this.fileList.map(f => {
+    return this.fileList.map((f, index) => {
       let userName: string = '';
       for (const user of this.users) {
         if (user.id === f.data.uid) {
@@ -36,13 +37,15 @@ export default class FileTable extends Vue {
       return {
         name: f.data.name,
         userName,
-        fileSize: f.data.fileSize
+        fileSize: util.getReadableFileSizeString(f.data.fileSize),
+        key: index
       };
     });
   }
 
   private async uidToUserName() {
     const keys = Object.keys(this.$store.getters.currentProject.data.users);
+
     for (const key of keys) {
       this.users.push(await Collections.users.load(User, key));
     }

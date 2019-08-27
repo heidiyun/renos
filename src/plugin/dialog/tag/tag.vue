@@ -1,51 +1,43 @@
 <template>
-  <v-dialog v-model="show"
-            max-width="500px">
-    <v-card class="px-3 py-3"
-            style="height: 100%;">
+  <v-dialog v-model="show" max-width="500px">
+    <v-card class="px-3 py-3" style="height: 100%;">
       <div style="display:flex; width:100%;">
         <div class="title font-weight-bold px-1">TAG -</div>
         <div class="subtitle-2">{{file.data.name}}</div>
       </div>
 
       <div style="display:flex; width:100%;">
-        <div class="pr-2"
-             style="width:50%;">
-          <a-input-search class="mt-3"
-                          v-model="inputValue"
-                          @keypress.enter="createTag(inputValue)"></a-input-search>
+        <div class="pr-2" style="width:50%;">
+          <a-input-search class="mt-3" v-model="inputValue" @keypress.enter="createTag(inputValue)"></a-input-search>
           <div style="height : 300px; overflow:auto;">
-            <a-list size="small"
-                    :dataSource="exampleTags">
-              <a-list-item class="list-item pl-4"
-                           @click.stop="createTag(item.name, item.color === undefined ? undefined : item.color)"
-                           slot="renderItem"
-                           slot-scope="item">
-                <a-tooltip v-if="item.length > 20"
-                           :key="item"
-                           :title="item.name">
-                  <a-tag :key="item"
-                         :closable="true"
-                         :color="item.color">{{`${item.name.slice(0, 20)}...`}}</a-tag>
+            <a-list size="small" :dataSource="exampleTags">
+              <a-list-item
+                class="list-item pl-4"
+                @click.stop="createTag(item.name, item.color === undefined ? undefined : item.color)"
+                slot="renderItem"
+                slot-scope="item"
+              >
+                <a-tooltip v-if="item.length > 20" :key="item" :title="item.name">
+                  <a-tag
+                    :key="item"
+                    :closable="true"
+                    :color="$app.util.getNameToColor(item.name)"
+                  >{{`${item.name.slice(0, 20)}...`}}</a-tag>
                 </a-tooltip>
-                <a-tag :closable="false"
-                       :color="item.color">{{item.name}}</a-tag>
+                <a-tag :closable="false" :color="$app.util.getNameToColor(item.name)">{{item.name}}</a-tag>
                 <v-spacer></v-spacer>
-                <div @click.stop="is=!is"
-                     class="mr-2 pl-2 list-detail-menu-container">
+                <div @click.stop="is=!is" class="mr-2 pl-2 list-detail-menu-container">
                   <v-menu offset-x>
                     <template v-slot:activator="{ on }">
-                      <v-btn icon
-                             v-on="on"
-                             small
-                             class="ma-0">
-                        <a-icon class="list-detail-menu"
-                                type="ellipsis" />
+                      <v-btn icon v-on="on" small class="ma-0">
+                        <a-icon class="list-detail-menu" type="ellipsis" />
                       </v-btn>
                     </template>
-                    <a-list size="small"
-                            bordered
-                            style="z-index:10; background:white; cursor:pointer">
+                    <a-list
+                      size="small"
+                      bordered
+                      style="z-index:10; background:white; cursor:pointer"
+                    >
                       <a-list-item @click="removeProjectTag(item)">삭제</a-list-item>
                     </a-list>
                   </v-menu>
@@ -55,25 +47,24 @@
           </div>
         </div>
 
-        <div class="mt-3"
-             style="overflow:auto; width:50%; height:300px;">
-          <div style="display:inline"
-               v-for="tag in file.data.tags"
-               :key="tag.name"
-               @click="setMainTag(tag)">
-            <a-tooltip v-if="tag.name.length > 20"
-                       :key="tag.name"
-                       :title="tag">
-              <a-tag :key="tag"
-                     :afterClose="() => deleteTag(tag)"
-                     :closable="true"
-                     :color="$app.util.getNameToColor(tag.name)">{{`${tag.name.slice(0, 20)}...`}}</a-tag>
+        <div class="mt-3" style="overflow:auto; width:50%; height:300px;">
+          <div
+            style="display:inline"
+            v-for="tag in file.data.tags"
+            :key="tag.name"
+            @click="setMainTag(tag)"
+          >
+            <a-tooltip v-if="tag.name.length > 20" :key="tag.name" :title="tag">
+              <a-tag
+                :key="tag"
+                :afterClose="() => deleteTag(tag)"
+                :closable="true"
+                :color="$app.util.getNameToColor(tag.name)"
+              >{{`${tag.name.slice(0, 20)}...`}}</a-tag>
             </a-tooltip>
-            <a-tag :color="$app.util.getNameToColor(tag.name)"
-                   class="mb-2">
+            <a-tag :color="$app.util.getNameToColor(tag.name)" class="mb-2">
               {{tag.name}}
-              <a-icon @click.stop="deleteTag(tag.name)"
-                      type="close" />
+              <a-icon @click.stop="deleteTag(tag.name)" type="close" />
             </a-tag>
           </div>
         </div>

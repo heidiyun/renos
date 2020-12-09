@@ -1,9 +1,6 @@
 # Rabinet
 >  Resource + cabinet 
 
-click!!
-[rabinet-hosting](rabinet-4d186.web.app)
-
 ## Project resource management service at the group level.
 
 Work on your team project here.
